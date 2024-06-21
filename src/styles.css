@@ -1,1 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  background-color: #091a3a;
+  background-image: url('assets/images/bg/8bit.gif');
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
