@@ -1,6 +1,6 @@
 # PlDyn Webapp
 
-[![Release & Deploy](https://github.com/SkyeRangerDelta/PlDyn-Webapp/actions/workflows/release-and-deploy.yml/badge.svg)](https://github.com/SkyeRangerDelta/PlDyn-Webapp/actions/workflows/release-and-deploy.yml)
+[![Release & Deploy](https://github.com/SkyeRangerDelta/PlDyn-Webapp/actions/workflows/app-ci.yml/badge.svg)](https://github.com/SkyeRangerDelta/PlDyn-Webapp/actions/workflows/app-ci.yml)
 
 Official webapp repository for Planetary Dynamics. It do be a website.
 
