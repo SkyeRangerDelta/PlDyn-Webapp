@@ -28,7 +28,20 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Cache
+        uses: actions/cache@v4.0.0
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-devbuild-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-devbuild-${{ env.cache-name }}-
 
       - name: Install modules
         run: npm ci
