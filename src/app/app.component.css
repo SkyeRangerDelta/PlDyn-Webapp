@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+p {
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+  color: white;
+  font-size: large;
+}
+
+img {
+  color: white;
+}
+
+div {
+  margin: 10px;
+}
+
+.mainDiv {
+  display: flex;
+  padding: 1%;
+}
