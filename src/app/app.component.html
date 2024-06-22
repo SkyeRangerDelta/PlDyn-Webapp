@@ -3,11 +3,20 @@
 </head>
 
 <body>
-  <p>
-    You've arrived at the PlDyn main site, but there's no content here.
-  </p>
-  <p>
-    I don't know what else to say about this.
-  </p>
-  <img ngSrc="{{flagshipLogo}}" width="150" height="150" alt="PlDyn Flagship Logo"/>
+  <div class="mainDiv">
+    <div class="">
+      <img ngSrc="{{flagshipLogo}}" width="150" height="150" alt="PlDyn Flagship Logo"/>
+    </div>
+    <div>
+      <p>
+        You've arrived at the PlDyn main site, but there's no content here.
+      </p>
+      <p>
+        I don't know what else to say about this.
+      </p>
+    </div>
+  </div>
+  <div style="padding: 1%">
+    <button id="funButton" mat-flat-button (click)="generateRandomLink()">Go Somewhere Fun</button>
+  </div>
 </body>
