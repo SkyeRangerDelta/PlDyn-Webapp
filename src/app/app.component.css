@@ -9,3 +9,12 @@ p {
 img {
   color: white;
 }
+
+div {
+  margin: 10px;
+}
+
+.mainDiv {
+  display: flex;
+  padding: 1%;
+}
