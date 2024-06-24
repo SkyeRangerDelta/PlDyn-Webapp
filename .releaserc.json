@@ -14,8 +14,11 @@
         "preset": "eslint",
         "types": [
           { "type": "Test", "hidden": true },
-          { "type": "Perf", "section": "Performance Changes" },
-          { "type": "Refactor", "section": "Misc." }
+          { "type": "Perf", "section": "Performance Changes", "release": "patch" },
+          { "type": "Refactor", "section": "Misc.", "release": "patch" },
+          { "type": "Build", "release":  "patch"},
+          { "type": "Docs", "release":  "patch"},
+          { "type": "Chore", "release":  "patch"}
         ]
       }
     ],
