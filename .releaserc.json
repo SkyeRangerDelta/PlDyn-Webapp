@@ -13,12 +13,16 @@
       {
         "preset": "eslint",
         "types": [
-          { "type": "Test", "hidden": true },
-          { "type": "Perf", "section": "Performance Changes", "release": "patch" },
-          { "type": "Refactor", "section": "Misc.", "release": "patch" },
-          { "type": "Build", "release":  "patch"},
-          { "type": "Docs", "release":  "patch"},
-          { "type": "Chore", "release":  "patch"}
+          { "type": "Test",     "hidden": true },
+          { "type": "Perf",     "section": "Performance Changes", "release": "patch" },
+          { "type": "Refactor", "section": "Misc.",               "release": "patch" }
+        ],
+        "releaseRules": [
+          { "type": "Build",    "release": "patch"},
+          { "type": "Docs",     "release": "patch"},
+          { "type": "Chore",    "release": "patch"},
+          { "type": "Perf",     "release": "patch" },
+          { "type": "Refactor", "release": "patch" }
         ]
       }
     ],
