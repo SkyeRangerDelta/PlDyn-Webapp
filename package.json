@@ -10,7 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --browsers ChromeHeadless,LibreWolfHeadless --no-watch && eslint .",
     "test:ci": "ng test --browsers ChromeHeadless,FirefoxHeadless --no-watch && eslint .",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "docker:build": "npm run build && docker build -t pldyn-webapp ."
   },
   "private": false,
   "dependencies": {
@@ -24,6 +25,7 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
+    "express": "^4.19.2",
     "rxjs": "~7.8.0",
     "semantic-release": "^24.0.0",
     "tslib": "^2.3.0",
