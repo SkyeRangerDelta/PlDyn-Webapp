@@ -1,7 +1,7 @@
 #===========================
 #LCARS47 Docker Image Config
 #===========================
-FROM node:20-alpine
+FROM nginx:latest
 LABEL   authors="SkyeRangerDelta" \
         version="1.0.0" \
         description="Official PlDyn Website/app" \
@@ -13,12 +13,6 @@ LABEL   authors="SkyeRangerDelta" \
 #Setup environment
 #===========================
 WORKDIR /PlDyn-Webapp
-COPY package*.json ./
-RUN npm ci
-COPY . .
 
-#===========================
-#Post & Run
-#===========================
-
-CMD ["npm", "run", "start"]
+# Copy static web data from dist into nginx
+COPY ./dist/pldyn-webapp/browser /usr/share/nginx/html

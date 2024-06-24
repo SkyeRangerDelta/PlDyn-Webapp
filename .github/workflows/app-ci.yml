@@ -101,7 +101,26 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Cache
+        uses: actions/cache@v4.0.0
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-devbuild-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-devbuild-${{ env.cache-name }}-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
