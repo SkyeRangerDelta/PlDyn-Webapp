@@ -8,8 +8,7 @@
     "jsr:@std/fs@^1.0.4": "1.0.4",
     "jsr:@std/internal@^1.0.4": "1.0.4",
     "jsr:@std/path@^1.0.6": "1.0.6",
-    "jsr:@std/testing@^1.0.3": "1.0.3",
-    "npm:dotenv@^16.4.5": "16.4.5"
+    "jsr:@std/testing@^1.0.3": "1.0.3"
   },
   "jsr": {
     "@std/assert@1.0.6": {
@@ -47,17 +46,11 @@
       ]
     }
   },
-  "npm": {
-    "dotenv@16.4.5": {
-      "integrity": "sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg=="
-    }
-  },
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@1",
       "jsr:@std/dotenv@~0.225.2",
-      "jsr:@std/testing@^1.0.3",
-      "npm:dotenv@^16.4.5"
+      "jsr:@std/testing@^1.0.3"
     ]
   }
 }
