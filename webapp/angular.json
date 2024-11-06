@@ -3,18 +3,11 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "PlDyn-Webapp": {
+    "webapp": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "standalone": false,
           "style": "scss"
-        },
-        "@schematics/angular:directive": {
-          "standalone": false
-        },
-        "@schematics/angular:pipe": {
-          "standalone": false
         }
       },
       "root": "",
@@ -24,15 +17,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/pldyn-webapp",
+            "outputPath": "dist/webapp",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
-              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -76,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "PlDyn-Webapp:build:production"
+              "buildTarget": "webapp:build:production"
             },
             "development": {
-              "buildTarget": "PlDyn-Webapp:build:development"
+              "buildTarget": "webapp:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -95,6 +88,7 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
@@ -105,31 +99,10 @@
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "karmaConfig": "karma.conf.cjs"
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "scripts": []
           }
         }
       }
     }
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "style": "scss"
-    }
-  },
-  "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
-    "analytics": false
   }
 }
