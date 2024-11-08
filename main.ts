@@ -20,7 +20,7 @@ const host = Deno.env.get('APP_HOST') || 'localhost';
 // Set Routes
 app.use( async (ctx, next) => {
   console.log(`${ctx.request.method} ${ctx.request.url}`);
-  next();
+  await next();
 } );
 
 app.use( async (ctx, next) => {
@@ -29,7 +29,8 @@ app.use( async (ctx, next) => {
 
   try {
     await ctx.send({
-      root: indexPath
+      root: indexPath,
+      index: 'index.html',
     });
   }
   catch (error) {
