@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "dev": "cd webapp && ng build && cd .. && deno run --allow-net --allow-read --allow-env --watch main.ts"
+    "dev": "cd webapp && ng build && cd .. && deno run --allow-net --allow-read --allow-env --watch main.ts",
+    "test": "cd webapp && npx ng test --browsers ChromeHeadless --code-coverage true --watch false"
   },
   "imports": {
     "@angular/cli": "npm:@angular/cli@^18.2.11",
