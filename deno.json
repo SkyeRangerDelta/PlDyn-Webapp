@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "cd webapp && ng build && cd .. && deno run --allow-net --allow-read --allow-env --watch main.ts",
+    "dev": "cd webapp && ng build && cd .. && deno run --allow-net --allow-read --allow-env --watch api/main.ts",
     "test": "cd webapp && npx ng test --browsers ChromeHeadless --code-coverage true --watch false"
   },
   "imports": {
