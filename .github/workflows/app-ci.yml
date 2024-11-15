@@ -38,6 +38,7 @@ jobs:
       - name: Build
         run: |
           cd webapp
+          npm i
           ng build
 
       - name: Test
