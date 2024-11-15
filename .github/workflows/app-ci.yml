@@ -43,5 +43,5 @@ jobs:
 
       - name: Build
         run: |
-          npm run build
-          cd ..
+          cd webapp
+          npm run build:ci
