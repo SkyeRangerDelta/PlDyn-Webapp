@@ -35,13 +35,13 @@ jobs:
           touch .env
           echo $ENV_DATA | base64 --decode > .env
 
-      - name: Build
-        run: |
-          cd webapp
-          npm i
-          ng build
-
       - name: Test
         run: |
-          npm run test
+          cd webapp
+          npm ci
+          npm run test:ci
+
+      - name: Build
+        run: |
+          npm run build
           cd ..
