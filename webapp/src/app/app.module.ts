@@ -5,25 +5,25 @@ import { AppRoutingModule } from "./app-routing.module";
 import { NgOptimizedImage } from "@angular/common";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-import { MatButtonModule } from "@angular/material/button";
-import { MatInputModule } from "@angular/material/input";
-import { MatFormFieldModule } from "@angular/material/form-field";
+import { MaterialModule } from './material_module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from "./app.component";
-import { LoginComponent } from "./login/login.component";
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent,
     LoginComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     NgOptimizedImage,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule
+    MaterialModule
   ],
   providers: [
     provideAnimationsAsync()
