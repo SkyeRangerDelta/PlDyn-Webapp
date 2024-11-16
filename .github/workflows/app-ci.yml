@@ -29,6 +29,14 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Cache NodeJS Modules
+        uses: actions/cache@v2
+        with:
+          path: webapp/node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('webapp/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-node-${{ matrix.node-version }}-
+
       - name: Generate ENV
         run: |
           pwd
