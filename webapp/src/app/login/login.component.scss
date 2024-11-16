@@ -1,12 +1,78 @@
+// Variables for theme colors
+$primary-color: #a5c4d4; // Soft blue
+$background-color: rgba(0, 0, 0, 0.5); // Semi-transparent dark overlay
+$text-color: #ffffff;
+$input-background: rgba(255, 255, 255, 0.9);
+$button-background: #72a1c8;
+$button-hover: #6190b1;
+
+// Centering the login container
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  gap: 20px;
+  background-size: cover;
+  background-position: center;
 }
 
+// Semi-transparent overlay to focus on the login form
+.overlay {
+  background-color: $background-color;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+// Login form styling
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+// Login header
+h1 {
+  font-family: 'Courier New', Courier, monospace;
+  color: $text-color;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+// Input fields
 mat-form-field {
-  width: 300px;
+  width: 100%;
+
+  .mat-form-field-wrapper {
+    background-color: $input-background;
+    border-radius: 8px;
+    padding: 4px;
+  }
+
+  input {
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  mat-label {
+    color: $input-background;
+  }
+}
+
+// Submit button styling
+button {
+  color: $text-color !important;
+  padding: 12px 0;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $button-hover !important;
+  }
 }
