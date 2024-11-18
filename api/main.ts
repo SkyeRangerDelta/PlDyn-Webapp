@@ -5,8 +5,7 @@ import { load } from '@std/dotenv';
 import { Application } from '@oak/oak';
 import { join } from '@std/path/unstable-join';
 
-import { APIRouter } from "./Routes/APIRouter.ts";
-import { WebappRouter } from "./Routes/WebappRouter.ts";
+import { MainRouter } from "./Routes/MainRouter.ts";
 
 // Env
 await load( { export: true } );
@@ -23,9 +22,10 @@ app.use( async (ctx, next) => {
   await next();
 } );
 
+app.use( MainRouter.routes(), MainRouter.allowedMethods() );
+
 app.use( async (ctx, next) => {
   const indexPath = join( Deno.cwd(), 'webapp/dist/webapp/browser' );
-  console.log( indexPath );
 
   try {
     await ctx.send({
@@ -33,15 +33,10 @@ app.use( async (ctx, next) => {
       index: 'index.html',
     });
   }
-  catch (error) {
-    console.error( error );
+  catch {
     await next();
-    ctx.response.status = 500;
-    ctx.response.body = 'Internal Server Error'
   }
 } );
-
-app.use( APIRouter.routes() );
 
 // Error handler
 app.use( async ctx => {
