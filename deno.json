@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-read --allow-env --allow-sys --watch api/main.ts",
-    "start": "cd webapp && npx ng serve",
+    "start": "cd webapp && npx ng serve --proxy-config proxy.conf.json",
     "test": "cd webapp && npx ng test --browsers ChromeHeadless --code-coverage true --watch false"
   },
   "imports": {

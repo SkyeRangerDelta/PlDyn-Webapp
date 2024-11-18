@@ -5,7 +5,11 @@
 <body>
 
   <div style="display: flex; justify-content: flex-end; padding: 1%;">
-    <button mat-flat-button routerLink="/login">Login</button>
+    <button *ngIf="!authed" mat-flat-button routerLink="/login">Login</button>
+    <button *ngIf="authed" mat-flat-button (click)="logout()" routerLink="/">Logout</button>
+    <div *ngIf="authed" class="UsernameBox">
+      <span>Hello, {{getUsername()}}!</span>
+    </div>
   </div>
 
   <router-outlet></router-outlet>

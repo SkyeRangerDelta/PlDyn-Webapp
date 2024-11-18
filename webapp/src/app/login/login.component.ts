@@ -3,6 +3,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { AuthService } from '../services/auth.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,10 +15,14 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  isSuccess: boolean = false;
+  isSuccess: boolean = true;
   submitText: string = '';
 
-  constructor( private fb: FormBuilder, private router: Router ) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.loginForm = this.fb.group({
       user: [ '', Validators.required ],
       pass: [ '', Validators.required ],
@@ -29,7 +35,7 @@ export class LoginComponent {
 
       const { user, pass } = this.loginForm.value;
 
-      this.authUser( user, pass );
+      this.authUser(user, pass);
     }
     else {
       console.log( 'Invalid form submission');
@@ -38,16 +44,20 @@ export class LoginComponent {
 
   authUser( user: string, pass: string ) {
     // Authenticate user here
-    if ( user === 'admin' && pass === 'admin' ) {
-      this.submitText = 'User authenticated';
-      this.isSuccess = true;
+    this.authService.authenticateUser(user, pass).subscribe( (isAuthed: boolean) => {
+      if ( isAuthed ) {
+        this.submitText = 'User authenticated';
+        this.isSuccess = true;
 
-      this.handleAuthSuccess();
-    }
-    else {
-      this.submitText = 'Invalid credentials';
-      this.isSuccess = false;
-    }
+        this.handleAuthSuccess();
+      }
+      else {
+        this.submitText = 'Invalid credentials';
+        this.isSuccess = false;
+
+        this.loginForm.reset();
+      }
+    });
   }
 
   getSubmitResultStyle() {
@@ -63,6 +73,7 @@ export class LoginComponent {
       50,
       () => {
         setTimeout(() => {
+          this.authService.setAuthState(true);
           this.router.navigate(['/dashboard']);
         }, 1500);
       }
