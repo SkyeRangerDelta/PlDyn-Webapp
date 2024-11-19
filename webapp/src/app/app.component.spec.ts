@@ -2,13 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NgOptimizedImage } from "@angular/common";
+import { AuthService } from './services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         RouterModule.forRoot([]),
-        NgOptimizedImage
+        NgOptimizedImage,
+        HttpClientModule
       ],
       declarations: [
         AppComponent
