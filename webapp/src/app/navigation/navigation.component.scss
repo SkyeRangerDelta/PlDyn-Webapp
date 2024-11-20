@@ -1,0 +1,42 @@
+// Navigation Bar Container
+.navigation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.7); // Semi-transparent background
+  border-bottom: 2px solid #0159b5; // Neon green border
+  font-family: 'Press Start 2P', monospace; // Retro font
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+// Button Styling
+.nav-button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #4caf50; // Neon green background
+  color: #ffffff; // White text
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #ffcc00; // Yellow hover effect
+    color: #000000; // Dark text on hover
+  }
+}
+
+// Username Box Styling
+.username-box {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.5); // Semi-transparent dark background
+  border-radius: 8px;
+  border: 1px solid #4caf50; // Neon green border
+  color: #ffffff; // White text
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}

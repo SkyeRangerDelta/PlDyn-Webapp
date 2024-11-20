@@ -1,1 +1,7 @@
-<p>navigation works!</p>
+<div *ngIf="!isLoginPage()" class="navigation-bar">
+  <button *ngIf="!authed" mat-flat-button routerLink="/login" class="nav-button">Login</button>
+  <button *ngIf="authed" mat-flat-button (click)="logout()" routerLink="/" class="nav-button">Logout</button>
+  <div *ngIf="authed" class="username-box">
+    <span>Hello, {{getUsername()}}!</span>
+  </div>
+</div>
