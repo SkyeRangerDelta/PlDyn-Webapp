@@ -1,5 +1,8 @@
+import * as jose from 'https://deno.land/x/jose@v5.9.6/index.ts'
 import { Router, RouterContext } from '@oak/oak/router';
+
 import { JellyfinAuthenticateRequest } from "../../../Types/API_ObjectTypes.ts";
+import { generateRandomString } from "../../../Utilities/Generators.ts";
 
 const router = new Router;
 
@@ -48,10 +51,21 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
 
   const data = await response.json();
 
+  // Generate JWT here
+  const secret = Deno.env.get('JWT_SECRET') || generateRandomString();
+  const jwtToken = await new jose.SignJWT({
+    User: data.User.Name,
+    AccessToken: data.AccessToken
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('1w')
+    .sign( new TextEncoder().encode( secret ) );
+
   return {
     status: 200,
     message: 'User authenticated',
-    data: data
+    data: jwtToken
   }
 }
 

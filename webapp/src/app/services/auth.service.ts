@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, of } from 'rxjs';
+import jwt from 'jsonwebtoken';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   authState$ = this.authState.asObservable();
 
   public get isAuthenticated(): boolean {
-    return !!localStorage.getItem('jfAccessToken');
+    return !!localStorage.getItem('pldyn-jfToken');
   }
 
   constructor( private httpClient: HttpClient ) {}
@@ -29,10 +30,7 @@ export class AuthService {
               return false;
             }
 
-            console.log( data );
-
-            localStorage.setItem('jfAccessToken', data.data.AccessToken);
-            localStorage.setItem('jfUsername', data.data.User.Name);
+            localStorage.setItem( 'pldyn-jfToken', data.data );
 
             this.authState.next(true);
 
@@ -43,8 +41,7 @@ export class AuthService {
             console.error( error );
 
             try {
-              localStorage.removeItem('jfAccessToken');
-              localStorage.removeItem('jfUsername');
+              localStorage.removeItem('pldyn-jfToken');
             }
             catch {
               console.error( 'Couldnt remove local storage token (if any).' );
@@ -58,8 +55,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('jfAccessToken');
-    localStorage.removeItem('jfUsername');
+    localStorage.removeItem('pldyn-jfToken');
 
     this.authState.next(false);
   }
@@ -68,13 +64,30 @@ export class AuthService {
     this.authState.next( authed );
   }
 
-  getUsername() {
-    const uname = localStorage.getItem('jfUsername');
+  async getUsername() {
+    const clientToken = localStorage.getItem('pldyn-jfToken');
 
-    if ( !uname ) {
+    if ( !clientToken ) {
       return this.logout();
     }
 
-    return uname;
+    try {
+      const data: any = await this.httpClient.post(
+        '/api/v1/gettokendata',
+        { params: [ 'User' ] },
+        { headers: new HttpHeaders().set( 'Authorization', `Bearer ${ clientToken }` ) } )
+        .toPromise();
+
+      const uname = data.data.User;
+
+      if ( !uname ) {
+        return this.logout();
+      }
+
+      return uname;
+    }
+    catch {
+      return this.logout();
+    }
   }
 }

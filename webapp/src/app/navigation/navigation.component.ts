@@ -10,9 +10,14 @@ import { Router } from '@angular/router';
 export class NavigationComponent {
 
   authed: boolean = false;
+  username: string = 'Program!';
 
   constructor( private authService: AuthService, private router: Router ) {
     this.authed = this.authService.isAuthenticated;
+
+    this.getUsername().then( (name: string) => {
+      this.username = name;
+    });
   }
 
   ngOnInit() {
@@ -25,8 +30,8 @@ export class NavigationComponent {
     this.authService.logout();
   }
 
-  getUsername() {
-    return this.authService.getUsername();
+  async getUsername() {
+    return await this.authService.getUsername();
   }
 
   isLoginPage(): boolean {

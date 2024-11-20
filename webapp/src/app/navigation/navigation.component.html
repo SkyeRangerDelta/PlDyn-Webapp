@@ -1,7 +1,9 @@
 <div *ngIf="!isLoginPage()" class="navigation-bar">
+  <button *ngIf="authed" mat-flat-button routerLink="/" class="nav-button">Home</button>
+  <button *ngIf="authed" mat-flat-button routerLink="/media" class="nav-button">Media</button>
+  <div *ngIf="authed" class="username-box">
+    <span>Hello, {{username}}!</span>
+  </div>
   <button *ngIf="!authed" mat-flat-button routerLink="/login" class="nav-button">Login</button>
   <button *ngIf="authed" mat-flat-button (click)="logout()" routerLink="/" class="nav-button">Logout</button>
-  <div *ngIf="authed" class="username-box">
-    <span>Hello, {{getUsername()}}!</span>
-  </div>
 </div>

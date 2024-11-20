@@ -6,6 +6,7 @@ import { Application } from '@oak/oak';
 import { join } from '@std/path/unstable-join';
 
 import { MainRouter } from "./Routes/MainRouter.ts";
+import { generateRandomString } from "./Utilities/Generators.ts";
 
 // Env
 await load( { export: true } );
@@ -15,6 +16,15 @@ const app = new Application();
 
 const port = parseInt( Deno.env.get('APP_PORT') || '4200' );
 const host = Deno.env.get('APP_HOST') || 'localhost';
+
+// Check JWT token
+let jwtSecret = Deno.env.get('JWT_SECRET');
+if ( !jwtSecret ) {
+  console.error('JWT_SECRET not set in environment; creating one.');
+  jwtSecret = generateRandomString();
+  Deno.env.set('JWT_SECRET', jwtSecret);
+  await Deno.writeTextFile( '.env', `\nJWT_SECRET=${ jwtSecret }\n`, { append: true } );
+}
 
 // Set Routes
 app.use( async (ctx, next) => {
