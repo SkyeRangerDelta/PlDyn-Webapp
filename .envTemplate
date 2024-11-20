@@ -1,0 +1,4 @@
+APP_PORT=%7200%
+APP_HOST=%localhost%
+JELLYFIN_HOST=%localhost%
+JELLYFIN_PORT=%8096%
