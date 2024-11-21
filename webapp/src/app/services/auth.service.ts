@@ -12,11 +12,28 @@ export class AuthService {
   private authState = new BehaviorSubject<boolean>(this.isAuthenticated);
   authState$ = this.authState.asObservable();
 
+  private uname = new BehaviorSubject<string>( 'Program' );
+  uname$ = this.uname.asObservable();
+
   public get isAuthenticated(): boolean {
     return !!localStorage.getItem('pldyn-jfToken');
   }
 
-  constructor( private httpClient: HttpClient ) {}
+  public get getUsername(): string {
+    return this.uname.value;
+  }
+
+  constructor( private httpClient: HttpClient ) {
+    // If they refresh the page, we need to re-acquire the token username.
+    try {
+      this.getTokenUsername().then( (username: string) => {
+        this.setUsername( username );
+      });
+    }
+    catch {
+      console.error( 'Couldnt get token username (if any).' );
+    }
+  }
 
   authenticateUser( user: string, pass: string ) {
     const payload = { "user": user, "pass": pass };
@@ -33,6 +50,10 @@ export class AuthService {
             localStorage.setItem( 'pldyn-jfToken', data.data );
 
             this.authState.next(true);
+
+            this.getTokenUsername().then( (username: string) => {
+              this.setUsername( username );
+            });
 
             return true;
           }
@@ -64,11 +85,21 @@ export class AuthService {
     this.authState.next( authed );
   }
 
-  async getUsername() {
+  setUsername( uname: string ) {
+    this.uname.next( uname );
+  }
+
+  async getTokenUsername(): Promise<string> {
     const clientToken = localStorage.getItem('pldyn-jfToken');
 
+    if ( !this.isAuthenticated ) {
+      this.logout();
+      return '';
+    }
+
     if ( !clientToken ) {
-      return this.logout();
+      this.logout();
+      return '';
     }
 
     try {
@@ -78,16 +109,17 @@ export class AuthService {
         { headers: new HttpHeaders().set( 'Authorization', `Bearer ${ clientToken }` ) } )
         .toPromise();
 
-      const uname = data.data.User;
-
+      const uname: string = data.data.User;
       if ( !uname ) {
-        return this.logout();
+        this.logout();
+        return '';
       }
 
       return uname;
     }
     catch {
-      return this.logout();
+      this.logout();
+      return '';
     }
   }
 }
