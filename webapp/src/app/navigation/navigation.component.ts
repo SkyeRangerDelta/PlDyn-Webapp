@@ -14,24 +14,21 @@ export class NavigationComponent {
 
   constructor( private authService: AuthService, private router: Router ) {
     this.authed = this.authService.isAuthenticated;
-
-    this.getUsername().then( (name: string) => {
-      this.username = name;
-    });
+    this.username = this.authService.getUsername;
   }
 
   ngOnInit() {
     this.authService.authState$.subscribe( (authed: boolean) => {
       this.authed = authed;
     });
+
+    this.authService.uname$.subscribe( (uname: string) => {
+      this.username = uname;
+    });
   }
 
   logout() {
     this.authService.logout();
-  }
-
-  async getUsername() {
-    return await this.authService.getUsername();
   }
 
   isLoginPage(): boolean {
