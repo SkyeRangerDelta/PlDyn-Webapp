@@ -13,13 +13,15 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { provideHttpClient } from '@angular/common/http';
 import { NavigationComponent } from './navigation/navigation.component';
+import { MediaDashboardComponent } from './media-dashboard/media-dashboard.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LoginComponent,
-    NavigationComponent
+    NavigationComponent,
+    MediaDashboardComponent
   ],
   imports: [
     BrowserModule,
