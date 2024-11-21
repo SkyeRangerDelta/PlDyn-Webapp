@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MediaDashboardComponent } from './media-dashboard.component';
+import { MaterialModule } from '../material_module';
 
 describe('MediaDashboardComponent', () => {
   let component: MediaDashboardComponent;
@@ -8,7 +9,10 @@ describe('MediaDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MediaDashboardComponent]
+      declarations: [MediaDashboardComponent],
+      imports: [
+        MaterialModule
+      ]
     })
     .compileComponents();
 
