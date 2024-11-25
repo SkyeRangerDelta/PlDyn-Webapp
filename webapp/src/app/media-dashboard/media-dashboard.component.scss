@@ -11,6 +11,24 @@
   margin: 1rem auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
+  .media-type-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 4px;
+
+      &:disabled {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.5);
+        cursor: not-allowed;
+      }
+    }
+  }
+
   .contributions-section {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
