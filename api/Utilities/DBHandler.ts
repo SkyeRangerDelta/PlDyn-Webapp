@@ -7,6 +7,9 @@ import * as mongo from '@db/mongo';
 export class DBHandler {
   private client: mongo.MongoClient = new mongo.MongoClient();
   private mongoURI = Deno.env.get('MONGO_URI');
+  private mongoDBName = Deno.env.get('MONGO_DB_NAME');
+
+  private database: mongo.Database;
 
   constructor() {
     // Initialize
@@ -15,31 +18,22 @@ export class DBHandler {
     }
 
     this.client.connect( this.mongoURI );
+
+    this.mongoDBName = Deno.env.get( 'MONGO_DB_NAME' );
+
+    if ( !this.mongoDBName ) {
+      throw new Error('MONGO_DB_NAME not found in environment variables.');
+    }
+
+    this.database = this.client.database( this.mongoDBName );
   }
 
-  // Get All
-  public async getAll(collection: string): Promise<any> {
-      return await this.client.getAll(collection);
+  public async selectOne( collection: string, docId: number | string ) {
+    return await this.database.collection( collection ).findOne( { id: docId });
   }
 
-  // Get By ID
-  public async getByID(collection: string, id: string): Promise<any> {
-      return await this.client.getByID(collection, id);
-  }
-
-  // Create
-  public async create(collection: string, data: any): Promise<any> {
-      return await this.client.create(collection, data);
-  }
-
-  // Update
-  public async update(collection: string, id: string, data: any): Promise<any> {
-      return await this.client.update(collection, id, data);
-  }
-
-  // Delete
-  public async delete(collection: string, id: string): Promise<any> {
-      return await this.client.delete(collection, id);
+  public selectMany( collection: string, query: object, filter: mongo.FindOptions ) {
+    return this.database.collection( collection ).find( query, filter ).toArray();
   }
 
   // Close
