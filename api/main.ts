@@ -7,6 +7,7 @@ import { join } from '@std/path/unstable-join';
 
 import { MainRouter } from "./Routes/MainRouter.ts";
 import { generateRandomString } from "./Utilities/Generators.ts";
+import { DBHandler } from "./Utilities/DBHandler.ts";
 
 // Env
 await load( { export: true } );
@@ -16,6 +17,9 @@ const app = new Application();
 
 const port = parseInt( Deno.env.get('APP_PORT') || '4200' );
 const host = Deno.env.get('APP_HOST') || 'localhost';
+
+// Configure RDS
+const Mongo = new DBHandler();
 
 // Check JWT token
 let jwtSecret = Deno.env.get('JWT_SECRET');
