@@ -55,7 +55,8 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   const secret = Deno.env.get('JWT_SECRET') || generateRandomString();
   const jwtToken = await new jose.SignJWT({
     User: data.User.Name,
-    AccessToken: data.AccessToken
+    AccessToken: data.AccessToken,
+    ID: data.User.Id
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
