@@ -1,5 +1,6 @@
 <div class="media-dashboard">
   <!-- Contributions Section -->
+  Recent uploads
   <div class="contributions-section">
     <div class="media-item" *ngFor="let item of contributions">
       <img [src]="item.thumbnailUrl" alt="Thumbnail" />
@@ -10,13 +11,21 @@
     </div>
   </div>
 
+  Upload editor
   <!-- Uploader Section -->
-  <div class="uploader-section">
-<!--    <form [formGroup]="newUploadForm" (ngSubmit)="onSubmit()">-->
-<!--      <input type="text" placeholder="Title" [(ngModel)]="newMedia.title" />-->
-<!--      <textarea placeholder="Description" [(ngModel)]="newMedia.description"></textarea>-->
-<!--      <input type="file" (change)="onFileSelect($event)" />-->
-<!--      <button type="submit">Upload</button>-->
-<!--    </form>-->
+  <div class="media-type-buttons">
+    <button mat-flat-button color="primary" (click)="selectMediaType('music')">Music</button>
+    <button mat-flat-button color="primary" disabled>Movies</button>
+    <button mat-flat-button color="primary" disabled>Shows</button>
   </div>
 </div>
+
+
+<!--<div class="uploader-section">-->
+<!--  <form [formGroup]="newUploadForm" (ngSubmit)="onSubmit()">-->
+<!--    <input type="text" placeholder="Title" [(ngModel)]="newMedia.title" />-->
+<!--    <textarea placeholder="Description" [(ngModel)]="newMedia.description"></textarea>-->
+<!--    <input type="file" (change)="onFileSelect($event)" />-->
+<!--    <button type="submit">Upload</button>-->
+<!--  </form>-->
+<!--</div>-->

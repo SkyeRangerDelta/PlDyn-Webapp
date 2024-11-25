@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormGroup } from '@angular/forms';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-media-dashboard',
@@ -11,7 +12,7 @@ import { FormGroup } from '@angular/forms';
   ]
 })
 export class MediaDashboardComponent {
-  newUploadForm: FormGroup;
+  private backendHost = '/api/v1/GetRecentContributions';
 
   contributions = [
     {
@@ -28,14 +29,18 @@ export class MediaDashboardComponent {
   }
 
   constructor() {
-    this.newUploadForm = new FormGroup({});
+    getContributions();
   }
 
-  onSubmit() {
-    // Submit
+  getContributions() {
+    // fetch contributions
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const payload = { "mediaType": lastUploaderState };
+
+    this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
   }
 
-  onFileSelect( event: Event ) {
-    // File selected
+  selectMediaType(ev: string) {
+    console.log(ev);
   }
 }
