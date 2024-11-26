@@ -29,15 +29,15 @@ export class MediaDashboardComponent {
   }
 
   constructor() {
-    getContributions();
+    this.getContributions();
   }
 
   getContributions() {
     // fetch contributions
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const payload = { "mediaType": lastUploaderState };
-
-    this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
+    // const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    // const payload = { "mediaType": lastUploaderState };
+    //
+    // this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
   }
 
   selectMediaType(ev: string) {
