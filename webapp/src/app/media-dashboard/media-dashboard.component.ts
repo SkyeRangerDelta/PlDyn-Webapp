@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormGroup } from '@angular/forms';
 import { HttpHeaders } from '@angular/common/http';
 
 @Component({
@@ -13,6 +12,8 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class MediaDashboardComponent {
   private backendHost = '/api/v1/GetRecentContributions';
+
+  lastUsedEditor: string = 'Music';
 
   contributions = [
     {
@@ -29,18 +30,21 @@ export class MediaDashboardComponent {
   }
 
   constructor() {
+    this.lastUsedEditor = localStorage.getItem('lastUsedEditor') || 'Music';
+
     this.getContributions();
   }
 
   getContributions() {
     // fetch contributions
-    // const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
     // const payload = { "mediaType": lastUploaderState };
-    //
+
     // this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
   }
 
   selectMediaType(ev: string) {
+    localStorage.setItem('lastUsedEditor', ev);
     console.log(ev);
   }
 }
