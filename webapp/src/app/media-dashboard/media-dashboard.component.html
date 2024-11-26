@@ -15,8 +15,8 @@
   <!-- Uploader Section -->
   <div class="media-type-buttons">
     <button mat-flat-button color="primary" (click)="selectMediaType('music')">Music</button>
-    <button mat-flat-button color="primary" disabled>Movies</button>
-    <button mat-flat-button color="primary" disabled>Shows</button>
+    <button mat-flat-button color="primary" disabled (click)="selectMediaType('movies')">Movies</button>
+    <button mat-flat-button color="primary" disabled (click)="selectMediaType('shows')">Shows</button>
   </div>
 </div>
 
