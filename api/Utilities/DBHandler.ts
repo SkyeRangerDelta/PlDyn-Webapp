@@ -9,7 +9,7 @@ export class DBHandler {
   private mongoURI = Deno.env.get('MONGO_URI');
   private mongoDBName = Deno.env.get('MONGO_DB_NAME');
 
-  private database: mongo.Database;
+  private database!: mongo.Database;
 
   constructor() {
     // Initialize
@@ -17,7 +17,13 @@ export class DBHandler {
       throw new Error('MONGO_URI not found in environment variables.');
     }
 
-    this.client.connect( this.mongoURI );
+    this.initialize().then(() => {
+      console.log('MongoDB connected.');
+    });
+  }
+
+  private async initialize() {
+    await this.client.connect( this.mongoURI! );
 
     this.mongoDBName = Deno.env.get( 'MONGO_DB_NAME' );
 
