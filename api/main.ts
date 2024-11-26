@@ -30,12 +30,19 @@ if ( !jwtSecret ) {
   await Deno.writeTextFile( '.env', `\nJWT_SECRET=${ jwtSecret }\n`, { append: true } );
 }
 
-// Set Routes
+// Attach Mongo to CTX
+app.use( async (ctx, next) => {
+  ctx.state.Mongo = Mongo;
+  await next();
+});
+
+// Log requests
 app.use( async (ctx, next) => {
   console.log(`${ctx.request.method} ${ctx.request.url}`);
   await next();
 } );
 
+// Set Routes
 app.use( MainRouter.routes(), MainRouter.allowedMethods() );
 
 app.use( async (ctx, next) => {

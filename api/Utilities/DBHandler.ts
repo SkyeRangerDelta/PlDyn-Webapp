@@ -36,6 +36,10 @@ export class DBHandler {
     return this.database.collection( collection ).find( query, filter ).toArray();
   }
 
+  public async insertOne( collection: string, doc: object ) {
+    return await this.database.collection( collection ).insertOne( doc );
+  }
+
   // Close
   public close() {
     this.client.close();
