@@ -18,3 +18,17 @@ export interface NewUserRes {
   inserted: number;
   success: boolean;
 }
+
+export interface UpdatedUserRes {
+  modified: number;
+  success: boolean;
+}
+
+export interface DB_USerSettingRecord {
+  jfId: string;
+  clientSettings: ClientSettings;
+}
+
+export interface ClientSettings {
+  lastUsedEditor: string;
+}
