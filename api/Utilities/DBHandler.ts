@@ -51,7 +51,7 @@ export class DBHandler {
   }
 
   public async updateOne( collection: string, filter: object, update: object ) {
-    return await this.database.collection( collection ).findAndModify( filter, update );
+    return await this.database.collection( collection ).updateOne( filter, update );
   }
 
   // Close
