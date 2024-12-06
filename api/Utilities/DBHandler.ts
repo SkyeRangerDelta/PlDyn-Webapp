@@ -34,8 +34,12 @@ export class DBHandler {
     this.database = this.client.database( this.mongoDBName );
   }
 
-  public async selectOne( collection: string, docId: number | string ) {
+  public async selectOneById( collection: string, docId: number | string ) {
     return await this.database.collection( collection ).findOne( { id: docId });
+  }
+
+  public async selectOneByFilter( collection: string, filter: object ) {
+    return await this.database.collection( collection ).findOne( filter );
   }
 
   public selectMany( collection: string, query: object, filter: mongo.FindOptions ) {
