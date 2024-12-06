@@ -17,6 +17,12 @@ $button-hover: #6190b1;
   background-position: center;
 }
 
+.login-subtext {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 // Semi-transparent overlay to focus on the login form
 .overlay {
   background-color: $background-color;
