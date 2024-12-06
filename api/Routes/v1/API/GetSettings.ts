@@ -8,7 +8,7 @@ router
     const Mongo: DBHandler = ctx.state.Mongo;
 
     const uId = ctx.request.body.json();
-    const settingsRes = await Mongo.selectOne( 'settings', 1 );
+    const settingsRes = await Mongo.selectOneByFilter( 'UserSettings', { jfId: uId } );
 
     ctx.response.body = {
       message: 'Success',
