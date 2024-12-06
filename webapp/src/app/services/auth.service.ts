@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, of } from 'rxjs';
-import jwt from 'jsonwebtoken';
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { AuthResult } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -35,16 +35,31 @@ export class AuthService {
     }
   }
 
-  authenticateUser( user: string, pass: string ) {
+  authenticateUser( user: string, pass: string ): Observable<AuthResult> {
     const payload = { "user": user, "pass": pass };
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
       .pipe(
         map( (data: any) => {
+            if ( data.status === 500 ) {
+              console.log( 'Internal server error' );
+
+              return {
+                status: 500,
+                message: 'Internal server error',
+                success: false
+              } as AuthResult;
+            }
+
             if ( data.status !== 200 || !data.data ) {
               console.log( 'Error authenticating user' );
-              return false;
+
+              return {
+                status: data.status,
+                message: data.message,
+                success: false
+              } as AuthResult;
             }
 
             localStorage.setItem( 'pldyn-jfToken', data.data );
@@ -55,7 +70,11 @@ export class AuthService {
               this.setUsername( username );
             });
 
-            return true;
+            return {
+              status: 200,
+              message: 'User authenticated',
+              success: true
+            }
           }
         ),
         catchError( (error: any) => {
@@ -68,9 +87,13 @@ export class AuthService {
               console.error( 'Couldnt remove local storage token (if any).' );
             }
 
-            this.authState.next(false);
+            this.authState.next( false );
 
-            return of(false);
+            return of({
+              status: 500,
+              message: 'Internal server error',
+              success: false
+            } as AuthResult );
         })
       );
   }
