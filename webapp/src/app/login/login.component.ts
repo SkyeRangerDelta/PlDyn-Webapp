@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
+import { AuthResult } from '../customTypes';
 
 @Component({
   selector: 'app-login',
@@ -44,15 +45,15 @@ export class LoginComponent {
 
   authUser( user: string, pass: string ) {
     // Authenticate user here
-    this.authService.authenticateUser(user, pass).subscribe( (isAuthed: boolean) => {
-      if ( isAuthed ) {
+    this.authService.authenticateUser(user, pass).subscribe( (resObject: AuthResult) => {
+      if ( resObject.success ) {
         this.submitText = 'User authenticated';
         this.isSuccess = true;
 
         this.handleAuthSuccess();
       }
       else {
-        this.submitText = 'Invalid credentials';
+        this.submitText = resObject.message;
         this.isSuccess = false;
 
         this.loginForm.reset();
