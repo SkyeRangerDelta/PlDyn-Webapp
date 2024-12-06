@@ -58,16 +58,33 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
 
   // Map user ID to DB
   console.log( `[Jellyfin] Mapping user...` );
-  const uid: string = data.User.Id;
-  const userRes = await Mongo.selectOneByFilter( 'UserMap', { jfId: uid } );
+  try {
+    const uid: string = data.User.Id;
+    const userRes = await Mongo.selectOneByFilter( 'UserMap', { jfId: uid } );
 
-  if ( !userRes || !userRes.id ) {
-    // Insert user
-    await Mongo.insertOne( 'UserMap', {
-      jfId: uid,
-      name: data.User.Name,
-      lastLogin: new Date().toISOString()
-    });
+    if ( !userRes ) {
+      // Insert user
+      await Mongo.insertOne( 'UserMap', {
+        jfId: uid,
+        name: data.User.Name,
+        lastLogin: new Date().toISOString()
+      });
+    }
+    else if ( !userRes.jfId ) {
+      // Update user
+      await Mongo.updateOne( 'UserMap', { jfId: uid }, { $set: { jfId: uid, lastLogin: new Date().toISOString() } });
+    }
+    else {
+      // Update last login
+      await Mongo.updateOne( 'UserMap', { jfId: uid }, { $set: { lastLogin: new Date().toISOString() } });
+    }
+  }
+  catch (e) {
+    console.error( `[Jellyfin] Error mapping user: ${ e }` );
+    return {
+      status: 500,
+      message: 'Internal Server Error'
+    }
   }
 
   // Generate JWT here
