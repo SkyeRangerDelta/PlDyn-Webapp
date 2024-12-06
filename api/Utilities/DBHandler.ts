@@ -50,6 +50,10 @@ export class DBHandler {
     return await this.database.collection( collection ).insertOne( doc );
   }
 
+  public async updateOne( collection: string, filter: object, update: object ) {
+    return await this.database.collection( collection ).findAndModify( filter, update );
+  }
+
   // Close
   public close() {
     this.client.close();
