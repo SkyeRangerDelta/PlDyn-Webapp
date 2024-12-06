@@ -13,3 +13,8 @@ export interface ContributionTile {
   title: string;
   status: string;
 }
+
+export interface NewUserRes {
+  inserted: number;
+  success: boolean;
+}

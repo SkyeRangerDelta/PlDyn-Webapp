@@ -4,6 +4,7 @@ import { Router, RouterContext } from '@oak/oak/router';
 import { JellyfinAuthenticateRequest } from "../../../Types/API_ObjectTypes.ts";
 import { generateRandomString } from "../../../Utilities/Generators.ts";
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
+import { NewUserRes } from "../../../../webapp/src/app/customTypes.ts";
 
 const router = new Router;
 
@@ -64,19 +65,15 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
 
     if ( !userRes ) {
       // Insert user
-      await Mongo.insertOne( 'UserMap', {
-        jfId: uid,
-        name: data.User.Name,
-        lastLogin: new Date().toISOString()
-      });
-    }
-    else if ( !userRes.jfId ) {
-      // Update user
-      await Mongo.updateOne( 'UserMap', { jfId: uid }, { $set: { jfId: uid, lastLogin: new Date().toISOString() } });
+      const res = await addNewUser( uid, data.User.Name );
+
+      if ( !res || res.inserted < 3 || !res.success ) {
+        throw new Error('Error inserting user');
+      }
     }
     else {
       // Update last login
-      await Mongo.updateOne( 'UserMap', { jfId: uid }, { $set: { lastLogin: new Date().toISOString() } });
+      const res = await updateUser( uid );
     }
   }
   catch (e) {
@@ -104,6 +101,32 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
     message: 'User authenticated',
     data: jwtToken
   }
+}
+
+async function addNewUser( jfId: string, name: string ) {
+  await Mongo.insertOne( 'UserMap', {
+    jfId: jfId,
+    name: name,
+    lastLogin: new Date().toISOString()
+  });
+
+  await Mongo.insertOne( 'UserSettings', {
+    jfId: jfId,
+    clientSettings: {
+      lastUsedEditor: 'Music'
+    }
+  });
+
+  await Mongo.insertOne( 'UserContributions', {
+    jfId: jfId,
+    contributions: []
+  });
+
+  return { inserted: 3, success: true } as NewUserRes;
+}
+
+async function updateUser( jfId: string ) {
+  return await Mongo.updateOne( 'UserMap', { jfId: jfId }, { $set: { lastLogin: new Date().toISOString() } });
 }
 
 export default {
