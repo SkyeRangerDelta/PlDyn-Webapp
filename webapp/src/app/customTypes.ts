@@ -7,3 +7,9 @@ export interface AuthResult {
   message: string;
   success: boolean;
 }
+
+export interface ContributionTile {
+  thumbnailUrl: string;
+  title: string;
+  status: string;
+}

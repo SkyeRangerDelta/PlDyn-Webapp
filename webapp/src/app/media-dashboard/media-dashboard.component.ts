@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpHeaders } from '@angular/common/http';
+import { ContributionTile } from '../customTypes';
 
 @Component({
   selector: 'app-media-dashboard',
@@ -15,13 +16,7 @@ export class MediaDashboardComponent {
 
   lastUsedEditor: string = 'Music';
 
-  contributions = [
-    {
-      thumbnailUrl: '',
-      title: '',
-      status: ''
-    }
-  ];
+  contributions: ContributionTile[] = [];
 
   newMedia = {
     title: '',
