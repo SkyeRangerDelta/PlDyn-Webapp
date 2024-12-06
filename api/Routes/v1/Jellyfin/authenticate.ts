@@ -3,10 +3,15 @@ import { Router, RouterContext } from '@oak/oak/router';
 
 import { JellyfinAuthenticateRequest } from "../../../Types/API_ObjectTypes.ts";
 import { generateRandomString } from "../../../Utilities/Generators.ts";
+import { DBHandler } from "../../../Utilities/DBHandler.ts";
 
 const router = new Router;
 
+let Mongo: DBHandler;
+
 router.post('/authenticate', async (ctx: RouterContext<string>) => {
+  Mongo = ctx.state.Mongo;
+
   const reqBody = await ctx.request.body.json();
 
   const result = await sendLoginRequest( reqBody.user, reqBody.pass );
@@ -50,6 +55,20 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   }
 
   const data = await response.json();
+
+  // Map user ID to DB
+  console.log( `[Jellyfin] Mapping user...` );
+  const uid: string = data.User.Id;
+  const userRes = await Mongo.selectOneByFilter( 'UserMap', { jfId: uid } );
+
+  if ( !userRes || !userRes.id ) {
+    // Insert user
+    await Mongo.insertOne( 'UserMap', {
+      jfId: uid,
+      name: data.User.Name,
+      lastLogin: new Date().toISOString()
+    });
+  }
 
   // Generate JWT here
   const secret = Deno.env.get('JWT_SECRET') || generateRandomString();
