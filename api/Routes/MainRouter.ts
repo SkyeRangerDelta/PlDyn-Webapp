@@ -25,7 +25,7 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
     return;
   }
 
-  const token = ctx.request.headers.get('authorization')?.split(' ')[1];
+  const token = ctx.request.headers.get('Authorization')?.split(' ')[1];
   if ( !token ) {
     ctx.response.status = 401;
     ctx.response.body = {

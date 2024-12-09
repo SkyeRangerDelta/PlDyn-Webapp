@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpHeaders } from '@angular/common/http';
 import { ContributionTile } from '../customTypes';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-media-dashboard',
@@ -24,7 +25,9 @@ export class MediaDashboardComponent {
     file: null
   }
 
-  constructor() {
+  constructor(
+    private settingsService: SettingsService
+  ) {
     this.lastUsedEditor = localStorage.getItem('lastUsedEditor') || 'Music';
 
     this.getContributions();
@@ -32,10 +35,9 @@ export class MediaDashboardComponent {
 
   getContributions() {
     // fetch contributions
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    // const payload = { "mediaType": lastUploaderState };
-
-    // this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
+    this.settingsService.getContributions().subscribe( (data: any) => {
+      console.log(data);
+    });
   }
 
   selectMediaType(ev: string) {
