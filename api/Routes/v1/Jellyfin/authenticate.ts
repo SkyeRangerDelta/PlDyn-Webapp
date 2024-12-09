@@ -4,7 +4,11 @@ import { Router, RouterContext } from '@oak/oak/router';
 import { JellyfinAuthenticateRequest } from "../../../Types/API_ObjectTypes.ts";
 import { generateRandomString } from "../../../Utilities/Generators.ts";
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
-import { DB_USerSettingRecord, NewUserRes, UpdatedUserRes } from "../../../../webapp/src/app/customTypes.ts";
+import {
+  DB_UserSettingRecord,
+  NewUserRes,
+  UpdatedUserRes
+} from "../../../../webapp/src/app/customTypes.ts";
 
 const router = new Router;
 
@@ -109,7 +113,7 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   }
 }
 
-async function addNewUser( jfId: string, name: string ) {
+async function addNewUser( jfId: string, name: string ): Promise<NewUserRes> {
   await Mongo.insertOne( 'UserMap', {
     jfId: jfId,
     name: name,
@@ -121,7 +125,7 @@ async function addNewUser( jfId: string, name: string ) {
     clientSettings: {
       lastUsedEditor: 'Music'
     }
-  } as DB_USerSettingRecord );
+  } as DB_UserSettingRecord );
 
   await Mongo.insertOne( 'UserContributions', {
     jfId: jfId,
@@ -131,7 +135,7 @@ async function addNewUser( jfId: string, name: string ) {
   return { inserted: 3, success: true } as NewUserRes;
 }
 
-async function updateUser( jfId: string ) {
+async function updateUser( jfId: string ): Promise<UpdatedUserRes> {
   await Mongo.updateOne( 'UserMap', { jfId: jfId }, { $set: { lastLogin: new Date().toISOString() } });
 
   return {
@@ -141,7 +145,7 @@ async function updateUser( jfId: string ) {
 }
 
 async function setClientSettings( jfId: string ) {
-  const settingsRes = await Mongo.selectOneByFilter( 'UserSettings', { jfId: jfId } ) as DB_USerSettingRecord;
+  const settingsRes = await Mongo.selectOneByFilter( 'UserSettings', { jfId: jfId } ) as DB_UserSettingRecord;
 
   if ( !settingsRes ) return;
 
