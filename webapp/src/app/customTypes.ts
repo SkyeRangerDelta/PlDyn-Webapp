@@ -24,7 +24,7 @@ export interface UpdatedUserRes {
   success: boolean;
 }
 
-export interface DB_USerSettingRecord {
+export interface DB_UserSettingRecord {
   jfId: string;
   clientSettings: ClientSettings;
 }
