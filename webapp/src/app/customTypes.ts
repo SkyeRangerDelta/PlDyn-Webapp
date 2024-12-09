@@ -32,3 +32,10 @@ export interface DB_UserSettingRecord {
 export interface ClientSettings {
   lastUsedEditor: string;
 }
+
+export interface ClientSettingsResult {
+  status: number;
+  message: string;
+  settings: ClientSettings;
+  success: boolean;
+}

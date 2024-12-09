@@ -42,41 +42,40 @@ export class AuthService {
     return this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
       .pipe(
         map( (data: any) => {
-            if ( data.status === 500 ) {
-              console.log( 'Internal server error' );
-
-              return {
-                status: 500,
-                message: 'Internal server error',
-                success: false
-              } as AuthResult;
-            }
-
-            if ( data.status !== 200 || !data.data ) {
-              console.log( 'Error authenticating user' );
-
-              return {
-                status: data.status,
-                message: data.message,
-                success: false
-              } as AuthResult;
-            }
-
-            localStorage.setItem( 'pldyn-jfToken', data.data );
-
-            this.authState.next(true);
-
-            this.getTokenUsername().then( (username: string) => {
-              this.setUsername( username );
-            });
+          if ( data.status === 500 ) {
+            console.log( 'Internal server error' );
 
             return {
-              status: 200,
-              message: 'User authenticated',
-              success: true
-            }
+              status: 500,
+              message: 'Internal server error',
+              success: false
+            } as AuthResult;
           }
-        ),
+
+          if ( data.status !== 200 || !data.data ) {
+            console.log( 'Error authenticating user' );
+
+            return {
+              status: data.status,
+              message: data.message,
+              success: false
+            } as AuthResult;
+          }
+
+          localStorage.setItem( 'pldyn-jfToken', data.data );
+
+          this.authState.next(true);
+
+          this.getTokenUsername().then( (username: string) => {
+            this.setUsername( username );
+          });
+
+          return {
+            status: 200,
+            message: 'User authenticated',
+            success: true
+          } as AuthResult;
+        }),
         catchError( (error: any) => {
             console.error( error );
 
