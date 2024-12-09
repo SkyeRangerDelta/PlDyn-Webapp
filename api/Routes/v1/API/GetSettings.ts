@@ -7,7 +7,7 @@ router
   .post('/GetSettings', async ( ctx: RouterContext<string> ) => {
     const Mongo: DBHandler = ctx.state.Mongo;
 
-    const uId = ctx.request.body.json();
+    const uId = await ctx.request.body.json();
     const settingsRes = await Mongo.selectOneByFilter( 'UserSettings', { jfId: uId } );
 
     ctx.response.body = {
