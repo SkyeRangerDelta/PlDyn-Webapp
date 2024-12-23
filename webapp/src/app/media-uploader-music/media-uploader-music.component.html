@@ -1,30 +1,5 @@
 <div class="media-uploader">
-  <div class="media-uploader__header">
-    <h2 class="media-uploader__title">Upload Music</h2>
-    <button class="media-uploader__close" (click)="closeUploader()">Close</button>
-  </div>
   <div class="media-uploader__content">
-    <div class="media-uploader__form">
-      <div class="media-uploader__form-group">
-        <label for="title">Title</label>
-        <input type="text" id="title" [(ngModel)]="title" name="title" required>
-      </div>
-      <div class="media-uploader__form-group">
-        <label for="artist">Artist</label>
-        <input type="text" id="artist" [(ngModel)]="artist" name="artist" required>
-      </div>
-      <div class="media-uploader__form-group">
-        <label for="album">Album</label>
-        <input type="text" id="album" [(ngModel)]="album" name="album" required>
-      </div>
-      <div class="media-uploader__form-group">
-        <label for="genre">Genre</label>
-        <input type="text" id="genre" [(ngModel)]="genre" name="genre" required>
-      </div>
-      <div class="media-uploader__form-group">
-        <label for="year">Year</label>
-        <input type="number" id="year" [(ngModel)]="year" name="year" required>
-      </div>
       <div class="media-uploader__form-group">
         <label for="file">File</label>
         <input type="file" id="file" (change)="onFileChange($event)" name="file" required>
@@ -32,6 +7,5 @@
       <div class="media-uploader__form-group">
         <button class="media-uploader__submit" (click)="uploadMusic()">Upload</button>
       </div>
-    </div>
   </div>
 </div>
