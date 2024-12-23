@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { NgOptimizedImage } from "@angular/common";
@@ -30,7 +31,8 @@ import { MediaUploaderMusicComponent } from './media-uploader-music/media-upload
     BrowserAnimationsModule,
     AppRoutingModule,
     NgOptimizedImage,
-    MaterialModule
+    MaterialModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideAnimationsAsync(),
