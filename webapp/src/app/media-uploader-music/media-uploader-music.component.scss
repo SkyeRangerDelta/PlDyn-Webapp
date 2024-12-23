@@ -1,6 +1,6 @@
 @import '../../styles/colors';
 
-/* Styles for the form fields */
+/* Styles for the table layout */
 .media-uploader-music {
   display: flex;
   flex-direction: column;
@@ -14,25 +14,37 @@
   margin: 1rem auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
 
-    label {
-      font-weight: bold;
+    th, td {
+      border: 1px solid $button-background;
+      padding: 0.5rem;
+      text-align: left;
     }
 
-    input {
-      padding: 0.5rem;
-      border: 1px solid $button-background;
-      border-radius: 4px;
+    th {
+      background-color: $button-background;
+      color: $text-color;
+    }
+
+    td {
       background-color: $input-background;
       color: $text-color;
+
+      input {
+        width: 100%;
+        padding: 0.5rem;
+        border: none;
+        background-color: transparent;
+        color: $text-color;
+      }
     }
   }
 
-  /* Styles for the submit button */
+  /* Styles for the buttons */
   button {
     padding: 0.5rem 1rem;
     background-color: $button-background;

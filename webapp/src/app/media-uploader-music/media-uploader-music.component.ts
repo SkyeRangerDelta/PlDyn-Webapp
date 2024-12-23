@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class MediaUploaderMusicComponent implements OnInit {
   musicForm: FormGroup;
   selectedFiles: File[] = [];
+  songs: any[] = [];
 
   constructor(private fb: FormBuilder) {
     this.musicForm = this.fb.group({
@@ -30,15 +31,47 @@ export class MediaUploaderMusicComponent implements OnInit {
     }
   }
 
+  addSongsToTable(): void {
+    this.selectedFiles.forEach(file => {
+      const song = {
+        title: '',
+        artist: '',
+        album: '',
+        genre: '',
+        year: ''
+      };
+      this.readMetadata(file, song);
+      this.songs.push(song);
+    });
+  }
+
+  readMetadata(file: File, song: any): void {
+    // Logic to read metadata from the file and populate the song object
+    // Example: using a library like music-metadata-browser to read metadata
+    // musicMetadata.parseBlob(file).then(metadata => {
+    //   song.title = metadata.common.title || '';
+    //   song.artist = metadata.common.artist || '';
+    //   song.album = metadata.common.album || '';
+    //   song.genre = metadata.common.genre || '';
+    //   song.year = metadata.common.year || '';
+    // });
+  }
+
+  isFormValid(): boolean {
+    return this.songs.every(song => song.title && song.artist && song.album && song.genre && song.year);
+  }
+
   onSubmit(): void {
-    if (this.musicForm.valid) {
+    if (this.isFormValid()) {
       const formData = new FormData();
       this.selectedFiles.forEach(file => formData.append('files', file));
-      formData.append('title', this.musicForm.get('title')?.value);
-      formData.append('artist', this.musicForm.get('artist')?.value);
-      formData.append('album', this.musicForm.get('album')?.value);
-      formData.append('genre', this.musicForm.get('genre')?.value);
-      formData.append('year', this.musicForm.get('year')?.value);
+      this.songs.forEach(song => {
+        formData.append('title', song.title);
+        formData.append('artist', song.artist);
+        formData.append('album', song.album);
+        formData.append('genre', song.genre);
+        formData.append('year', song.year);
+      });
 
       // Execute API call to upload the data to the server
       // Example: this.http.post('/api/upload', formData).subscribe(response => console.log(response));
