@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'media', component: MediaDashboardComponent },
-  { path: 'media-uploader-music', component: MediaUploaderMusicComponent },
+  { path: 'music-editor', component: MediaUploaderMusicComponent },
   { path: '**', redirectTo: '' }
 ];
 
