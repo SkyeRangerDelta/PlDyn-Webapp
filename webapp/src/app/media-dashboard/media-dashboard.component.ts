@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { HttpHeaders } from '@angular/common/http';
 import { ContributionTile } from '../customTypes';
 import { SettingsService } from '../services/settings.service';
 
@@ -13,8 +12,6 @@ import { SettingsService } from '../services/settings.service';
   ]
 })
 export class MediaDashboardComponent {
-  private backendHost = '/api/v1/GetRecentContributions';
-
   lastUsedEditor: string = 'Music';
 
   contributions: ContributionTile[] = [];
