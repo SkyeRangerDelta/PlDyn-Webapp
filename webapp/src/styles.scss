@@ -1,10 +1,4 @@
-// Variables for theme colors
-$primary-color: #a5c4d4; // Soft blue
-$background-color: rgba(0, 0, 0, 0.5); // Semi-transparent dark overlay
-$text-color: #ffffff;
-$input-background: rgba(255, 255, 255, 0.9);
-$button-background: #0159B5;
-$button-hover: #0172E8;
+@import 'colors';
 
 body {
   background-color: #091a3a;

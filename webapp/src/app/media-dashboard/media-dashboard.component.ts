@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpHeaders } from '@angular/common/http';
 import { ContributionTile } from '../customTypes';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-media-dashboard',
@@ -24,7 +25,7 @@ export class MediaDashboardComponent {
     file: null
   }
 
-  constructor() {
+  constructor(private router: Router) {
     this.lastUsedEditor = localStorage.getItem('lastUsedEditor') || 'Music';
 
     this.getContributions();
@@ -41,5 +42,9 @@ export class MediaDashboardComponent {
   selectMediaType(ev: string) {
     localStorage.setItem('lastUsedEditor', ev);
     console.log(ev);
+  }
+
+  navigateToMediaUploaderMusic() {
+    this.router.navigate(['/media-uploader-music']);
   }
 }

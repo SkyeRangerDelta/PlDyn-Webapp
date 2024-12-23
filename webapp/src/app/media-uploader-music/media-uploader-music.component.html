@@ -1,0 +1,29 @@
+<div class="media-uploader-music">
+  <form [formGroup]="musicForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" formControlName="title" type="text" required />
+    </div>
+    <div class="form-group">
+      <label for="artist">Artist</label>
+      <input id="artist" formControlName="artist" type="text" required />
+    </div>
+    <div class="form-group">
+      <label for="album">Album</label>
+      <input id="album" formControlName="album" type="text" required />
+    </div>
+    <div class="form-group">
+      <label for="genre">Genre</label>
+      <input id="genre" formControlName="genre" type="text" required />
+    </div>
+    <div class="form-group">
+      <label for="year">Year</label>
+      <input id="year" formControlName="year" type="number" required />
+    </div>
+    <div class="form-group">
+      <label for="file">Select Files</label>
+      <input id="file" type="file" (change)="onFileSelect($event)" multiple required />
+    </div>
+    <button type="submit" [disabled]="!musicForm.valid">Upload</button>
+  </form>
+</div>
