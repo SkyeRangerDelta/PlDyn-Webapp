@@ -1,0 +1,52 @@
+/* Styles for the form fields */
+.media-uploader-music {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: $background-color;
+  color: $text-color;
+  border: 2px solid $button-background;
+  border-radius: 8px;
+  max-width: 80%;
+  margin: 1rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      padding: 0.5rem;
+      border: 1px solid $button-background;
+      border-radius: 4px;
+      background-color: $input-background;
+      color: $text-color;
+    }
+  }
+
+  /* Styles for the submit button */
+  button {
+    padding: 0.5rem 1rem;
+    background-color: $button-background;
+    color: $text-color;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: $button-hover;
+    }
+
+    &:disabled {
+      background-color: rgba($button-background, 0.5);
+      cursor: not-allowed;
+    }
+  }
+}

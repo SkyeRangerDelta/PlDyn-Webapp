@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { NgOptimizedImage } from "@angular/common";
@@ -14,6 +15,7 @@ import { LoginComponent } from './login/login.component';
 import { provideHttpClient } from '@angular/common/http';
 import { NavigationComponent } from './navigation/navigation.component';
 import { MediaDashboardComponent } from './media-dashboard/media-dashboard.component';
+import { MediaUploaderMusicComponent } from './media-uploader-music/media-uploader-music.component';
 
 @NgModule({
   declarations: [
@@ -21,14 +23,16 @@ import { MediaDashboardComponent } from './media-dashboard/media-dashboard.compo
     HomeComponent,
     LoginComponent,
     NavigationComponent,
-    MediaDashboardComponent
+    MediaDashboardComponent,
+    MediaUploaderMusicComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     NgOptimizedImage,
-    MaterialModule
+    MaterialModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideAnimationsAsync(),

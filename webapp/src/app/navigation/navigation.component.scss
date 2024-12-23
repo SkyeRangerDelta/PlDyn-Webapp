@@ -1,11 +1,13 @@
+@import 'colors';
+
 // Navigation Bar Container
 .navigation-bar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.7); // Semi-transparent background
-  border-bottom: 2px solid #0159b5; // Neon green border
+  background-color: $background-color; // Semi-transparent background
+  border-bottom: 2px solid $button-background; // Neon green border
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -13,8 +15,8 @@
 .nav-button {
   margin: 0 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #0172E8; // Neon green background
-  color: #ffffff; // White text
+  background-color: $button-background; // Neon green background
+  color: $text-color; // White text
   border: none;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -22,7 +24,7 @@
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: #0172E8; // Yellow hover effect
+    background-color: $button-hover; // Yellow hover effect
     color: #000000; // Dark text on hover
   }
 }
@@ -31,10 +33,10 @@
 .username-box {
   margin-left: 1rem;
   padding: 0.5rem 1rem;
-  background-color: rgba(0, 0, 0, 0.5); // Semi-transparent dark background
+  background-color: rgba($background-color, 0.5); // Semi-transparent dark background
   border-radius: 8px;
-  border: 1px solid #0159b5; // Neon green border
-  color: #ffffff; // White text
+  border: 1px solid $button-background; // Neon green border
+  color: $text-color; // White text
   font-size: 0.9rem;
   display: flex;
   align-items: center;

@@ -1,11 +1,13 @@
+@import 'colors';
+
 .media-dashboard {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: #ffffff;
-  border: 2px solid #0159B5;
+  background-color: $background-color;
+  color: $text-color;
+  border: 2px solid $button-background;
   border-radius: 8px;
   max-width: 80%;
   margin: 1rem auto;
@@ -22,8 +24,8 @@
       border-radius: 4px;
 
       &:disabled {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: rgba(255, 255, 255, 0.5);
+        background-color: rgba($text-color, 0.2);
+        color: rgba($text-color, 0.5);
         cursor: not-allowed;
       }
     }
@@ -35,8 +37,8 @@
     gap: 1rem;
 
     .media-item {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid #0159B5;
+      background: $background-color;
+      border: 1px solid $button-background;
       border-radius: 8px;
       padding: 1rem;
       text-align: center;
@@ -58,29 +60,29 @@
 
       .status {
         font-size: 0.9rem;
-        color: #cccccc;
+        color: rgba($text-color, 0.7);
         margin-bottom: 0.5rem;
       }
 
       button {
         margin-top: auto;
         padding: 0.5rem 1rem;
-        background: #0159B5;
-        color: #ffffff;
+        background: $button-background;
+        color: $text-color;
         border: none;
         border-radius: 4px;
         cursor: pointer;
 
         &:hover {
-          background: #0172E8;
+          background: $button-hover;
         }
       }
     }
   }
 
   .uploader-section {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid #0159B5;
+    background: $background-color;
+    border: 1px solid $button-background;
     border-radius: 8px;
     padding: 1rem;
 
@@ -91,9 +93,9 @@
 
       input,
       textarea {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        border: 1px solid #0159B5;
+        background: rgba($text-color, 0.1);
+        color: $text-color;
+        border: 1px solid $button-background;
         border-radius: 4px;
         padding: 0.5rem;
       }
@@ -101,14 +103,14 @@
       button {
         align-self: flex-end;
         padding: 0.5rem 1rem;
-        background: #0159B5;
-        color: #ffffff;
+        background: $button-background;
+        color: $text-color;
         border: none;
         border-radius: 4px;
         cursor: pointer;
 
         &:hover {
-          background: #0172E8;
+          background: $button-hover;
         }
       }
     }
