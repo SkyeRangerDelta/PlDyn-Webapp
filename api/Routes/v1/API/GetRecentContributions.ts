@@ -1,5 +1,6 @@
 import { Router, RouterContext } from '@oak/oak/router';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
+import { JellyfinContributionsResponse } from "../../../Types/API_ObjectTypes.ts";
 
 const router = new Router();
 
@@ -14,9 +15,10 @@ router
       ctx.response.body = {
         message: 'Bad Request',
         data: {
-          error: 'Invalid request body.'
+          contributions: [],
+          errorMessage: 'Invalid request body.'
         }
-      }
+      } as JellyfinContributionsResponse;
     }
 
     const uId = req.uid;
@@ -27,17 +29,21 @@ router
       ctx.response.body = {
         message: 'No Contributions',
         data: {
-          contributions: []
+          contributions: [],
+          errorMessage: 'No contributions found.'
         }
-      }
+      } as JellyfinContributionsResponse;
+
+      return;
     }
 
     ctx.response.body = {
       message: 'Success',
       data: {
-        contributions: req.contributions
+        contributions: req.contributions,
+        errorMessage: ''
       }
-    }
+    } as JellyfinContributionsResponse;
   });
 
 export default {

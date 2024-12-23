@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { ClientSettingsResult } from '../customTypes';
+import { ClientContributionResult, ClientSettingsResult } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +58,7 @@ export class SettingsService {
     );
   }
 
-  getContributions(): Observable<ClientSettingsResult> {
+  getContributions(): Observable<ClientContributionResult> {
     // fetch settings
     const headers: HttpHeaders = new HttpHeaders()
       .set('Content-Type', 'application/json')
@@ -71,32 +71,33 @@ export class SettingsService {
     ).pipe (
       map( (data: any) => {
         if ( data.status !== 200 || !data.data ) {
-          console.error( 'Error fetching settings' );
-
           return {
-            status: data.status,
             message: data.message,
-            settings: {},
-            success: false
-          } as ClientSettingsResult;
+            data: {
+              contributions: [],
+              errorMessage: 'No contributions found.'
+            }
+          } as ClientContributionResult;
         }
 
         return {
-          status: data.status,
           message: data.message,
-          settings: data.settings,
-          success: true
-        } as ClientSettingsResult;
+          data: {
+            contributions: data.contributions,
+            errorMessage: ''
+          }
+        } as ClientContributionResult;
       }),
       catchError( (err: any) => {
         console.error( 'Error fetching settings\n', err );
 
         return of({
-          status: 500,
           message: 'Internal server error',
-          settings: {},
-          success: false
-        } as ClientSettingsResult );
+          data: {
+            contributions: [],
+            errorMessage: 'Internal server error.'
+          }
+        } as ClientContributionResult );
       })
     );
   }
