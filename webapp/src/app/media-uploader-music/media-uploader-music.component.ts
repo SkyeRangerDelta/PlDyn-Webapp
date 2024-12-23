@@ -11,6 +11,8 @@ export class MediaUploaderMusicComponent implements OnInit {
   selectedFiles: File[] = [];
   songs: any[] = [];
 
+  isLoading = false;
+
   constructor(private fb: FormBuilder) {
     this.musicForm = this.fb.group({
       title: ['', Validators.required],
@@ -25,10 +27,15 @@ export class MediaUploaderMusicComponent implements OnInit {
   ngOnInit(): void {}
 
   onFileSelect(event: Event): void {
+    this.isLoading = true;
+
+    console.log( 'onFileSelect', event );
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.selectedFiles = Array.from(input.files);
     }
+
+    this.addSongsToTable();
   }
 
   addSongsToTable(): void {
@@ -43,6 +50,8 @@ export class MediaUploaderMusicComponent implements OnInit {
       this.readMetadata(file, song);
       this.songs.push(song);
     });
+
+    this.isLoading = false;
   }
 
   readMetadata(file: File, song: any): void {
