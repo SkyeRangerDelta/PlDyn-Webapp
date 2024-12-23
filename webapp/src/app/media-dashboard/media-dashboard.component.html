@@ -19,19 +19,14 @@
   Upload editor
   <!-- Uploader Section -->
   <div class="media-type-buttons">
-    <button mat-flat-button color="primary" (click)="selectMediaType('music')">Music</button>
-    <button mat-flat-button color="primary" disabled (click)="selectMediaType('movies')">Movies</button>
-    <button mat-flat-button color="primary" disabled (click)="selectMediaType('shows')">Shows</button>
+    <div class="btns-left">
+      <button mat-flat-button color="primary" (click)="selectMediaType('music')">Music</button>
+      <button mat-flat-button color="primary" disabled (click)="selectMediaType('movies')">Movies</button>
+      <button mat-flat-button color="primary" disabled (click)="selectMediaType('shows')">Shows</button>
+    </div>
+    <div class="btns-right">
+      <button mat-flat-button color="primary" routerLink="/music-editor">Open Editor →</button>
+    </div>
   </div>
   <button mat-flat-button color="primary" (click)="navigateToMediaUploaderMusic()">Upload Music</button>
 </div>
-
-
-<!--<div class="uploader-section">-->
-<!--  <form [formGroup]="newUploadForm" (ngSubmit)="onSubmit()">-->
-<!--    <input type="text" placeholder="Title" [(ngModel)]="newMedia.title" />-->
-<!--    <textarea placeholder="Description" [(ngModel)]="newMedia.description"></textarea>-->
-<!--    <input type="file" (change)="onFileSelect($event)" />-->
-<!--    <button type="submit">Upload</button>-->
-<!--  </form>-->
-<!--</div>-->
