@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MediaUploaderMusicComponent } from './media-uploader-music.component';
+import { By } from '@angular/platform-browser';
 
 describe('MediaUploaderMusicComponent', () => {
   let component: MediaUploaderMusicComponent;
@@ -9,7 +10,7 @@ describe('MediaUploaderMusicComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ MediaUploaderMusicComponent ],
-      imports: [ ReactiveFormsModule ]
+      imports: [ ReactiveFormsModule, FormsModule ]
     })
     .compileComponents();
   });
@@ -24,28 +25,6 @@ describe('MediaUploaderMusicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a valid form when all fields are filled', () => {
-    component.musicForm.controls['title'].setValue('Test Title');
-    component.musicForm.controls['artist'].setValue('Test Artist');
-    component.musicForm.controls['album'].setValue('Test Album');
-    component.musicForm.controls['genre'].setValue('Test Genre');
-    component.musicForm.controls['year'].setValue(2021);
-    component.musicForm.controls['file'].setValue(new File([], 'test.mp3'));
-
-    expect(component.musicForm.valid).toBeTruthy();
-  });
-
-  it('should have an invalid form when a required field is missing', () => {
-    component.musicForm.controls['title'].setValue('');
-    component.musicForm.controls['artist'].setValue('Test Artist');
-    component.musicForm.controls['album'].setValue('Test Album');
-    component.musicForm.controls['genre'].setValue('Test Genre');
-    component.musicForm.controls['year'].setValue(2021);
-    component.musicForm.controls['file'].setValue(new File([], 'test.mp3'));
-
-    expect(component.musicForm.invalid).toBeTruthy();
-  });
-
   it('should handle file selection', () => {
     const file = new File([], 'test.mp3');
     const event = { target: { files: [file] } } as unknown as Event;
@@ -55,18 +34,57 @@ describe('MediaUploaderMusicComponent', () => {
     expect(component.selectedFiles[0]).toBe(file);
   });
 
+  it('should add songs to the table', () => {
+    const file = new File([], 'test.mp3');
+    component.selectedFiles = [file];
+    spyOn(component, 'readMetadata').and.callFake((file, song) => {
+      song.title = 'Test Title';
+      song.artist = 'Test Artist';
+      song.album = 'Test Album';
+      song.genre = 'Test Genre';
+      song.year = '2021';
+    });
+
+    component.addSongsToTable();
+
+    expect(component.songs.length).toBe(1);
+    expect(component.songs[0].title).toBe('Test Title');
+    expect(component.songs[0].artist).toBe('Test Artist');
+    expect(component.songs[0].album).toBe('Test Album');
+    expect(component.songs[0].genre).toBe('Test Genre');
+    expect(component.songs[0].year).toBe('2021');
+  });
+
+  it('should validate that all cells are populated before submission', () => {
+    component.songs = [
+      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: '2021' }
+    ];
+
+    expect(component.isFormValid()).toBeTruthy();
+
+    component.songs[0].title = '';
+    expect(component.isFormValid()).toBeFalsy();
+  });
+
   it('should call onSubmit when form is valid', () => {
     spyOn(component, 'onSubmit').and.callThrough();
 
-    component.musicForm.controls['title'].setValue('Test Title');
-    component.musicForm.controls['artist'].setValue('Test Artist');
-    component.musicForm.controls['album'].setValue('Test Album');
-    component.musicForm.controls['genre'].setValue('Test Genre');
-    component.musicForm.controls['year'].setValue(2021);
-    component.musicForm.controls['file'].setValue(new File([], 'test.mp3'));
+    component.songs = [
+      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: '2021' }
+    ];
 
     component.onSubmit();
 
     expect(component.onSubmit).toHaveBeenCalled();
+  });
+
+  it('should disable submit button when form is invalid', () => {
+    component.songs = [
+      { title: '', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: '2021' }
+    ];
+    fixture.detectChanges();
+
+    const submitButton = fixture.debugElement.query(By.css('button[disabled]'));
+    expect(submitButton).toBeTruthy();
   });
 });
