@@ -14,6 +14,12 @@ export interface ContributionTile {
   status: string;
 }
 
+export interface ContributionObject {
+  title: string;
+  description: string;
+  recordId: string;
+}
+
 export interface NewUserRes {
   inserted: number;
   success: boolean;
@@ -24,11 +30,26 @@ export interface UpdatedUserRes {
   success: boolean;
 }
 
-export interface DB_USerSettingRecord {
+export interface DB_UserSettingRecord {
   jfId: string;
   clientSettings: ClientSettings;
 }
 
 export interface ClientSettings {
   lastUsedEditor: string;
+}
+
+export interface ClientSettingsResult {
+  status: number;
+  message: string;
+  settings: ClientSettings;
+  success: boolean;
+}
+
+export interface ClientContributionResult {
+  message: string,
+  data: {
+    contributions: ContributionObject[],
+    errorMessage: string
+  }
 }
