@@ -64,3 +64,32 @@
     }
   }
 }
+
+.custom-uploader {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background-color: $button-background;
+  color: $text-color;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $button-hover;
+  }
+
+  .loading-icon {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid $text-color;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+input[type="file"] {
+  display: none;
+}

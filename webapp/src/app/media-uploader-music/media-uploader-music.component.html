@@ -1,6 +1,12 @@
 <div class="media-uploader-music">
-  <input id="file" type="file" (change)="onFileSelect($event)" multiple />
-  <button (click)="addSongsToTable()">Add Songs to Table</button>
+  <label for="file-uploader" class="custom-uploader">
+    <span *ngIf="isLoading" class="loading-icon"></span>
+    <span *ngIf="!isLoading">
+      Add Songs
+    </span>
+  </label>
+  <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
+<!--  <button (click)="addSongsToTable()">Add Songs</button>-->
   <table>
     <thead>
       <tr>
