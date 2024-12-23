@@ -36,7 +36,13 @@ export class MediaDashboardComponent {
   getContributions() {
     // fetch contributions
     this.settingsService.getContributions().subscribe( (data: any) => {
-      console.log(data);
+
+      if ( !data || !data.contributions ) {
+        console.log( 'No contribution data.' )
+      }
+      else {
+        this.contributions = data.contributions;
+      }
     });
   }
 

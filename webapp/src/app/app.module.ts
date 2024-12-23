@@ -14,6 +14,7 @@ import { LoginComponent } from './login/login.component';
 import { provideHttpClient } from '@angular/common/http';
 import { NavigationComponent } from './navigation/navigation.component';
 import { MediaDashboardComponent } from './media-dashboard/media-dashboard.component';
+import { MediaUploaderMusicComponent } from './media-uploader-music/media-uploader-music.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MediaDashboardComponent } from './media-dashboard/media-dashboard.compo
     HomeComponent,
     LoginComponent,
     NavigationComponent,
-    MediaDashboardComponent
+    MediaDashboardComponent,
+    MediaUploaderMusicComponent
   ],
   imports: [
     BrowserModule,
