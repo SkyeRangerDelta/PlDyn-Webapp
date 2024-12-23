@@ -1,0 +1,13 @@
+.media-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  border: 2px solid #0159B5;
+  border-radius: 8px;
+  max-width: 80%;
+  margin: 1rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
