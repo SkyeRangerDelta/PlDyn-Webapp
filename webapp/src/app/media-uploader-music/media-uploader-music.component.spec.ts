@@ -37,12 +37,17 @@ describe('MediaUploaderMusicComponent', () => {
   it('should add songs to the table', () => {
     const file = new File([], 'test.mp3');
     component.selectedFiles = [file];
+
     spyOn(component, 'readMetadata').and.callFake((file, song) => {
       song.title = 'Test Title';
       song.artist = 'Test Artist';
       song.album = 'Test Album';
       song.genre = 'Test Genre';
-      song.year = '2021';
+      song.year = 2021;
+      song.track = 1;
+      song.albumArtist = 'Test Album Artist';
+      song.composer = '';
+      song.discNumber = 1;
     });
 
     component.addSongsToTable();
@@ -52,12 +57,16 @@ describe('MediaUploaderMusicComponent', () => {
     expect(component.songs[0].artist).toBe('Test Artist');
     expect(component.songs[0].album).toBe('Test Album');
     expect(component.songs[0].genre).toBe('Test Genre');
-    expect(component.songs[0].year).toBe('2021');
+    expect(component.songs[0].year).toBe(2021);
+    expect(component.songs[0].track).toBe(1);
+    expect(component.songs[0].albumArtist).toBe('Test Album Artist');
+    expect(component.songs[0].composer).toBe('');
+    expect(component.songs[0].discNumber).toBe(1);
   });
 
   it('should validate that all cells are populated before submission', () => {
     component.songs = [
-      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: '2021' }
+      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: 2021, track: 1, albumArtist: 'Test Album Artist', composer: '', discNumber: 1 }
     ];
 
     expect(component.isFormValid()).toBeTruthy();
@@ -70,7 +79,7 @@ describe('MediaUploaderMusicComponent', () => {
     spyOn(component, 'onSubmit').and.callThrough();
 
     component.songs = [
-      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: '2021' }
+      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: 2021, track: 1, albumArtist: 'Test Album Artist', composer: '', discNumber: 1 }
     ];
 
     component.onSubmit();
@@ -80,7 +89,7 @@ describe('MediaUploaderMusicComponent', () => {
 
   it('should disable submit button when form is invalid', () => {
     component.songs = [
-      { title: '', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: '2021' }
+      { title: '', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: 2021, track: 1, albumArtist: 'Test Album Artist', composer: '', discNumber: 1 }
     ];
     fixture.detectChanges();
 
