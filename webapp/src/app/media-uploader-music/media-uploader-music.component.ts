@@ -12,6 +12,8 @@ export class MediaUploaderMusicComponent implements OnInit {
   selectedFiles: File[] = [];
   songs: Song[] = [];
 
+  curTrackNumber = 1;
+
   isLoading = false;
 
   constructor(private fb: FormBuilder) {
@@ -21,7 +23,7 @@ export class MediaUploaderMusicComponent implements OnInit {
       album: ['', Validators.required],
       genre: ['', Validators.required],
       year: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
-      track: [0, Validators.required],
+      track: [this.curTrackNumber, Validators.required],
       albumArtist: ['', Validators.required],
       composer: [''],
       discNumber: [1, Validators.required],
@@ -44,21 +46,23 @@ export class MediaUploaderMusicComponent implements OnInit {
     this.addSongsToTable();
   }
 
+  //TODO: REMOVE TEMP TEST DATA
   addSongsToTable(): void {
     this.selectedFiles.forEach(file => {
       const song = {
-        title: '',
-        artist: '',
-        album: '',
-        genre: '',
+        title: 'test',
+        artist: 'test',
+        album: 'test',
+        genre: 'test',
         year: 2024,
-        track: 0,
-        albumArtist: '',
+        track: this.curTrackNumber,
+        albumArtist: 'test',
         composer: '',
         discNumber: 1
       } as Song;
       this.readMetadata(file, song);
       this.songs.push(song);
+      this.curTrackNumber++;
     });
 
     this.isLoading = false;
@@ -77,13 +81,23 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    return this.songs.every(song => song.title && song.artist && song.album && song.genre && song.year);
+    return this.songs.every(
+      song =>
+        song.title &&
+        song.artist &&
+        song.album &&
+        song.genre &&
+        song.year &&
+        song.track &&
+        song.albumArtist &&
+        song.discNumber
+    );
   }
 
   onSubmit(): void {
     if (this.isFormValid()) {
       const formData = new FormData();
-      this.selectedFiles.forEach(file => formData.append('files', file));
+      this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
       this.songs.forEach(song => {
         formData.append('title', song.title);
         formData.append('artist', song.artist);
