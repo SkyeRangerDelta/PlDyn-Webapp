@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Song } from '../customTypes';
 
 @Component({
   selector: 'app-media-uploader-music',
@@ -9,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class MediaUploaderMusicComponent implements OnInit {
   musicForm: FormGroup;
   selectedFiles: File[] = [];
-  songs: any[] = [];
+  songs: Song[] = [];
 
   isLoading = false;
 
@@ -20,6 +21,10 @@ export class MediaUploaderMusicComponent implements OnInit {
       album: ['', Validators.required],
       genre: ['', Validators.required],
       year: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
+      track: [0, Validators.required],
+      albumArtist: ['', Validators.required],
+      composer: [''],
+      discNumber: [1, Validators.required],
       file: [null, Validators.required]
     });
   }
@@ -30,6 +35,7 @@ export class MediaUploaderMusicComponent implements OnInit {
     this.isLoading = true;
 
     console.log( 'onFileSelect', event );
+
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.selectedFiles = Array.from(input.files);
@@ -45,8 +51,12 @@ export class MediaUploaderMusicComponent implements OnInit {
         artist: '',
         album: '',
         genre: '',
-        year: ''
-      };
+        year: 2024,
+        track: 0,
+        albumArtist: '',
+        composer: '',
+        discNumber: 1
+      } as Song;
       this.readMetadata(file, song);
       this.songs.push(song);
     });
@@ -79,7 +89,11 @@ export class MediaUploaderMusicComponent implements OnInit {
         formData.append('artist', song.artist);
         formData.append('album', song.album);
         formData.append('genre', song.genre);
-        formData.append('year', song.year);
+        formData.append('year', `${song.year}`);
+        formData.append('track', `${song.track}`);
+        formData.append('albumArtist', song.albumArtist);
+        formData.append('composer', song.composer);
+        formData.append('discNumber', `${song.discNumber}`);
       });
 
       // Execute API call to upload the data to the server

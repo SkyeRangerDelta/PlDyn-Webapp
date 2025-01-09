@@ -1,12 +1,14 @@
 <div class="media-uploader-music">
-  <label for="file-uploader" class="custom-uploader">
-    <span *ngIf="isLoading" class="loading-icon"></span>
-    <span *ngIf="!isLoading">
+  <div class="add-content-btns">
+    <label for="file-uploader" class="custom-uploader">
+      <span *ngIf="isLoading" class="loading-icon"></span>
+      <span *ngIf="!isLoading">
       Add Songs
     </span>
-  </label>
-  <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
-<!--  <button (click)="addSongsToTable()">Add Songs</button>-->
+    </label>
+    <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
+    <button id="submit-btn" class="upload-btn" (click)="onSubmit()" [disabled]="!isFormValid()">Upload</button>
+  </div>
   <table>
     <thead>
       <tr>
@@ -15,6 +17,10 @@
         <th>Album</th>
         <th>Genre</th>
         <th>Year</th>
+        <th>Track</th>
+        <th>Album Artist</th>
+        <th>Composer</th>
+        <th>Disc #</th>
       </tr>
     </thead>
     <tbody>
@@ -24,8 +30,11 @@
         <td><input [(ngModel)]="song.album" required /></td>
         <td><input [(ngModel)]="song.genre" required /></td>
         <td><input [(ngModel)]="song.year" type="number" required /></td>
+        <td><input [(ngModel)]="song.track" required /></td>
+        <td><input [(ngModel)]="song.albumArtist" required /></td>
+        <td><input [(ngModel)]="song.composer" /></td>
+        <td><input [(ngModel)]="song.discNumber" required /></td>
       </tr>
     </tbody>
   </table>
-  <button (click)="onSubmit()" [disabled]="!isFormValid()">Submit</button>
 </div>
