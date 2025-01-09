@@ -53,3 +53,15 @@ export interface ClientContributionResult {
     errorMessage: string
   }
 }
+
+export interface Song {
+  title: string;
+  artist: string;
+  album: string;
+  genre: string;
+  albumArtist: string;
+  year: number;
+  track: number;
+  composer: string;
+  discNumber: number;
+}
