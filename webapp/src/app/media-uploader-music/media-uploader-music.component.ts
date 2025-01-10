@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Song } from '../customTypes';
+import { MediaResult, Song } from '../customTypes';
+
+import { MediaService } from '../services/media.service';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-media-uploader-music',
@@ -12,11 +16,22 @@ export class MediaUploaderMusicComponent implements OnInit {
   selectedFiles: File[] = [];
   songs: Song[] = [];
 
+  uploadErrorMessage = '';
+
   curTrackNumber = 1;
 
   isLoading = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private MediaService: MediaService,
+    private AuthService: AuthService,
+    private router: Router
+  ) {
+    if ( !this.AuthService.isAuthenticated ) {
+      this.router.navigate(['/login']);
+    }
+
     this.musicForm = this.fb.group({
       title: ['', Validators.required],
       artist: ['', Validators.required],
@@ -43,7 +58,38 @@ export class MediaUploaderMusicComponent implements OnInit {
       this.selectedFiles = Array.from(input.files);
     }
 
-    this.addSongsToTable();
+    // this.addSongsToTable();
+    this.uploadSongs();
+  }
+
+  uploadSongs() {
+    const formData = new FormData();
+    this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
+    this.songs.forEach(song => {
+      formData.append('title', song.title);
+      formData.append('artist', song.artist);
+      formData.append('album', song.album);
+      formData.append('genre', song.genre);
+      formData.append('year', `${song.year}`);
+      formData.append('track', `${song.track}`);
+      formData.append('albumArtist', song.albumArtist);
+      formData.append('composer', song.composer);
+      formData.append('discNumber', `${song.discNumber}`);
+    });
+
+    this.MediaService.uploadMedia( formData ).subscribe( (data: MediaResult) => {
+      this.isLoading = false;
+
+      if ( data.success ) {
+        console.log( 'Media uploaded successfully' );
+      }
+      else {
+        console.error( 'Error uploading media:', data.message, data.status );
+        this.uploadErrorMessage = data.message;
+
+
+      }
+    });
   }
 
   //TODO: REMOVE TEMP TEST DATA
@@ -81,6 +127,8 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   isFormValid(): boolean {
+    if (this.songs.length === 0) return false;
+
     return this.songs.every(
       song =>
         song.title &&
@@ -96,19 +144,7 @@ export class MediaUploaderMusicComponent implements OnInit {
 
   onSubmit(): void {
     if (this.isFormValid()) {
-      const formData = new FormData();
-      this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
-      this.songs.forEach(song => {
-        formData.append('title', song.title);
-        formData.append('artist', song.artist);
-        formData.append('album', song.album);
-        formData.append('genre', song.genre);
-        formData.append('year', `${song.year}`);
-        formData.append('track', `${song.track}`);
-        formData.append('albumArtist', song.albumArtist);
-        formData.append('composer', song.composer);
-        formData.append('discNumber', `${song.discNumber}`);
-      });
+      console.log('Form is valid, submitting data:', this.songs);
 
       // Execute API call to upload the data to the server
       // Example: this.http.post('/api/upload', formData).subscribe(response => console.log(response));
