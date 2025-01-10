@@ -1,13 +1,19 @@
 <div class="media-uploader-music">
   <div class="add-content-btns">
-    <label for="file-uploader" class="custom-uploader">
-      <span *ngIf="isLoading" class="loading-icon"></span>
-      <span *ngIf="!isLoading">
+    <div class="add-content-cols">
+      <label for="file-uploader" class="custom-uploader">
+        <span *ngIf="isLoading" class="loading-icon"></span>
+        <span *ngIf="!isLoading">
       Add Songs
     </span>
-    </label>
-    <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
-    <button id="submit-btn" class="upload-btn" (click)="onSubmit()" [disabled]="!isFormValid()">Upload</button>
+      </label>
+      <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
+      <span *ngIf="uploadErrorMessage" class="uploadError-message">{{ uploadErrorMessage }}</span>
+    </div>
+
+    <div class="add-content-cols">
+      <button id="submit-btn" class="upload-btn" (click)="onSubmit()" [disabled]="!isFormValid()">Upload</button>
+    </div>
   </div>
   <table>
     <thead>

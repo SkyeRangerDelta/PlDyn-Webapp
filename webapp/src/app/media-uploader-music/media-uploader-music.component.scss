@@ -95,12 +95,23 @@ input[type="file"] {
 }
 
 .add-content-btns {
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
+.add-content-cols {
+  display: flex;
+  flex-direction: row;
+}
+
 .upload-btn {
-  font-size: medium;
+  font-size: large;
+  padding: 0.5rem 1rem;
+}
+
+.uploadError-message {
+  color: red;
+  margin-left: 10px;
+  vertical-align: middle;
 }

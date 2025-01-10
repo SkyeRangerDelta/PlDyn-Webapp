@@ -1,9 +1,50 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, Observable, of } from 'rxjs';
+import { MediaResult } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MediaService {
 
-  constructor() { }
+  constructor(
+    private httpClient: HttpClient
+  ) { }
+
+  uploadMedia( formData: FormData ): Observable<MediaResult> {
+    const headers: HttpHeaders = new HttpHeaders()
+      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
+
+    return this.httpClient.post<any>(
+      '/api/v1/jellyfin/upload',
+      formData,
+      { headers: headers }
+    ).pipe (
+        map( ( data: any ) => {
+          return {
+            status: data.status,
+            message: data.message,
+            success: true
+          } as MediaResult;
+        }),
+        catchError( error => {
+          console.error( 'Error uploading media:', error );
+
+          if ( error.status === 401 ) {
+            return of({
+              status: 401,
+              message: 'Unauthorized',
+              success: false
+            } as MediaResult );
+          }
+
+          return of({
+            status: 500,
+            message: 'Internal server error',
+            success: false
+          } as MediaResult );
+        })
+      );
+  }
 }

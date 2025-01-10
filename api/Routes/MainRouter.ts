@@ -26,7 +26,7 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
   }
 
   const token = ctx.request.headers.get('Authorization')?.split(' ')[1];
-  if ( !token ) {
+  if ( !token || token === 'null' ) {
     ctx.response.status = 401;
     ctx.response.body = {
       message: 'Unauthorized (no token)'
@@ -52,10 +52,12 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
 
     await next();
   }
-  catch {
+  catch ( error ) {
     ctx.response.status = 401;
     ctx.response.body = {
       message: 'Invalid token.'
     }
+
+    console.error( 'Invalid token:', error );
   }
 }
