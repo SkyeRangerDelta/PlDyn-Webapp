@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MediaUploaderMusicComponent } from './media-uploader-music.component';
 import { By } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('MediaUploaderMusicComponent', () => {
   let component: MediaUploaderMusicComponent;
@@ -10,7 +11,7 @@ describe('MediaUploaderMusicComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ MediaUploaderMusicComponent ],
-      imports: [ ReactiveFormsModule, FormsModule ]
+      imports: [ ReactiveFormsModule, FormsModule, HttpClientModule ]
     })
     .compileComponents();
   });
