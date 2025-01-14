@@ -70,13 +70,10 @@ export class MediaUploaderMusicComponent implements OnInit {
       this.isLoading = false;
 
       if ( !data.error ) {
-        console.log( 'Media uploaded successfully.' );
+        console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
 
         //TODO: Parse uploadData returned and add to table
-
-        console.log( data );
-
-        console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
+        this.addSongsToTable( data.uploadData );
       }
       else {
         console.error( 'Error uploading media:', data.message, data.status );
@@ -88,42 +85,12 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   //TODO: REMOVE TEMP TEST DATA
-  addSongsToTable(): void {
-    this.selectedFiles.forEach(file => {
-      const song = {
-        filePath: file.name,
-        title: 'test',
-        artist: 'test',
-        album: 'test',
-        genre: ['test'],
-        year: 2024,
-        track: this.curTrackNumber,
-        albumArtist: 'test',
-        composer: [''],
-        discNumber: 1,
-        cover: {
-          format: 'jpg',
-          data: new Uint8Array()
-        }
-      } as Song;
-      this.readMetadata(file, song);
-      this.songs.push(song);
-      this.curTrackNumber++;
-    });
+  addSongsToTable( songData: Song[] ): void {
+    songData.forEach( song => {
+      this.songs.push( song );
+    } );
 
     this.isLoading = false;
-  }
-
-  readMetadata(file: File, song: any): void {
-    // Logic to read metadata from the file and populate the song object
-    // Example: using a library like music-metadata-browser to read metadata
-    // musicMetadata.parseBlob(file).then(metadata => {
-    //   song.title = metadata.common.title || '';
-    //   song.artist = metadata.common.artist || '';
-    //   song.album = metadata.common.album || '';
-    //   song.genre = metadata.common.genre || '';
-    //   song.year = metadata.common.year || '';
-    // });
   }
 
   isFormValid(): boolean {
