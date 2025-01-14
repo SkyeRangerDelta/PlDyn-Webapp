@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { MediaResult } from '../customTypes';
+import { AudioUploadResponse, MediaResult } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class MediaService {
     private httpClient: HttpClient
   ) { }
 
-  uploadMedia( formData: FormData ): Observable<MediaResult> {
+  uploadMedia( formData: FormData ): Observable<AudioUploadResponse> {
     const headers: HttpHeaders = new HttpHeaders()
       .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
 
@@ -25,8 +25,9 @@ export class MediaService {
           return {
             status: data.status,
             message: data.message,
-            success: true
-          } as MediaResult;
+            error: false,
+            uploadData: data.uploadData
+          } as AudioUploadResponse;
         }),
         catchError( error => {
           console.error( 'Error uploading media:', error );
@@ -35,15 +36,15 @@ export class MediaService {
             return of({
               status: 401,
               message: 'Unauthorized',
-              success: false
-            } as MediaResult );
+              error: true
+            } as AudioUploadResponse );
           }
 
           return of({
             status: 500,
             message: 'Internal server error',
-            success: false
-          } as MediaResult );
+            error: true
+          } as AudioUploadResponse );
         })
       );
   }

@@ -61,13 +61,25 @@ export interface ClientContributionResult {
 }
 
 export interface Song {
+  filePath: string;
   title: string;
   artist: string;
   album: string;
-  genre: string;
-  albumArtist: string;
+  genre: string[];
   year: number;
   track: number;
-  composer: string;
+  albumArtist: string;
+  composer: string[];
   discNumber: number;
+  cover: {
+    format: string;
+    data: Uint8Array;
+  }
+}
+
+export interface AudioUploadResponse {
+  message: string;
+  status: number;
+  error: boolean;
+  uploadData: Song[];
 }

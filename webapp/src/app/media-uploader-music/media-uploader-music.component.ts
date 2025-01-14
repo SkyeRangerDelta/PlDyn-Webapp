@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MediaResult, Song } from '../customTypes';
+import { AudioUploadResponse, MediaResult, Song } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
 import { AuthService } from '../services/auth.service';
@@ -65,23 +65,18 @@ export class MediaUploaderMusicComponent implements OnInit {
   uploadSongs() {
     const formData = new FormData();
     this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
-    this.songs.forEach(song => {
-      formData.append('title', song.title);
-      formData.append('artist', song.artist);
-      formData.append('album', song.album);
-      formData.append('genre', song.genre);
-      formData.append('year', `${song.year}`);
-      formData.append('track', `${song.track}`);
-      formData.append('albumArtist', song.albumArtist);
-      formData.append('composer', song.composer);
-      formData.append('discNumber', `${song.discNumber}`);
-    });
 
-    this.MediaService.uploadMedia( formData ).subscribe( (data: MediaResult) => {
+    this.MediaService.uploadMedia( formData ).subscribe( (data: AudioUploadResponse) => {
       this.isLoading = false;
 
-      if ( data.success ) {
-        console.log( 'Media uploaded successfully' );
+      if ( !data.error ) {
+        console.log( 'Media uploaded successfully.' );
+
+        //TODO: Parse uploadData returned and add to table
+
+        console.log( data );
+
+        console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
       }
       else {
         console.error( 'Error uploading media:', data.message, data.status );
@@ -96,15 +91,20 @@ export class MediaUploaderMusicComponent implements OnInit {
   addSongsToTable(): void {
     this.selectedFiles.forEach(file => {
       const song = {
+        filePath: file.name,
         title: 'test',
         artist: 'test',
         album: 'test',
-        genre: 'test',
+        genre: ['test'],
         year: 2024,
         track: this.curTrackNumber,
         albumArtist: 'test',
-        composer: '',
-        discNumber: 1
+        composer: [''],
+        discNumber: 1,
+        cover: {
+          format: 'jpg',
+          data: new Uint8Array()
+        }
       } as Song;
       this.readMetadata(file, song);
       this.songs.push(song);
