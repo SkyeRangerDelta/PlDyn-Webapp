@@ -17,3 +17,27 @@ export interface JellyfinContribution {
   description: string;
   recordId: string;
 }
+
+export interface AudioFile {
+  filePath: string;
+  title: string;
+  artist: string;
+  album: string;
+  genre: string[];
+  year: number;
+  track: number;
+  albumArtist: string;
+  composer: string[];
+  discNumber: number;
+  cover: {
+    format: string;
+    data: Uint8Array;
+  }
+}
+
+export interface AudioUploadResponse {
+  message: string;
+  status: number;
+  error: boolean;
+  uploadData: AudioFile[];
+}
