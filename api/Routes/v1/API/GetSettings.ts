@@ -1,6 +1,6 @@
 import { Router, RouterContext } from '@oak/oak/router';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
-import { ClientSettingsResult } from "../../../../webapp/src/app/customTypes";
+import { ClientSettingsResult } from "../../../../webapp/src/app/customTypes.ts";
 
 const router = new Router();
 
