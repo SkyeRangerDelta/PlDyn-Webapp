@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MediaUploaderMusicComponent } from './media-uploader-music.component';
 import { By } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { Song } from '../customTypes';
 
 describe('MediaUploaderMusicComponent', () => {
   let component: MediaUploaderMusicComponent;
@@ -36,38 +37,47 @@ describe('MediaUploaderMusicComponent', () => {
   });
 
   it('should add songs to the table', () => {
-    const file = new File([], 'test.mp3');
-    component.selectedFiles = [file];
+    const songData = [
+      {
+        title: 'Test Title',
+        artist: 'Test Artist',
+        album: 'Test Album',
+        genre: ['Test Genre'],
+        year: 2021,
+        track: 1,
+        albumArtist: 'Test Album Artist',
+        composer: [''],
+        discNumber: 1
+      } as Song
+    ];
 
-    spyOn(component, 'readMetadata').and.callFake((file, song) => {
-      song.title = 'Test Title';
-      song.artist = 'Test Artist';
-      song.album = 'Test Album';
-      song.genre = 'Test Genre';
-      song.year = 2021;
-      song.track = 1;
-      song.albumArtist = 'Test Album Artist';
-      song.composer = '';
-      song.discNumber = 1;
-    });
-
-    component.addSongsToTable();
+    component.addSongsToTable( songData );
 
     expect(component.songs.length).toBe(1);
     expect(component.songs[0].title).toBe('Test Title');
     expect(component.songs[0].artist).toBe('Test Artist');
     expect(component.songs[0].album).toBe('Test Album');
-    expect(component.songs[0].genre).toBe('Test Genre');
+    expect(component.songs[0].genre).toEqual(['Test Genre']);
     expect(component.songs[0].year).toBe(2021);
     expect(component.songs[0].track).toBe(1);
     expect(component.songs[0].albumArtist).toBe('Test Album Artist');
-    expect(component.songs[0].composer).toBe('');
+    expect(component.songs[0].composer).toEqual(['']);
     expect(component.songs[0].discNumber).toBe(1);
   });
 
   it('should validate that all cells are populated before submission', () => {
     component.songs = [
-      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: 2021, track: 1, albumArtist: 'Test Album Artist', composer: '', discNumber: 1 }
+      {
+        title: 'Test Title',
+        artist: 'Test Artist',
+        album: 'Test Album',
+        genre: ['Test Genre'],
+        year: 2021,
+        track: 1,
+        albumArtist: 'Test Album Artist',
+        composer: [''],
+        discNumber: 1
+      } as Song
     ];
 
     expect(component.isFormValid()).toBeTruthy();
@@ -80,7 +90,17 @@ describe('MediaUploaderMusicComponent', () => {
     spyOn(component, 'onSubmit').and.callThrough();
 
     component.songs = [
-      { title: 'Test Title', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: 2021, track: 1, albumArtist: 'Test Album Artist', composer: '', discNumber: 1 }
+      {
+        title: 'Test Title',
+        artist: 'Test Artist',
+        album: 'Test Album',
+        genre: ['Test Genre'],
+        year: 2021,
+        track: 1,
+        albumArtist: 'Test Album Artist',
+        composer: [''],
+        discNumber: 1
+      } as Song
     ];
 
     component.onSubmit();
@@ -89,9 +109,24 @@ describe('MediaUploaderMusicComponent', () => {
   });
 
   it('should disable submit button when form is invalid', () => {
+    component.songs = [];
+
+    fixture.detectChanges();
+
     component.songs = [
-      { title: '', artist: 'Test Artist', album: 'Test Album', genre: 'Test Genre', year: 2021, track: 1, albumArtist: 'Test Album Artist', composer: '', discNumber: 1 }
+      {
+        title: 'Test Title',
+        artist: 'Test Artist',
+        album: '',
+        genre: ['Test Genre'],
+        year: 2021,
+        track: 1,
+        albumArtist: 'Test Album Artist',
+        composer: [''],
+        discNumber: 0
+      } as Song
     ];
+
     fixture.detectChanges();
 
     const submitButton = fixture.debugElement.query(By.css('button[disabled]'));
