@@ -84,9 +84,9 @@ export class MediaUploaderMusicComponent implements OnInit {
     });
   }
 
-  //TODO: REMOVE TEMP TEST DATA
   addSongsToTable( songData: Song[] ): void {
     songData.forEach( song => {
+      if ( song.discNumber === 0 ) song.discNumber = 1;
       this.songs.push( song );
     } );
 
@@ -105,7 +105,8 @@ export class MediaUploaderMusicComponent implements OnInit {
         song.year &&
         song.track &&
         song.albumArtist &&
-        song.discNumber
+        song.discNumber >= 1 &&
+        song.cover
     );
   }
 
