@@ -5,6 +5,7 @@ import { AudioUploadResponse, MediaResult, Song } from '../customTypes';
 import { MediaService } from '../services/media.service';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-media-uploader-music',
@@ -72,7 +73,6 @@ export class MediaUploaderMusicComponent implements OnInit {
       if ( !data.error ) {
         console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
 
-        //TODO: Parse uploadData returned and add to table
         this.addSongsToTable( data.uploadData );
       }
       else {
