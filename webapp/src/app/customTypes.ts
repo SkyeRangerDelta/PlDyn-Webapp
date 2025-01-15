@@ -73,7 +73,7 @@ export interface Song {
   discNumber: number;
   cover: {
     format: string;
-    data: Uint8Array;
+    data: string;
   }
 }
 

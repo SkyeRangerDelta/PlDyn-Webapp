@@ -41,7 +41,12 @@
         <td><input [(ngModel)]="song.albumArtist" required /></td>
         <td><input [(ngModel)]="song.composer" /></td>
         <td><input [(ngModel)]="song.discNumber" required /></td>
-        <td>Cover</td>
+        <td>
+          <img *ngIf="song.cover.data && song.cover.format else placeholderCover" [src]="song.cover.data" height="50" width="50" />
+          <ng-template #placeholderCover>
+            <img src="assets/images/placeholder.png" alt="Blah" />
+          </ng-template>
+        </td>
       </tr>
     </tbody>
   </table>

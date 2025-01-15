@@ -1,3 +1,5 @@
+import { IPicture } from "npm:music-metadata@10.7.0/lib/type.d.ts";
+
 export interface JellyfinAuthenticateRequest {
   status: number;
   message: string;
@@ -30,8 +32,8 @@ export interface AudioFile {
   composer: string[];
   discNumber: number;
   cover: {
-    format: string;
-    data: Uint8Array;
+    format: string | null;
+    data: string | null;
   }
 }
 
