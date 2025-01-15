@@ -76,7 +76,8 @@ describe('MediaUploaderMusicComponent', () => {
         track: 1,
         albumArtist: 'Test Album Artist',
         composer: [''],
-        discNumber: 1
+        discNumber: 1,
+        cover: { format: 'jpeg', data: 'test' }
       } as Song
     ];
 
@@ -123,7 +124,8 @@ describe('MediaUploaderMusicComponent', () => {
         track: 1,
         albumArtist: 'Test Album Artist',
         composer: [''],
-        discNumber: 0
+        discNumber: 0,
+        cover: { format: 'jpeg', data: 'test' }
       } as Song
     ];
 
