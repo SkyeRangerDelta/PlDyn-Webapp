@@ -67,8 +67,6 @@ router.post('/upload', async (ctx) => {
         } as AudioFile;
 
         readTracks.push( builtMetadata );
-
-        console.log( 'Metadata:', builtMetadata );
       }
       catch {
         console.error( 'Error reading metadata:', entryPath );
