@@ -1,3 +1,5 @@
+import { uint8ArrayToBase64 } from "./Converters.ts";
+
 export function humanizeBytes( byteCount: number ) {
   const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   let i = 0;
@@ -20,4 +22,9 @@ export function humanizeTime( seconds: number ) {
   }
 
   return `${seconds.toFixed(2)}${units[i]}`;
+}
+
+export function buildImgB64( imgData: Uint8Array, format: string ) {
+  const imgb64 = uint8ArrayToBase64( imgData );
+  return `data:${format};base64,${imgb64}`;
 }

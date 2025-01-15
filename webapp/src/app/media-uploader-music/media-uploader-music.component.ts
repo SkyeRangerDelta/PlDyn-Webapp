@@ -52,8 +52,6 @@ export class MediaUploaderMusicComponent implements OnInit {
   onFileSelect(event: Event): void {
     this.isLoading = true;
 
-    console.log( 'onFileSelect', event );
-
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.selectedFiles = Array.from(input.files);
@@ -78,8 +76,6 @@ export class MediaUploaderMusicComponent implements OnInit {
       else {
         console.error( 'Error uploading media:', data.message, data.status );
         this.uploadErrorMessage = data.message;
-
-
       }
     });
   }
@@ -87,6 +83,7 @@ export class MediaUploaderMusicComponent implements OnInit {
   addSongsToTable( songData: Song[] ): void {
     songData.forEach( song => {
       if ( song.discNumber === 0 ) song.discNumber = 1;
+
       this.songs.push( song );
     } );
 
@@ -113,9 +110,6 @@ export class MediaUploaderMusicComponent implements OnInit {
   onSubmit(): void {
     if (this.isFormValid()) {
       console.log('Form is valid, submitting data:', this.songs);
-
-      // Execute API call to upload the data to the server
-      // Example: this.http.post('/api/upload', formData).subscribe(response => console.log(response));
     }
   }
 }

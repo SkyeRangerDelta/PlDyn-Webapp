@@ -1,8 +1,9 @@
 import { Router } from '@oak/oak/router';
-import { parseFile } from "npm:music-metadata@10.7.0";
+import { parseFile, selectCover } from "npm:music-metadata@10.7.0";
 
 import { ensureFolderExists } from "../../../Utilities/IOUtilities.ts";
 import { AudioFile, AudioUploadResponse } from "../../../Types/API_ObjectTypes.ts";
+import { buildImgB64 } from "../../../Utilities/Formatters.ts";
 
 const router = new Router;
 
@@ -48,6 +49,11 @@ router.post('/upload', async (ctx) => {
     try {
       const metadata = await parseFile( entryPath );
 
+      const coverData = selectCover( metadata.common.picture ) || {
+        format: null,
+        data: null
+      };
+
       try {
         const builtMetadata = {
           filePath: entryPath,
@@ -61,8 +67,8 @@ router.post('/upload', async (ctx) => {
           composer: metadata.common.composer || [],
           discNumber: metadata.common.disk.no || 0,
           cover: {
-            format: metadata.common.picture && metadata.common.picture[0] ? metadata.common.picture[0].format : '',
-            data: metadata.common.picture && metadata.common.picture[0] ? metadata.common.picture[0].data : new Uint8Array()
+            format: coverData.format ? coverData.format : null,
+            data: coverData.data ? buildImgB64( coverData.data, coverData.format ) : null
           }
         } as AudioFile;
 
