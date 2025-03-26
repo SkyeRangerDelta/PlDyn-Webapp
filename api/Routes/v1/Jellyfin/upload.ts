@@ -22,6 +22,7 @@ router.post('/upload', async (ctx) => {
 
   // Save the file data to the temp folder
   const files = formData.getAll('files');
+  const uploadedFileNames: string[] = [];
   for ( const file of files ) {
     if ( file instanceof File ) {
       const fileData = new Uint8Array( await file.arrayBuffer() );
@@ -35,6 +36,8 @@ router.post('/upload', async (ctx) => {
         ctx.response.status = 500;
         ctx.response.body = { message: 'Error writing file' };
       }
+
+      uploadedFileNames.push( file.name );
     }
   }
 
@@ -44,6 +47,8 @@ router.post('/upload', async (ctx) => {
   const tempPath = new URL( `file://${Deno.cwd()}/temp/audio-uploads` );
   const tempFolder = Deno.readDirSync( tempPath );
   for ( const entry of tempFolder ) {
+    if ( !uploadedFileNames.includes( entry.name ) ) continue;
+
     const entryPath = `${strPath}/${entry.name}`;
 
     try {
