@@ -22,6 +22,7 @@ export interface JellyfinContribution {
 
 export interface AudioFile {
   filePath: string;
+  fileName: string;
   title: string;
   artist: string;
   album: string;
@@ -42,4 +43,10 @@ export interface AudioUploadResponse {
   status: number;
   error: boolean;
   uploadData: AudioFile[];
+}
+
+export interface DeleteResponse {
+  message: string;
+  status: number;
+  error: boolean;
 }

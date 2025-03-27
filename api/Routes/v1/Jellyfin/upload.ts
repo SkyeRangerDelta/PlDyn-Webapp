@@ -62,6 +62,7 @@ router.post('/upload', async (ctx) => {
       try {
         const builtMetadata = {
           filePath: entryPath,
+          fileName: entry.name,
           title: metadata.common.title || '',
           artist: metadata.common.artist || '',
           album: metadata.common.album || '',
