@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AudioUploadResponse, MediaResult, Song } from '../customTypes';
+import { AudioUploadResponse, DeleteResponse, Song } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
 import { AuthService } from '../services/auth.service';
@@ -54,7 +54,7 @@ export class MediaUploaderMusicComponent implements OnInit {
 
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      this.selectedFiles = Array.from(input.files);
+      this.selectedFiles = Array.from( input.files );
     }
 
     // this.addSongsToTable();
@@ -63,6 +63,7 @@ export class MediaUploaderMusicComponent implements OnInit {
 
   uploadSongs() {
     const formData = new FormData();
+
     this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
 
     this.MediaService.uploadMedia( formData ).subscribe( (data: AudioUploadResponse) => {
@@ -78,16 +79,30 @@ export class MediaUploaderMusicComponent implements OnInit {
         this.uploadErrorMessage = data.message;
       }
     });
+
+    this.selectedFiles = [];
   }
 
   addSongsToTable( songData: Song[] ): void {
     songData.forEach( song => {
       if ( song.discNumber === 0 ) song.discNumber = 1;
-
-      this.songs.push( song );
+      if ( !this.songs.includes( song ) ) {
+        this.songs.push( song );
+      }
     } );
 
     this.isLoading = false;
+  }
+
+  removeSong( song: Song ): void {
+    const index = this.songs.indexOf( song );
+    this.songs.splice( index, 1 );
+
+    this.MediaService.clearMedia( song.fileName ).subscribe( (data: DeleteResponse) => {
+      if ( data.error ) {
+        console.error( 'Error deleting media:', data.message, data.status );
+      }
+    })
   }
 
   isFormValid(): boolean {

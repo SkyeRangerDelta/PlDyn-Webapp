@@ -18,6 +18,7 @@
   <table>
     <thead>
       <tr>
+        <th>Clear</th>
         <th>Title</th>
         <th>Artist</th>
         <th>Album</th>
@@ -32,6 +33,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let song of songs">
+        <td><button (click)="removeSong(song)">X</button></td>
         <td><input [(ngModel)]="song.title" required /></td>
         <td><input [(ngModel)]="song.artist" required /></td>
         <td><input [(ngModel)]="song.album" required /></td>
