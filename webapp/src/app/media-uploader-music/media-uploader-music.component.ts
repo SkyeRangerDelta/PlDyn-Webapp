@@ -79,8 +79,6 @@ export class MediaUploaderMusicComponent implements OnInit {
         this.uploadErrorMessage = data.message;
       }
     });
-
-    this.selectedFiles = [];
   }
 
   addSongsToTable( songData: Song[] ): void {
@@ -92,6 +90,7 @@ export class MediaUploaderMusicComponent implements OnInit {
     } );
 
     this.isLoading = false;
+    this.selectedFiles = [];
   }
 
   removeSong( song: Song ): void {
