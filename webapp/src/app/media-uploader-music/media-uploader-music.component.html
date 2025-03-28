@@ -46,7 +46,12 @@
         <td>
           <img *ngIf="song.cover.data && song.cover.format else placeholderCover" [src]="song.cover.data" height="50" width="50" />
           <ng-template #placeholderCover>
-            <img src="assets/images/placeholder.png" alt="Blah" />
+            <img ngSrc="assets/images/placeholder.png" width="50" height="50" alt="Blah" (click)="toggleContextButtons()" />
+            <div *ngIf="showContextButtons" class="context-btn-menu">
+              <button (click)="searchCover(song)">Search</button>
+              <button (click)="uploadCover(song)">Upload</button>
+              <button (click)="pasteCover(song)">Paste</button>
+            </div>
           </ng-template>
         </td>
       </tr>
