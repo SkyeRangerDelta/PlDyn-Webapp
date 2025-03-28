@@ -22,6 +22,7 @@ export class MediaUploaderMusicComponent implements OnInit {
   curTrackNumber = 1;
 
   isLoading = false;
+  showContextButtons = false;
 
   constructor(
     private fb: FormBuilder,
@@ -47,7 +48,20 @@ export class MediaUploaderMusicComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    document.addEventListener( 'click', () => this.cleanupMenus() );
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener( 'click', () => this.cleanupMenus() );
+  }
+
+  cleanupMenus(): void {
+    if ( this.showContextButtons ) {
+      console.log('Cleanup menus');
+      this.showContextButtons = false;
+    }
+  }
 
   onFileSelect(event: Event): void {
     this.isLoading = true;
@@ -119,6 +133,24 @@ export class MediaUploaderMusicComponent implements OnInit {
         song.discNumber >= 1 &&
         song.cover
     );
+  }
+
+  toggleContextButtons(): void {
+    console.log('Context buttons');
+    event?.stopPropagation();
+    this.showContextButtons = !this.showContextButtons;
+  }
+
+  searchCover( song: Song ) {
+    console.log( 'Searching for cover:', song.title );
+  }
+
+  uploadCover( song: Song ) {
+    console.log( 'Uploading cover:', song.title );
+  }
+
+  pasteCover( song: Song ) {
+    console.log( 'Pasting cover:', song.title );
   }
 
   onSubmit(): void {

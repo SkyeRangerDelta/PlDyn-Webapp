@@ -4,7 +4,7 @@ import { DeleteResponse } from "../../../Types/API_ObjectTypes.ts";
 
 const router = new Router;
 
-router.post('/clear', async (ctx: RouterContext<string>) => {
+router.post('/clear', async ( ctx ) => {
   if ( !ctx.request.hasBody || ctx.request.body.type() !== 'json' ) {
     ctx.response.status = 500;
     ctx.response.body = {
@@ -19,12 +19,10 @@ router.post('/clear', async (ctx: RouterContext<string>) => {
 
   const reqBody = await ctx.request.body.json();
 
-  console.log( reqBody );
-
   // Clear the resource specified in the request
   const fileName = reqBody.fileName;
 
-  console.log( 'Attempting to delete: ' + fileName );
+  console.debug( 'Attempting to delete: ' + fileName );
 
   const tempPath = new URL( `file://${ Deno.cwd() }/temp/audio-uploads/${fileName}` );
 
