@@ -37,6 +37,8 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
 
   try {
     const secret = Deno.env.get('JWT_SECRET');
+
+    // Check if secret is set on the backend
     if ( !secret ) {
       ctx.response.status = 500;
       ctx.response.body = {
@@ -48,7 +50,26 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
       return;
     }
 
-    await jose.jwtVerify( token, new TextEncoder().encode( secret ) );
+    // Decode the JWT token
+    const decRes = await jose.jwtDecrypt( token, new TextEncoder().encode( secret ) );
+
+    // Check if the token is expired
+    if ( !decRes || !decRes.payload.exp ) {
+      ctx.response.status = 401;
+      ctx.response.body = {
+        message: 'Invalid token.'
+      }
+
+      return;
+    }
+    else if ( decRes.payload.exp < Math.floor( Date.now() / 1000 ) ) {
+      ctx.response.status = 401;
+      ctx.response.body = {
+        message: 'Token expired.'
+      }
+
+      return;
+    }
 
     await next();
   }
