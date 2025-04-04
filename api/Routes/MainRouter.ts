@@ -51,7 +51,7 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
     }
 
     // Decode the JWT token
-    const decRes = await jose.jwtDecrypt( token, new TextEncoder().encode( secret ) );
+    const decRes = await jose.jwtVerify( token, new TextEncoder().encode( secret ) );
 
     // Check if the token is expired
     if ( !decRes || !decRes.payload.exp ) {
