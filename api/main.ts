@@ -3,7 +3,7 @@
 // Imports
 import { load } from '@std/dotenv';
 import { Application } from '@oak/oak';
-import { join } from '@std/path/unstable-join';
+import { join } from '@std/path';
 
 import { MainRouter } from "./Routes/MainRouter.ts";
 import { generateRandomString } from "./Utilities/Generators.ts";
