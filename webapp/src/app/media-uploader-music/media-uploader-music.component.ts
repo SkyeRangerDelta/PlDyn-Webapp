@@ -91,6 +91,10 @@ export class MediaUploaderMusicComponent implements OnInit {
       else {
         console.error( 'Error uploading media:', data.message, data.status );
         this.uploadErrorMessage = data.message;
+
+        if ( !this.AuthService.isAuthenticated ) {
+          this.router.navigate(['/']);
+        }
       }
     });
   }
