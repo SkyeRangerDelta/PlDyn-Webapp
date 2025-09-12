@@ -29,23 +29,31 @@ export function ensureFolderExists( parentPath: string, folderName: string ) {
  * cleanTempFolder - Cleans and removes excess data from the temp folder
  */
 export function cleanTempFolders() {
+  const rootTempPath = `${ Deno.cwd() }/temp`;
   const tempPath = new URL( `file://${ Deno.cwd() }/temp/audio-uploads` );
 
+  let tempFolder;
+
   try {
-    const tempFolder = Deno.readDirSync( tempPath );
-    for ( const entry of tempFolder ) {
-      const entryPath = new URL( `${tempPath}/${entry.name}` );
-
-      try {
-        Deno.removeSync( entryPath, { recursive: true } );
-
-        console.log( 'Removed temp file:', entry.name );
-      }
-      catch {
-        console.error( 'Error removing temp file:', entryPath );
-      }
-    }
+    tempFolder = Deno.readDirSync( tempPath );
   } catch (e) {
-    console.error( 'Error reading temp folder:', tempPath, e );
+    ensureFolderExists( rootTempPath, 'audio-uploads' );
+  }
+
+  if ( !tempFolder ) {
+    return;
+  }
+
+  for ( const entry of tempFolder ) {
+    const entryPath = new URL( `${tempPath}/${entry.name}` );
+
+    try {
+      Deno.removeSync( entryPath, { recursive: true } );
+
+      console.log( 'Removed temp file:', entry.name );
+    }
+    catch {
+      console.error( 'Error removing temp file:', entryPath );
+    }
   }
 }

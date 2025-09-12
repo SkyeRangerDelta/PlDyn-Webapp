@@ -4,7 +4,7 @@ import { Router } from '@oak/oak/router';
 async function loadRoutes( router: Router, directory: string) {
   console.log( `Loading routes from ${ directory }` );
 
-  const routesPath = `./api/Routes/v1/`;
+  const routesPath = `./Routes/v1/`;
   const importPath = `${routesPath}${directory}`;
 
   for await (const dirEntry of Deno.readDirSync(importPath)) {
