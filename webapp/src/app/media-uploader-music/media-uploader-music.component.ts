@@ -64,6 +64,10 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   onFileSelect(event: Event): void {
+    if ( !this.AuthService.isAuthenticated ) {
+      this.router.navigate(['/']);
+    }
+
     this.isLoading = true;
 
     const input = event.target as HTMLInputElement;
@@ -71,7 +75,6 @@ export class MediaUploaderMusicComponent implements OnInit {
       this.selectedFiles = Array.from( input.files );
     }
 
-    // this.addSongsToTable();
     this.uploadSongs();
   }
 

@@ -132,7 +132,7 @@ export class AuthService {
         .toPromise();
 
       const uname: string = data.data.User;
-      if ( !uname ) {
+      if ( !data || !data.data || !uname ) {
         this.logout();
         return '';
       }
