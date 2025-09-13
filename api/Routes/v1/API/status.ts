@@ -1,4 +1,4 @@
-import { Router, RouterContext } from '@oak/oak/router';
+import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
 import { humanizeBytes, humanizeTime } from "../../../Utilities/Formatters.ts";
 
 const router = new Router();

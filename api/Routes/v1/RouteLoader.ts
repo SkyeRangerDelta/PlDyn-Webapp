@@ -1,5 +1,5 @@
 // api/Routes/v1/loadRoutes.ts
-import { Router } from '@oak/oak/router';
+import { Router } from 'https://deno.land/x/oak/mod.ts';
 
 async function loadRoutes( router: Router, directory: string) {
   console.log( `Loading routes from ${ directory }` );

@@ -1,9 +1,9 @@
-import { Router } from '@oak/oak/router';
-import { parseFile, selectCover } from "npm:music-metadata@10.7.0";
+import { Router } from 'https://deno.land/x/oak/mod.ts';
+import { parseFile, selectCover } from 'npm:music-metadata@10.7.0';
 
-import { ensureFolderExists } from "../../../Utilities/IOUtilities.ts";
-import { AudioFile, AudioUploadResponse } from "../../../Types/API_ObjectTypes.ts";
-import { buildImgB64 } from "../../../Utilities/Formatters.ts";
+import { ensureFolderExists } from '../../../Utilities/IOUtilities.ts';
+import { AudioFile, AudioUploadResponse } from '../../../Types/API_ObjectTypes.ts';
+import { buildImgB64 } from '../../../Utilities/Formatters.ts';
 
 const router = new Router;
 

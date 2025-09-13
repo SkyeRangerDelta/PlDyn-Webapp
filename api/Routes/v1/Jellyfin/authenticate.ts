@@ -1,5 +1,5 @@
 import * as jose from 'https://deno.land/x/jose@v5.9.6/index.ts'
-import { Router, RouterContext } from '@oak/oak/router';
+import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
 
 import { JellyfinAuthenticateRequest } from "../../../Types/API_ObjectTypes.ts";
 import { generateRandomString } from "../../../Utilities/Generators.ts";

@@ -1,5 +1,5 @@
 // Main router handler
-import { Router } from '@oak/oak/router';
+import { Router } from 'https://deno.land/x/oak/mod.ts';
 import { getRouter } from "./RouteLoader.ts";
 
 const APIRouter: Router = await getRouter('API');

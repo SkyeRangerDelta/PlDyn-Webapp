@@ -1,4 +1,4 @@
-import { Router, RouterContext } from '@oak/oak/router';
+import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
 import { JellyfinContributionsResponse } from "../../../Types/API_ObjectTypes.ts";
 
