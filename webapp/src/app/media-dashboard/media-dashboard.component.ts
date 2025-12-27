@@ -4,12 +4,13 @@ import { ContributionTile } from '../customTypes';
 import { SettingsService } from '../services/settings.service';
 
 @Component({
-  selector: 'app-media-dashboard',
-  templateUrl: './media-dashboard.component.html',
-  styleUrl: './media-dashboard.component.scss',
-  providers: [
-    MatFormFieldModule
-  ]
+    selector: 'app-media-dashboard',
+    templateUrl: './media-dashboard.component.html',
+    styleUrl: './media-dashboard.component.scss',
+    providers: [
+        MatFormFieldModule
+    ],
+    standalone: false
 })
 export class MediaDashboardComponent {
   lastUsedEditor: string = 'Music';

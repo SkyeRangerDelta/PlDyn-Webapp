@@ -8,9 +8,10 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
 @Component({
-  selector: 'app-media-uploader-music',
-  templateUrl: './media-uploader-music.component.html',
-  styleUrls: ['./media-uploader-music.component.scss']
+    selector: 'app-media-uploader-music',
+    templateUrl: './media-uploader-music.component.html',
+    styleUrls: ['./media-uploader-music.component.scss'],
+    standalone: false
 })
 export class MediaUploaderMusicComponent implements OnInit {
   musicForm: FormGroup;

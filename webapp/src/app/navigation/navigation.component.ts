@@ -3,9 +3,10 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.scss'
+    selector: 'app-navigation',
+    templateUrl: './navigation.component.html',
+    styleUrl: './navigation.component.scss',
+    standalone: false
 })
 export class NavigationComponent {
 
