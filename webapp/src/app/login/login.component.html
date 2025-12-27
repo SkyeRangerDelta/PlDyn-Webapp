@@ -7,17 +7,21 @@
       <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>
         <input matInput formControlName="user" placeholder="Enter your username" />
-        <mat-error *ngIf="loginForm.get('user')?.hasError('required')">
-          Username is required
-        </mat-error>
+        @if (!loginForm.get('user') || loginForm.get('user')?.hasError('required')) {
+          <mat-error>
+            Username is required
+          </mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
         <input matInput formControlName="pass" type="password" placeholder="Enter your password" />
-        <mat-error *ngIf="loginForm.get('pass')?.hasError('required')">
-          Password is required
-        </mat-error>
+        @if ( !loginForm.get('pass') || loginForm.get('pass')?.hasError('required')) {
+          <mat-error>
+            Password is required
+          </mat-error>
+        }
       </mat-form-field>
 
       <button mat-flat-button type="submit">Submit</button>
