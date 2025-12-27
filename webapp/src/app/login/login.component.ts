@@ -7,12 +7,13 @@ import { AuthService } from '../services/auth.service';
 import { AuthResult } from '../customTypes';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
-  providers: [
-    MatFormFieldModule
-  ]
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss',
+    providers: [
+        MatFormFieldModule
+    ],
+    standalone: false
 })
 export class LoginComponent {
   loginForm: FormGroup;
