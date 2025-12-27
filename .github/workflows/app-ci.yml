@@ -46,7 +46,7 @@ jobs:
       - name: Test
         run: |
           cd webapp
-          npm ci
+          npm i
           npm run test:ci
 
       - name: Build
