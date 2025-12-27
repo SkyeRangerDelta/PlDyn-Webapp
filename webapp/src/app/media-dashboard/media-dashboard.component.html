@@ -2,18 +2,21 @@
   <!-- Contributions Section -->
   Recent uploads
   <div class="contributions-section">
-    <div *ngIf="contributions.length > 0; else noContributions" >
-      <div class="media-item" *ngFor="let item of contributions">
-        <img [src]="item.thumbnailUrl" alt="Thumbnail" />
-        <div class="title">{{ item.title }}</div>
-        <div class="status">{{ item.status }}</div>
-        <button>Edit</button>
-        <button>Delete</button>
+    @if (contributions.length > 0) {
+      <div >
+        @for (item of contributions; track item) {
+          <div class="media-item">
+            <img [src]="item.thumbnailUrl" alt="Thumbnail" />
+            <div class="title">{{ item.title }}</div>
+            <div class="status">{{ item.status }}</div>
+            <button>Edit</button>
+            <button>Delete</button>
+          </div>
+        }
       </div>
-    </div>
-    <ng-template #noContributions>
+    } @else {
       <p>No contributions yet</p>
-    </ng-template>
+    }
   </div>
 
   Upload editor
