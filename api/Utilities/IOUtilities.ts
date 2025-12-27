@@ -32,7 +32,23 @@ export function cleanTempFolders() {
   const tempPath = new URL( `file://${ Deno.cwd() }/temp/audio-uploads` );
 
   try {
-    const tempFolder = Deno.readDirSync( tempPath );
+
+    let tempFolder;
+
+    try {
+      tempFolder = Deno.readDirSync( tempPath );
+    }
+    catch {
+      console.log( 'Temp folder does not exist, creating ', tempPath.href );
+      Deno.mkdirSync( tempPath, { recursive: true } );
+      return;
+    }
+
+    if ( !tempFolder ) {
+      console.log( 'Temp folder is empty:', tempPath );
+      return;
+    }
+
     for ( const entry of tempFolder ) {
       const entryPath = new URL( `${tempPath}/${entry.name}` );
 
