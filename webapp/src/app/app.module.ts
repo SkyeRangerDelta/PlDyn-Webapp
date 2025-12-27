@@ -36,8 +36,7 @@ import { MediaUploaderMusicComponent } from './media-uploader-music/media-upload
   ],
   providers: [
     provideAnimationsAsync(),
-    provideHttpClient(),
-    provideZoneChangeDetection()
+    provideHttpClient()
   ],
   bootstrap: [AppComponent]
 })
