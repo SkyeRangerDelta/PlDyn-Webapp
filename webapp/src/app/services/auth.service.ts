@@ -101,6 +101,7 @@ export class AuthService {
     localStorage.removeItem('pldyn-jfToken');
 
     this.authState.next(false);
+    this.uname.next('Program');
   }
 
   setAuthState( authed: boolean ) {

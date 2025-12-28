@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
 import { AuthResult } from '../customTypes';
@@ -19,16 +19,21 @@ export class LoginComponent {
   loginForm: FormGroup;
   isSuccess: boolean = true;
   submitText: string = '';
+  returnUrl: string = '/media';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       user: [ '', Validators.required ],
       pass: [ '', Validators.required ],
     });
+
+    // Get the return URL from query params, default to /media
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/media';
   }
 
   onSubmit() {
@@ -76,7 +81,8 @@ export class LoginComponent {
       () => {
         setTimeout(() => {
           this.authService.setAuthState(true);
-          this.router.navigate(['/dashboard']);
+          // Navigate to returnUrl (from guard) or default to /media
+          this.router.navigate([this.returnUrl]);
         }, 1500);
       }
     )
