@@ -35,11 +35,16 @@ router.post('/upload', async (ctx) => {
         console.error( 'Error writing file:', filePath, file.name );
         ctx.response.status = 500;
         ctx.response.body = { message: 'Error writing file' };
+        return;
       }
+
+      console.debug(' Uploaded file:', file.name );
 
       uploadedFileNames.push( file.name );
     }
   }
+
+  console.debug(` Total uploaded files: ${ uploadedFileNames.length }`);
 
   // Read the metadata from titles in the directory
   const readTracks: AudioFile[] = [];
@@ -97,6 +102,7 @@ router.post('/upload', async (ctx) => {
       error: true,
       uploadData: []
     } as AudioUploadResponse;
+    return;
   }
 
   ctx.response.status = 200;
