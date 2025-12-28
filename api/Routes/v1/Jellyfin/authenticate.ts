@@ -103,7 +103,7 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('2min')
+    .setExpirationTime('24h')
     .sign( new TextEncoder().encode( secret ) );
 
   return {
