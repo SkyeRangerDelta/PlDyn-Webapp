@@ -3,9 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AudioUploadResponse, DeleteResponse, Song } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
 
 @Component({
     selector: 'app-media-uploader-music',
@@ -27,9 +24,7 @@ export class MediaUploaderMusicComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private MediaService: MediaService,
-    private AuthService: AuthService,
-    private router: Router
+    private MediaService: MediaService
   ) {
     // Auth check now handled by AuthGuard on the route
 
@@ -91,9 +86,8 @@ export class MediaUploaderMusicComponent implements OnInit {
         console.error( 'Error uploading media:', data.message, data.status );
         this.uploadErrorMessage = data.message;
 
-        if ( !this.AuthService.isAuthenticated ) {
-          this.router.navigate(['/']);
-        }
+        // Note: Auth errors (401) are now handled by AuthInterceptor
+        // which will automatically logout and redirect to /login
       }
     });
   }

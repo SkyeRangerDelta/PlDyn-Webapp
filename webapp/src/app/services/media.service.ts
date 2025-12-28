@@ -32,17 +32,11 @@ export class MediaService {
         catchError( error => {
           console.error( 'Error uploading media:', error );
 
-          if ( error.status === 401 ) {
-            return of({
-              status: 401,
-              message: 'Unauthorized',
-              error: true
-            } as AudioUploadResponse );
-          }
-
+          // Note: 401 errors are handled by AuthInterceptor (logout + redirect)
+          // This error handler is for other errors (500, network issues, etc.)
           return of({
-            status: 500,
-            message: 'Internal server error',
+            status: error.status || 500,
+            message: error.message || 'Internal server error',
             error: true
           } as AudioUploadResponse );
         })
@@ -67,17 +61,11 @@ export class MediaService {
           } as DeleteResponse;
         }),
         catchError( ( error: any ) => {
-          if ( error.status === 401 ) {
-            return of({
-              status: 401,
-              message: 'Unauthorized',
-              error: true
-            } as AudioUploadResponse );
-          }
-
+          // Note: 401 errors are handled by AuthInterceptor (logout + redirect)
+          // This error handler is for other errors (500, network issues, etc.)
           return of({
-            status: 500,
-            message: 'Internal server error',
+            status: error.status || 500,
+            message: error.message || 'Internal server error',
             error: true
           } as DeleteResponse );
         })
