@@ -66,6 +66,8 @@ export class MediaUploaderMusicComponent implements OnInit {
       return;
     }
 
+    // Clear any previous error messages when starting a new upload
+    this.uploadErrorMessage = '';
     this.isLoading = true;
     this.selectedFiles = Array.from( input.files );
 
@@ -92,6 +94,9 @@ export class MediaUploaderMusicComponent implements OnInit {
 
         if ( !data.error ) {
           console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
+
+          // Clear any previous error messages on successful upload
+          this.uploadErrorMessage = '';
 
           this.addSongsToTable( data.uploadData );
         }
@@ -136,6 +141,8 @@ export class MediaUploaderMusicComponent implements OnInit {
           this.uploadErrorMessage = `Failed to delete ${song.fileName}: ${data.message}`;
         } else {
           console.log( `Successfully deleted ${song.fileName}` );
+          // Clear error message on successful deletion
+          this.uploadErrorMessage = '';
         }
       },
       error: (error) => {
