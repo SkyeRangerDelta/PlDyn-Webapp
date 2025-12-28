@@ -25,14 +25,20 @@ export class AuthService {
 
   constructor( private httpClient: HttpClient ) {
     // If they refresh the page, we need to re-acquire the token username.
-    try {
-      this.getTokenUsername().then( (username: string) => {
-        this.setUsername( username );
+    // getTokenUsername() will handle logout if token is invalid
+    this.getTokenUsername()
+      .then( (username: string) => {
+        if (username) {
+          this.setUsername( username );
+          this.authState.next(true);
+        }
+      })
+      .catch( (error) => {
+        console.error( 'Error getting token username on init:', error );
+        // getTokenUsername() already called logout() in its error handlers
+        // Ensure authState is synced
+        this.authState.next(false);
       });
-    }
-    catch {
-      console.error( 'Couldnt get token username (if any).' );
-    }
   }
 
   authenticateUser( user: string, pass: string ): Observable<AuthResult> {
