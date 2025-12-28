@@ -2,7 +2,7 @@
 
 // Imports
 import { load } from '@std/dotenv';
-import { Application } from '@oak/oak';
+import { Application, HttpServerNative } from '@oak/oak';
 import { join } from '@std/path';
 
 import { MainRouter } from "./Routes/MainRouter.ts";
@@ -14,7 +14,10 @@ import { cleanTempFolders } from "./Utilities/IOUtilities.ts";
 await load( { export: true } );
 
 // Globals
-const app = new Application();
+// Force Oak to use native Deno HTTP server instead of Node.js adapter
+const app = new Application({
+  serverConstructor: HttpServerNative
+});
 
 const port = parseInt( Deno.env.get('APP_PORT') || '4200' );
 const host = Deno.env.get('APP_HOST') || 'localhost';
