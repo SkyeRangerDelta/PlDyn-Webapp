@@ -31,9 +31,7 @@ export class MediaUploaderMusicComponent implements OnInit {
     private AuthService: AuthService,
     private router: Router
   ) {
-    if ( !this.AuthService.isAuthenticated ) {
-      this.router.navigate(['/login']);
-    }
+    // Auth check now handled by AuthGuard on the route
 
     this.musicForm = this.fb.group({
       title: ['', Validators.required],
