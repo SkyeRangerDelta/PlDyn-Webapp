@@ -33,13 +33,21 @@ export class MediaDashboardComponent {
 
   getContributions() {
     // fetch contributions
-    this.settingsService.getContributions().subscribe( (data: any) => {
+    this.settingsService.getContributions().subscribe({
+      next: (data: any) => {
+        if ( !data || !data.data || !data.data.contributions ) {
+          console.log( 'No contribution data.' );
+          this.contributions = [];
+        }
+        else {
+          this.contributions = data.data.contributions;
+        }
+      },
+      error: (error) => {
+        console.error( 'Error fetching contributions:', error );
+        this.contributions = [];
 
-      if ( !data || !data.contributions ) {
-        console.log( 'No contribution data.' )
-      }
-      else {
-        this.contributions = data.contributions;
+        // Note: Auth errors (401) are handled by AuthInterceptor
       }
     });
   }

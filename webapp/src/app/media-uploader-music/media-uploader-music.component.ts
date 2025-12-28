@@ -58,36 +58,57 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   onFileSelect(event: Event): void {
-    this.isLoading = true;
-
     const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.selectedFiles = Array.from( input.files );
+
+    if (!input.files || input.files.length === 0) {
+      console.log('No files selected');
+      this.uploadErrorMessage = '';
+      return;
     }
+
+    this.isLoading = true;
+    this.selectedFiles = Array.from( input.files );
 
     // this.addSongsToTable();
     this.uploadSongs();
   }
 
   uploadSongs() {
+    // Safety check: prevent upload if no files selected
+    if (!this.selectedFiles || this.selectedFiles.length === 0) {
+      console.warn('Upload attempted with no files selected');
+      this.isLoading = false;
+      this.uploadErrorMessage = 'No files selected for upload.';
+      return;
+    }
+
     const formData = new FormData();
 
     this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
 
-    this.MediaService.uploadMedia( formData ).subscribe( (data: AudioUploadResponse) => {
-      this.isLoading = false;
+    this.MediaService.uploadMedia( formData ).subscribe({
+      next: (data: AudioUploadResponse) => {
+        this.isLoading = false;
 
-      if ( !data.error ) {
-        console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
+        if ( !data.error ) {
+          console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
 
-        this.addSongsToTable( data.uploadData );
-      }
-      else {
-        console.error( 'Error uploading media:', data.message, data.status );
-        this.uploadErrorMessage = data.message;
+          this.addSongsToTable( data.uploadData );
+        }
+        else {
+          console.error( 'Error uploading media:', data.message, data.status );
+          this.uploadErrorMessage = data.message;
 
-        // Note: Auth errors (401) are now handled by AuthInterceptor
-        // which will automatically logout and redirect to /login
+          // Note: Auth errors (401) are now handled by AuthInterceptor
+          // which will automatically logout and redirect to /login
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error( 'Upload subscription error:', error );
+        this.uploadErrorMessage = 'Failed to upload files. Please try again.';
+
+        // Note: Auth errors (401) are handled by AuthInterceptor before reaching here
       }
     });
   }
@@ -108,11 +129,23 @@ export class MediaUploaderMusicComponent implements OnInit {
     const index = this.songs.indexOf( song );
     this.songs.splice( index, 1 );
 
-    this.MediaService.clearMedia( song.fileName ).subscribe( (data: DeleteResponse) => {
-      if ( data.error ) {
-        console.error( 'Error deleting media:', data.message, data.status );
+    this.MediaService.clearMedia( song.fileName ).subscribe({
+      next: (data: DeleteResponse) => {
+        if ( data.error ) {
+          console.error( 'Error deleting media:', data.message, data.status );
+          this.uploadErrorMessage = `Failed to delete ${song.fileName}: ${data.message}`;
+        } else {
+          console.log( `Successfully deleted ${song.fileName}` );
+        }
+      },
+      error: (error) => {
+        console.error( 'Delete subscription error:', error );
+        this.uploadErrorMessage = `Failed to delete ${song.fileName}. Please try again.`;
+
+        // Re-add the song to the list since deletion failed
+        this.songs.splice( index, 0, song );
       }
-    })
+    });
   }
 
   isFormValid(): boolean {

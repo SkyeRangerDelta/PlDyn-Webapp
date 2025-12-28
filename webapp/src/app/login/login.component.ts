@@ -51,17 +51,25 @@ export class LoginComponent {
 
   authUser( user: string, pass: string ) {
     // Authenticate user here
-    this.authService.authenticateUser(user, pass).subscribe( (resObject: AuthResult) => {
-      if ( resObject.success ) {
-        this.submitText = 'User authenticated';
-        this.isSuccess = true;
+    this.authService.authenticateUser(user, pass).subscribe({
+      next: (resObject: AuthResult) => {
+        if ( resObject.success ) {
+          this.submitText = 'User authenticated';
+          this.isSuccess = true;
 
-        this.handleAuthSuccess();
-      }
-      else {
-        this.submitText = resObject.message;
+          this.handleAuthSuccess();
+        }
+        else {
+          this.submitText = resObject.message;
+          this.isSuccess = false;
+
+          this.loginForm.reset();
+        }
+      },
+      error: (error) => {
+        console.error( 'Login subscription error:', error );
+        this.submitText = 'Login failed. Please try again.';
         this.isSuccess = false;
-
         this.loginForm.reset();
       }
     });
