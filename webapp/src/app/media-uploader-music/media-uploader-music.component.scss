@@ -1,4 +1,5 @@
 @use '../../styles/colors';
+@use 'sass:color';
 
 /* Styles for the table layout */
 .media-uploader-music {
@@ -164,12 +165,12 @@ input[type="file"] {
 
 // Album header row styling
 .album-header-row {
-  background-color: lighten(colors.$button-background, 10%);
+  background-color: color.adjust(colors.$button-background, $lightness: 10%);
   font-weight: bold;
   border-bottom: 2px solid colors.$button-background;
 
   td {
-    background-color: lighten(colors.$button-background, 10%);
+    background-color: color.adjust(colors.$button-background, $lightness: 10%);
     padding: 0.75rem 0.5rem;
   }
 
@@ -212,7 +213,7 @@ input[type="file"] {
 }
 
 .song-row:hover {
-  background-color: lighten(colors.$row-background, 5%);
+  background-color: color.adjust(colors.$row-background, $lightness: 5%);
 }
 
 @keyframes spin {
