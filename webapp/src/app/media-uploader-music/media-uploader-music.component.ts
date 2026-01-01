@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
-import { AudioUploadResponse, DeleteResponse, Song } from '../customTypes';
+import { AudioUploadResponse, DeleteResponse, Song, AlbumGroup, TableRow } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
 
@@ -218,6 +218,67 @@ export class MediaUploaderMusicComponent implements OnInit {
         song.discNumber >= 1 &&
         song.cover
     );
+  }
+
+  // Getter that computes grouped table rows (auto-updates on songs changes)
+  get tableRows(): TableRow[] {
+    const albumMap = this.groupSongsByAlbum();
+    const sortedAlbumNames = Array.from(albumMap.keys()).sort();
+    const rows: TableRow[] = [];
+
+    for (const albumName of sortedAlbumNames) {
+      const albumGroup = albumMap.get(albumName)!;
+      rows.push({ type: 'album-header', albumGroup });
+
+      const sortedSongs = albumGroup.songs.sort((a, b) => a.track - b.track);
+      for (const song of sortedSongs) {
+        rows.push({ type: 'song', song, albumName });
+      }
+    }
+    return rows;
+  }
+
+  // Groups songs by album name
+  private groupSongsByAlbum(): Map<string, AlbumGroup> {
+    const albumMap = new Map<string, AlbumGroup>();
+
+    for (const song of this.songs) {
+      const albumName = song.album?.trim() || '(Unknown Album)';
+
+      if (!albumMap.has(albumName)) {
+        albumMap.set(albumName, {
+          albumName,
+          songs: [],
+          year: song.year,
+          albumArtist: song.albumArtist,
+          cover: song.cover
+        });
+      }
+      albumMap.get(albumName)!.songs.push(song);
+    }
+    return albumMap;
+  }
+
+  // Updates all songs in an album with new header value
+  updateAlbumField(albumName: string, field: 'year' | 'albumArtist' | 'cover', value: any): void {
+    const songsInAlbum = this.songs.filter(s => s.album === albumName);
+    for (const song of songsInAlbum) {
+      // Use type assertion to bypass TypeScript's union type restriction
+      (song as any)[field] = value;
+    }
+  }
+
+  // Triggers regrouping when album name changes
+  onSongAlbumChange(song: Song, newAlbumName: string): void {
+    song.album = newAlbumName;
+    // tableRows getter auto-recomputes on next change detection
+  }
+
+  // Track by function for performance
+  trackByRow(index: number, row: TableRow): string {
+    return row.type === 'album-header'
+      ? `album-${row.albumGroup!.albumName}`
+      : `song-${row.song!.fileName}`;
   }
 
   toggleContextButtons(): void {

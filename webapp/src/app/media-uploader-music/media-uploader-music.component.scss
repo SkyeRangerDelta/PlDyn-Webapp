@@ -162,6 +162,59 @@ input[type="file"] {
   }
 }
 
+// Album header row styling
+.album-header-row {
+  background-color: lighten(colors.$button-background, 10%);
+  font-weight: bold;
+  border-bottom: 2px solid colors.$button-background;
+
+  td {
+    background-color: lighten(colors.$button-background, 10%);
+    padding: 0.75rem 0.5rem;
+  }
+
+  .album-name-cell {
+    text-align: left;
+    font-size: 1.1rem;
+    padding-left: 1rem;
+  }
+
+  .album-field-input {
+    width: 90%;
+    padding: 0.5rem;
+    border: 1px solid colors.$text-color;
+    background-color: rgba(colors.$background-color, 0.8);
+    color: colors.$text-color;
+    border-radius: 4px;
+  }
+}
+
+// Song row styling (indented)
+.song-row {
+  td:nth-child(2) {
+    padding-left: 2rem; // Indent title column
+  }
+
+  .song-field-input {
+    width: 90%;
+    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    color: colors.$text-color;
+  }
+
+  .readonly-field {
+    color: colors.$text-color;
+    opacity: 0.7;
+    font-style: italic;
+    padding-left: 0.5rem;
+  }
+}
+
+.song-row:hover {
+  background-color: lighten(colors.$row-background, 5%);
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

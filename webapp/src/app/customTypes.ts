@@ -104,3 +104,21 @@ export interface FileProcessingError {
   errorType: 'metadata_write' | 'file_move' | 'ffmpeg_not_found';
   errorMessage: string;
 }
+
+export interface AlbumGroup {
+  albumName: string;
+  songs: Song[];
+  year: number | null;
+  albumArtist: string;
+  cover: {
+    format: string;
+    data: string;
+  } | null;
+}
+
+export interface TableRow {
+  type: 'album-header' | 'song';
+  albumGroup?: AlbumGroup;
+  song?: Song;
+  albumName?: string;
+}
