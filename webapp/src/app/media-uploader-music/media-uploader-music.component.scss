@@ -131,3 +131,38 @@ input[type="file"] {
 .context-btn-menu button {
   margin: 5px 0;
 }
+
+/* Upload progress styles - compact single line */
+.upload-progress-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+
+  .progress-text {
+    color: colors.$text-color;
+    opacity: 0.9;
+    white-space: nowrap;
+  }
+
+  .progress-bar-inline {
+    width: 120px;
+    height: 8px;
+    background-color: rgba(colors.$button-background, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+
+    .progress-bar {
+      height: 100%;
+      background: colors.$button-background;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

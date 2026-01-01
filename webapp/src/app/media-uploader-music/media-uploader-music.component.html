@@ -68,4 +68,15 @@
       }
     </tbody>
   </table>
+
+  @if (uploadProgress.hasUploaded) {
+    <div class="upload-progress-line">
+      <span class="progress-text">{{ uploadProgress.uploadedCount }} of {{ uploadProgress.totalFiles }} uploaded</span>
+      @if (uploadProgress.isUploading) {
+        <div class="progress-bar-inline">
+          <div class="progress-bar" [style.width.%]="uploadProgress.currentFileProgress"></div>
+        </div>
+      }
+    </div>
+  }
 </div>
