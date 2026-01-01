@@ -90,3 +90,17 @@ export interface DeleteResponse {
   status: number;
   error: boolean;
 }
+
+export interface FinalizeUploadResponse {
+  status: number;
+  message: string;
+  error: boolean;
+  processedCount: number;
+  failedFiles: FileProcessingError[];
+}
+
+export interface FileProcessingError {
+  fileName: string;
+  errorType: 'metadata_write' | 'file_move' | 'ffmpeg_not_found';
+  errorMessage: string;
+}

@@ -65,3 +65,21 @@ export function cleanTempFolders() {
     console.error( 'Error reading temp folder:', tempPath, e );
   }
 }
+
+/**
+ * Check if ffmpeg is available in the system PATH
+ * @returns Promise<boolean> - true if ffmpeg is available, false otherwise
+ */
+export async function checkFfmpegAvailable(): Promise<boolean> {
+  try {
+    const command = new Deno.Command('ffmpeg', {
+      args: ['-version'],
+      stdout: 'null',
+      stderr: 'null'
+    });
+    const { code } = await command.output();
+    return code === 0;
+  } catch {
+    return false;
+  }
+}

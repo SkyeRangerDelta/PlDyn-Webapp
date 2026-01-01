@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { AudioUploadResponse, DeleteResponse, MediaResult } from '../customTypes';
+import { AudioUploadResponse, DeleteResponse, FinalizeUploadResponse, MediaResult, Song } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +43,24 @@ export class MediaService {
       );
   }
 
+  uploadSingleFile( file: File ): Observable<HttpEvent<AudioUploadResponse>> {
+    const headers: HttpHeaders = new HttpHeaders()
+      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
+
+    const formData = new FormData();
+    formData.append('files', file, file.name);
+
+    return this.httpClient.post<AudioUploadResponse>(
+      '/api/v1/jellyfin/upload',
+      formData,
+      {
+        headers: headers,
+        reportProgress: true,
+        observe: 'events'
+      }
+    );
+  }
+
   clearMedia( mediaName: string ): Observable<DeleteResponse> {
     const headers: HttpHeaders = new HttpHeaders()
       .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
@@ -69,6 +87,39 @@ export class MediaService {
             error: true
           } as DeleteResponse );
         })
+    );
+  }
+
+  finalizeUpload( songs: Song[] ): Observable<FinalizeUploadResponse> {
+    const headers: HttpHeaders = new HttpHeaders()
+      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
+    const payload = { songs };
+
+    return this.httpClient.post<any>(
+      '/api/v1/jellyfin/finalize',
+      payload,
+      { headers: headers }
+    ).pipe(
+      map( ( data: any ) => {
+        return {
+          status: data.status,
+          message: data.message,
+          error: data.error,
+          processedCount: data.processedCount,
+          failedFiles: data.failedFiles
+        } as FinalizeUploadResponse;
+      }),
+      catchError( ( error: any ) => {
+        // Note: 401 errors are handled by AuthInterceptor (logout + redirect)
+        // This error handler is for other errors (500, network issues, etc.)
+        return of({
+          status: error.status || 500,
+          message: error.message || 'Internal server error',
+          error: true,
+          processedCount: 0,
+          failedFiles: []
+        } as FinalizeUploadResponse );
+      })
     );
   }
 }

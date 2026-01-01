@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpEventType } from '@angular/common/http';
 import { AudioUploadResponse, DeleteResponse, Song } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
@@ -21,6 +22,15 @@ export class MediaUploaderMusicComponent implements OnInit {
 
   isLoading = false;
   showContextButtons = false;
+
+  // Upload progress tracking
+  uploadProgress = {
+    isUploading: false,
+    uploadedCount: 0,
+    totalFiles: 0,
+    currentFileProgress: 0,
+    hasUploaded: false  // Track if any uploads have occurred
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +85,7 @@ export class MediaUploaderMusicComponent implements OnInit {
     this.uploadSongs();
   }
 
-  uploadSongs() {
+  async uploadSongs() {
     // Safety check: prevent upload if no files selected
     if (!this.selectedFiles || this.selectedFiles.length === 0) {
       console.warn('Upload attempted with no files selected');
@@ -84,37 +94,75 @@ export class MediaUploaderMusicComponent implements OnInit {
       return;
     }
 
-    const formData = new FormData();
+    // Initialize progress tracking for this batch
+    const newFilesCount = this.selectedFiles.length;
+    const startingCount = this.uploadProgress.uploadedCount;
 
-    this.selectedFiles.forEach(file => formData.append( 'files', file, file.name ));
+    this.uploadProgress.isUploading = true;
+    this.uploadProgress.totalFiles = startingCount + newFilesCount;
+    this.uploadProgress.currentFileProgress = 0;
+    this.uploadProgress.hasUploaded = true;
 
-    this.MediaService.uploadMedia( formData ).subscribe({
-      next: (data: AudioUploadResponse) => {
-        this.isLoading = false;
+    // Upload files sequentially
+    // Store length to avoid issues if array gets modified
+    const totalFiles = newFilesCount;
+    const filesToUpload = [...this.selectedFiles]; // Create a copy
 
-        if ( !data.error ) {
-          console.log( 'Upload data has ' + data.uploadData.length + ' entries' );
+    for (let i = 0; i < totalFiles; i++) {
+      const file = filesToUpload[i];
 
-          // Clear any previous error messages on successful upload
-          this.uploadErrorMessage = '';
+      this.uploadProgress.currentFileProgress = 0;
 
-          this.addSongsToTable( data.uploadData );
-        }
-        else {
-          console.error( 'Error uploading media:', data.message, data.status );
-          this.uploadErrorMessage = data.message;
-
-          // Note: Auth errors (401) are now handled by AuthInterceptor
-          // which will automatically logout and redirect to /login
-        }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error( 'Upload subscription error:', error );
-        this.uploadErrorMessage = 'Failed to upload files. Please try again.';
-
-        // Note: Auth errors (401) are handled by AuthInterceptor before reaching here
+      try {
+        await this.uploadSingleFile(file);
+        this.uploadProgress.uploadedCount++;
+      } catch (error: any) {
+        console.error(`Error uploading ${file.name}:`, error);
+        this.uploadErrorMessage = `Failed to upload ${file.name}: ${error.message || 'Unknown error'}`;
+        // Continue with next file instead of stopping
       }
+    }
+
+    // Mark uploading as complete but keep the progress visible
+    this.uploadProgress.isUploading = false;
+    this.uploadProgress.currentFileProgress = 0;
+    this.isLoading = false;
+  }
+
+  private uploadSingleFile(file: File): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.MediaService.uploadSingleFile(file).subscribe({
+        next: (event) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            // Update upload progress
+            if (event.total) {
+              this.uploadProgress.currentFileProgress = Math.round((100 * event.loaded) / event.total);
+            }
+          } else if (event.type === HttpEventType.Response) {
+            // File upload complete, process response
+            const data = event.body as AudioUploadResponse;
+
+            if (!data.error && data.uploadData && data.uploadData.length > 0) {
+              // Clear any previous error messages on successful upload
+              this.uploadErrorMessage = '';
+
+              // Add the uploaded song to the table
+              this.addSongsToTable(data.uploadData);
+              resolve();
+            } else {
+              console.error('Error in response data:', data.message, data.status);
+              this.uploadErrorMessage = data.message;
+              reject(new Error(data.message));
+            }
+          }
+        },
+        error: (error) => {
+          console.error('HTTP error during upload:', error);
+          // Note: Auth errors (401) are now handled by AuthInterceptor
+          this.uploadErrorMessage = error.message || 'Internal server error';
+          reject(error);
+        }
+      });
     });
   }
 
@@ -191,8 +239,33 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.isFormValid()) {
-      console.log('Form is valid, submitting data:', this.songs);
-    }
+    if (!this.isFormValid()) return;
+
+    this.isLoading = true;
+    this.uploadErrorMessage = '';
+
+    this.MediaService.finalizeUpload(this.songs).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+
+        if (response.status === 200) {
+          // Complete success - clear all songs
+          this.songs = [];
+          console.log('All files uploaded successfully');
+        } else if (response.status === 207) {
+          // Partial success - show error and remove successful files
+          this.uploadErrorMessage = `${response.processedCount} files uploaded. ${response.failedFiles.length} failed.`;
+
+          // Keep only failed files in table
+          this.songs = this.songs.filter(song =>
+            response.failedFiles.some(f => f.fileName === song.fileName)
+          );
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.uploadErrorMessage = error.message || 'Upload failed. Please try again.';
+      }
+    });
   }
 }

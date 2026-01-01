@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
@@ -20,9 +20,11 @@ export class AuthInterceptor implements HttpInterceptor {
     '/api/v1/status'
   ];
 
+  private authService: AuthService | null = null;
+
   constructor(
     private router: Router,
-    private authService: AuthService
+    private injector: Injector
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -35,7 +37,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
       if (!token) {
         console.warn('No token found - logging out user');
-        this.authService.logout();
+        this.getAuthService().logout();
         this.router.navigate(['/login']);
 
         // Return an error observable to prevent the request
@@ -61,7 +63,7 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401) {
           // Token is invalid or expired - logout and redirect
           console.warn('401 Unauthorized - logging out user');
-          this.authService.logout();
+          this.getAuthService().logout();
           this.router.navigate(['/login']);
         }
 
@@ -69,5 +71,12 @@ export class AuthInterceptor implements HttpInterceptor {
         return throwError(() => error);
       })
     );
+  }
+
+  private getAuthService(): AuthService {
+    if (!this.authService) {
+      this.authService = this.injector.get(AuthService);
+    }
+    return this.authService;
   }
 }
