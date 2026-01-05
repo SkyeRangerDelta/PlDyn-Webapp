@@ -48,9 +48,11 @@ export class SettingsService {
       catchError( (err: any) => {
         console.error( 'Error fetching settings\n', err );
 
+        // Note: 401 errors are handled by AuthInterceptor (logout + redirect)
+        // This error handler is for other errors (500, network issues, etc.)
         return of({
-          status: 500,
-          message: 'Internal server error',
+          status: err.status || 500,
+          message: err.message || 'Internal server error',
           settings: {},
           success: false
         } as ClientSettingsResult );
@@ -89,13 +91,15 @@ export class SettingsService {
         } as ClientContributionResult;
       }),
       catchError( (err: any) => {
-        console.error( 'Error fetching settings\n', err );
+        console.error( 'Error fetching contributions\n', err );
 
+        // Note: 401 errors are handled by AuthInterceptor (logout + redirect)
+        // This error handler is for other errors (500, network issues, etc.)
         return of({
-          message: 'Internal server error',
+          message: err.message || 'Internal server error',
           data: {
             contributions: [],
-            errorMessage: 'Internal server error.'
+            errorMessage: err.message || 'Internal server error.'
           }
         } as ClientContributionResult );
       })

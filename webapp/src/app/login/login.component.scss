@@ -1,4 +1,4 @@
-@import '../../styles/colors';
+@use '../../styles/colors';
 
 // Centering the login container
 .login-container {
@@ -14,12 +14,12 @@
 .login-subtext {
   margin-bottom: 1.5rem;
   font-size: 1rem;
-  color: rgba($text-color, 0.7);
+  color: rgba(colors.$text-color, 0.7);
 }
 
 // Semi-transparent overlay to focus on the login form
 .overlay {
-  background-color: $background-color;
+  background-color: colors.$background-color;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -39,7 +39,7 @@ form {
 // Login header
 h1 {
   font-family: 'Courier New', Courier, monospace;
-  color: $text-color;
+  color: colors.$text-color;
   font-size: 2rem;
   margin-bottom: 1rem;
 }
@@ -49,7 +49,7 @@ mat-form-field {
   width: 100%;
 
   .mat-form-field-wrapper {
-    background-color: $input-background;
+    background-color: colors.$input-background;
     border-radius: 8px;
     padding: 4px;
   }
@@ -57,17 +57,17 @@ mat-form-field {
   input {
     padding: 10px;
     border-radius: 8px;
-    color: $input-background !important;
+    color: colors.$input-background !important;
   }
 
   mat-label {
-    color: $input-background;
+    color: colors.$input-background;
   }
 }
 
 // Submit button styling
 button {
-  color: $text-color !important;
+  color: colors.$text-color !important;
   padding: 12px 0;
   border: none;
   border-radius: 25px;
@@ -75,6 +75,6 @@ button {
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: $button-hover !important;
+    background-color: colors.$button-hover !important;
   }
 }

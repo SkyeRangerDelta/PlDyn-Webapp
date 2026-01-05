@@ -2,13 +2,19 @@
   <div class="add-content-btns">
     <div class="add-content-cols">
       <label for="file-uploader" class="custom-uploader">
-        <span *ngIf="isLoading" class="loading-icon"></span>
-        <span *ngIf="!isLoading">
-      Add Songs
-    </span>
+        @if (isLoading) {
+          <span class="loading-icon"></span>
+        }
+        @if (!isLoading) {
+          <span>
+            Add Songs
+          </span>
+        }
       </label>
       <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
-      <span *ngIf="uploadErrorMessage" class="uploadError-message">{{ uploadErrorMessage }}</span>
+      @if (uploadErrorMessage) {
+        <span class="uploadError-message">{{ uploadErrorMessage }}</span>
+      }
     </div>
 
     <div class="add-content-cols">
@@ -32,29 +38,70 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let song of songs">
-        <td><button (click)="removeSong(song)">X</button></td>
-        <td><input [(ngModel)]="song.title" required /></td>
-        <td><input [(ngModel)]="song.artist" required /></td>
-        <td><input [(ngModel)]="song.album" required /></td>
-        <td><input [(ngModel)]="song.genre" required /></td>
-        <td><input [(ngModel)]="song.year" type="number" required /></td>
-        <td><input [(ngModel)]="song.track" required /></td>
-        <td><input [(ngModel)]="song.albumArtist" required /></td>
-        <td><input [(ngModel)]="song.composer" /></td>
-        <td><input [(ngModel)]="song.discNumber" required /></td>
-        <td>
-          <img *ngIf="song.cover.data && song.cover.format else placeholderCover" [src]="song.cover.data" height="50" width="50" />
-          <ng-template #placeholderCover>
-            <img ngSrc="assets/images/placeholder.png" width="50" height="50" alt="Blah" (click)="toggleContextButtons()" />
-            <div *ngIf="showContextButtons" class="context-btn-menu">
-              <button (click)="searchCover(song)">Search</button>
-              <button (click)="uploadCover(song)">Upload</button>
-              <button (click)="pasteCover(song)">Paste</button>
-            </div>
-          </ng-template>
-        </td>
-      </tr>
+      @for (row of tableRows; track trackByRow($index, row)) {
+
+        @if (row.type === 'album-header') {
+          <tr class="album-header-row">
+            <td></td>
+            <td colspan="5" class="album-name-cell">
+              <strong>{{ row.albumGroup!.albumName }}</strong>
+            </td>
+            <td>
+              <input type="number"
+                [ngModel]="row.albumGroup!.year"
+                (ngModelChange)="updateAlbumField(row.albumGroup!.albumName, 'year', $event)"
+                class="album-field-input" />
+            </td>
+            <td>
+              <input
+                [ngModel]="row.albumGroup!.albumArtist"
+                (ngModelChange)="updateAlbumField(row.albumGroup!.albumName, 'albumArtist', $event)"
+                class="album-field-input" />
+            </td>
+            <td colspan="2"></td>
+            <td>
+              @if (row.albumGroup!.cover && row.albumGroup!.cover.data) {
+                <img [src]="row.albumGroup!.cover.data" height="50" width="50" />
+              } @else {
+                <img ngSrc="assets/images/placeholder.png" width="50" height="50" alt="Album" />
+              }
+            </td>
+          </tr>
+        }
+
+        @if (row.type === 'song') {
+          <tr class="song-row">
+            <td><button (click)="removeSong(row.song!)">X</button></td>
+            <td><input [(ngModel)]="row.song!.title" required class="song-field-input" /></td>
+            <td><input [(ngModel)]="row.song!.artist" required class="song-field-input" /></td>
+            <td><input [(ngModel)]="row.song!.album"
+                       (ngModelChange)="onSongAlbumChange(row.song!, $event)"
+                       required class="song-field-input" /></td>
+            <td><input [(ngModel)]="row.song!.genre" required class="song-field-input" /></td>
+            <td><span class="readonly-field">{{ row.song!.year }}</span></td>
+            <td><input [(ngModel)]="row.song!.track" type="number" required class="song-field-input" /></td>
+            <td><span class="readonly-field">{{ row.song!.albumArtist }}</span></td>
+            <td><input [(ngModel)]="row.song!.composer" class="song-field-input" /></td>
+            <td><input [(ngModel)]="row.song!.discNumber" type="number" required class="song-field-input" /></td>
+            <td>
+              @if (row.song!.cover.data) {
+                <img [src]="row.song!.cover.data" height="50" width="50" />
+              }
+            </td>
+          </tr>
+        }
+      }
     </tbody>
   </table>
+
+  @if (uploadProgress.hasUploaded) {
+    <div class="upload-progress-line">
+      <span class="progress-text">{{ uploadProgress.uploadedCount }} of {{ uploadProgress.totalFiles }} uploaded</span>
+      @if (uploadProgress.isUploading) {
+        <div class="progress-bar-inline">
+          <div class="progress-bar" [style.width.%]="uploadProgress.currentFileProgress"></div>
+        </div>
+      }
+    </div>
+  }
 </div>

@@ -3,9 +3,10 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrl: './navigation.component.scss'
+    selector: 'app-navigation',
+    templateUrl: './navigation.component.html',
+    styleUrl: './navigation.component.scss',
+    standalone: false
 })
 export class NavigationComponent {
 
@@ -13,11 +14,20 @@ export class NavigationComponent {
   username: string = 'Program!';
 
   constructor( private authService: AuthService, private router: Router ) {
-    this.authed = this.authService.isAuthenticated;
-    this.username = this.authService.getUsername;
+    // Initialize with default values - subscriptions will update them
+    this.authed = false;
+    this.username = 'Program!';
   }
 
   ngOnInit() {
+    // Sync auth state with localStorage on init
+    const hasToken = !!localStorage.getItem('pldyn-jfToken');
+    if (!hasToken && this.authService.isAuthenticated) {
+      // Token was removed but authService still thinks user is authenticated
+      this.authService.logout();
+    }
+
+    // Subscribe to auth state changes
     this.authService.authState$.subscribe( (authed: boolean) => {
       this.authed = authed;
     });
@@ -25,10 +35,15 @@ export class NavigationComponent {
     this.authService.uname$.subscribe( (uname: string) => {
       this.username = uname;
     });
+
+    // Set initial state from observables
+    this.authed = this.authService.isAuthenticated;
+    this.username = this.authService.getUsername;
   }
 
   logout() {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   isLoginPage(): boolean {

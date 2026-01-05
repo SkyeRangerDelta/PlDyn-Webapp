@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { LoginComponent } from './login.component';
 import { MaterialModule } from '../material_module';
@@ -15,7 +17,18 @@ describe('LoginComponent', () => {
       ],
       imports: [
         MaterialModule,
-        HttpClientModule
+        HttpClientModule,
+        RouterTestingModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {}
+            }
+          }
+        }
       ]
     })
     .compileComponents();

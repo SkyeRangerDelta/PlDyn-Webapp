@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --watch main.ts",
+    "dev": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --allow-run --watch api/main.ts",
     "start": "cd webapp && npx ng serve --proxy-config proxy.conf.json",
     "test": "cd webapp && npx ng test --browsers ChromeHeadless --code-coverage true --watch false"
   },

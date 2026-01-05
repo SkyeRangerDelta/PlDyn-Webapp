@@ -29,23 +29,28 @@ export function ensureFolderExists( parentPath: string, folderName: string ) {
  * cleanTempFolder - Cleans and removes excess data from the temp folder
  */
 export function cleanTempFolders() {
-  const rootTempPath = `${ Deno.cwd() }/temp`;
   const tempPath = new URL( `file://${ Deno.cwd() }/temp/audio-uploads` );
 
-  let tempFolder;
-
   try {
-    tempFolder = Deno.readDirSync( tempPath );
-  } catch (e) {
-    ensureFolderExists( rootTempPath, 'audio-uploads' );
-  }
 
-  if ( !tempFolder ) {
-    return;
-  }
+    let tempFolder;
 
-  for ( const entry of tempFolder ) {
-    const entryPath = new URL( `${tempPath}/${entry.name}` );
+    try {
+      tempFolder = Deno.readDirSync( tempPath );
+    }
+    catch {
+      console.log( 'Temp folder does not exist, creating ', tempPath.href );
+      Deno.mkdirSync( tempPath, { recursive: true } );
+      return;
+    }
+
+    if ( !tempFolder ) {
+      console.log( 'Temp folder is empty:', tempPath );
+      return;
+    }
+
+    for ( const entry of tempFolder ) {
+      const entryPath = new URL( `${tempPath}/${entry.name}` );
 
     try {
       Deno.removeSync( entryPath, { recursive: true } );
@@ -55,5 +60,23 @@ export function cleanTempFolders() {
     catch {
       console.error( 'Error removing temp file:', entryPath );
     }
+  }
+}
+
+/**
+ * Check if ffmpeg is available in the system PATH
+ * @returns Promise<boolean> - true if ffmpeg is available, false otherwise
+ */
+export async function checkFfmpegAvailable(): Promise<boolean> {
+  try {
+    const command = new Deno.Command('ffmpeg', {
+      args: ['-version'],
+      stdout: 'null',
+      stderr: 'null'
+    });
+    const { code } = await command.output();
+    return code === 0;
+  } catch {
+    return false;
   }
 }

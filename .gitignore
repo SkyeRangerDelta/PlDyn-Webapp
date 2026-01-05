@@ -3,3 +3,4 @@ api/.env
 
 # Temp data
 temp
+/.claude/
