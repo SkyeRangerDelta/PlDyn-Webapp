@@ -1,5 +1,5 @@
-import { Router } from 'https://deno.land/x/oak/mod.ts';
-import { parseFile, selectCover } from 'npm:music-metadata@10.7.0';
+import { Router } from '@oak/oak';
+import { parseFile, selectCover } from 'music-metadata';
 
 import { ensureFolderExists } from '../../../Utilities/IOUtilities.ts';
 import { AudioFile, AudioUploadResponse } from '../../../Types/API_ObjectTypes.ts';

@@ -1,4 +1,4 @@
-import { Router } from '@oak/oak/router';
+import { Router } from '@oak/oak';
 
 import { ensureFolderExists, checkFfmpegAvailable } from "../../../Utilities/IOUtilities.ts";
 import { writeMetadataToFile } from "../../../Utilities/MetadataWriter.ts";

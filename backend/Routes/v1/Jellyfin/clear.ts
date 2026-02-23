@@ -1,4 +1,4 @@
-import { Router } from 'https://deno.land/x/oak/mod.ts';
+import { Router } from '@oak/oak';
 
 import { DeleteResponse } from "../../../Types/API_ObjectTypes.ts";
 
