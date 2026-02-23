@@ -1,4 +1,4 @@
-import { IPicture } from "npm:music-metadata@10.7.0/lib/type.d.ts";
+import { IPicture } from "music-metadata";
 
 export interface JellyfinAuthenticateRequest {
   status: number;
@@ -31,6 +31,24 @@ export interface AudioFile {
   track: number;
   albumArtist: string;
   composer: string[];
+  discNumber: number;
+  cover: {
+    format: string | null;
+    data: string | null;
+  }
+}
+
+export interface RawAudioFile {
+  filePath: string;
+  fileName: string;
+  title: string;
+  artist: string;
+  album: string;
+  genre: string | string[];
+  year: number;
+  track: number;
+  albumArtist: string;
+  composer: string | string[];
   discNumber: number;
   cover: {
     format: string | null;

@@ -2,7 +2,12 @@ import { Router } from '@oak/oak';
 
 import { ensureFolderExists, checkFfmpegAvailable } from "../../../Utilities/IOUtilities.ts";
 import { writeMetadataToFile } from "../../../Utilities/MetadataWriter.ts";
-import { AudioFile, FinalizeUploadResponse, FileProcessingError } from "../../../Types/API_ObjectTypes.ts";
+import {
+  AudioFile,
+  FinalizeUploadResponse,
+  FileProcessingError,
+  RawAudioFile
+} from "../../../Types/API_ObjectTypes.ts";
 
 const router = new Router();
 
@@ -22,7 +27,22 @@ router.post('/finalize', async (ctx) => {
 
   // Parse request body
   const body = await ctx.request.body.json();
-  const songs: AudioFile[] = body.songs;
+  const songs = body.songs;
+
+  // Normalize songs data - convert string genre/composer to arrays
+  const normalizedSongs: AudioFile[] = songs.map((song: RawAudioFile) => ({
+    ...song,
+    genre: Array.isArray(song.genre)
+      ? song.genre
+      : typeof song.genre === 'string'
+        ? song.genre.split(',').map(g => g.trim()).filter(g => g.length > 0)
+        : [],
+    composer: Array.isArray(song.composer)
+      ? song.composer
+      : typeof song.composer === 'string'
+        ? song.composer.split(',').map(c => c.trim()).filter(c => c.length > 0)
+        : []
+  }));
 
   if (!songs || !Array.isArray(songs) || songs.length === 0) {
     ctx.response.status = 400;
@@ -57,28 +77,13 @@ router.post('/finalize', async (ctx) => {
     ctx.response.status = 500;
     ctx.response.body = {
       status: 500,
-      message: `Failed to create library directory: ${error.message}`,
+      message: `Failed to create library directory: ${(error as Error).message}`,
       error: true,
       processedCount: 0,
       failedFiles: []
     } as FinalizeUploadResponse;
     return;
   }
-
-  // Normalize songs data - convert string genre/composer to arrays
-  const normalizedSongs = songs.map(song => ({
-    ...song,
-    genre: Array.isArray(song.genre)
-      ? song.genre
-      : typeof song.genre === 'string'
-        ? song.genre.split(',').map(g => g.trim()).filter(g => g.length > 0)
-        : [],
-    composer: Array.isArray(song.composer)
-      ? song.composer
-      : typeof song.composer === 'string'
-        ? song.composer.split(',').map(c => c.trim()).filter(c => c.length > 0)
-        : []
-  }));
 
   // Process each song
   const tempDir = `${Deno.cwd()}/temp/audio-uploads`;
@@ -92,20 +97,20 @@ router.post('/finalize', async (ctx) => {
       processedCount++;
       console.log(`Processed ${processedCount}/${normalizedSongs.length}: ${song.fileName}`);
     } catch (error) {
-      console.error(`Failed to process ${song.fileName}:`, error.message);
+      console.error(`Failed to process ${song.fileName}:`, (error as Error).message);
 
       // Determine error type
       let errorType: 'metadata_write' | 'file_move' | 'ffmpeg_not_found' = 'metadata_write';
-      if (error.message.includes('ffmpeg')) {
+      if ((error as Error).message.includes('ffmpeg')) {
         errorType = 'metadata_write';
-      } else if (error.message.includes('move') || error.message.includes('rename')) {
+      } else if ((error as Error).message.includes('move') || (error as Error).message.includes('rename')) {
         errorType = 'file_move';
       }
 
       failedFiles.push({
         fileName: song.fileName,
         errorType: errorType,
-        errorMessage: error.message
+        errorMessage: (error as Error).message
       });
     }
   }
