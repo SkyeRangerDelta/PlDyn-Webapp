@@ -8,7 +8,7 @@ import {
   DB_UserSettingRecord,
   NewUserRes,
   UpdatedUserRes
-} from "../../../../webapp/src/app/customTypes.ts";
+} from "../../../../frontend/src/app/customTypes.ts";
 
 const router = new Router;
 

@@ -1,4 +1,4 @@
-// api/Routes/JellyfinRouter.ts
+// backend/Routes/JellyfinRouter.ts
 import { Router } from 'https://deno.land/x/oak/mod.ts';
 import { getRouter } from "./RouteLoader.ts";
 

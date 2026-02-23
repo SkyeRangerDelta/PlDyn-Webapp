@@ -8,16 +8,16 @@ import { JellyfinRouter } from "./v1/JellyfinRouter.ts";
 const MainRouter = new Router();
 
 MainRouter.use( authMiddleware );
-MainRouter.use('/api/v1/jellyfin', JellyfinRouter.routes(), JellyfinRouter.allowedMethods());
-MainRouter.use('/api/v1', APIRouter.routes(), APIRouter.allowedMethods());
+MainRouter.use('/backend/v1/jellyfin', JellyfinRouter.routes(), JellyfinRouter.allowedMethods());
+MainRouter.use('/backend/v1', APIRouter.routes(), APIRouter.allowedMethods());
 
 export { MainRouter };
 
 async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<unknown> ) {
   const excludedRoutes = [
-    '/api/v1/jellyfin/authenticate',
-    '/api/v1/jellyfin/status',
-    '/api/v1/status'
+    '/backend/v1/jellyfin/authenticate',
+    '/backend/v1/jellyfin/status',
+    '/backend/v1/status'
   ];
 
   if ( excludedRoutes.includes( ctx.request.url.pathname ) ) {

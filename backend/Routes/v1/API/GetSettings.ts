@@ -1,6 +1,6 @@
 import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
-import { ClientSettingsResult } from "../../../../webapp/src/app/customTypes.ts";
+import { ClientSettingsResult } from "../../../../frontend/src/app/customTypes.ts";
 
 const router = new Router();
 

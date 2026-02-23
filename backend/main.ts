@@ -53,7 +53,7 @@ app.use( async (ctx, next) => {
 app.use( MainRouter.routes(), MainRouter.allowedMethods() );
 
 app.use( async (ctx, next) => {
-  const indexPath = join( Deno.cwd(), 'webapp/dist/webapp/browser' );
+  const indexPath = join( Deno.cwd(), 'frontend/dist/frontend/browser' );
 
   try {
     await ctx.send({
