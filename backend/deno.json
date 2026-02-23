@@ -6,9 +6,10 @@
   },
   "imports": {
     "@db/mongo": "jsr:@db/mongo@^0.34.0",
-    "@oak/oak": "jsr:@oak/oak@^17.1.4",
+    "@oak/oak": "jsr:@oak/oak@^17.2.0",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.5",
-    "@std/path": "jsr:@std/path@^1.1.0"
+    "@std/path": "jsr:@std/path@^1.1.0",
+    "jose": "npm:jose@6.1.3"
   },
   "compilerOptions": {
     "strict": true
