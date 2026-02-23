@@ -45,11 +45,11 @@ jobs:
 
       - name: Test
         run: |
-          cd webapp
+          cd frontend
           npm i
           npm run test:ci
 
       - name: Build
         run: |
-          cd webapp
+          cd frontend
           npm run build:ci
