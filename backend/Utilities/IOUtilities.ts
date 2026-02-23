@@ -50,16 +50,19 @@ export function cleanTempFolders() {
     }
 
     for ( const entry of tempFolder ) {
-      const entryPath = new URL( `${tempPath}/${entry.name}` );
+      const entryPath = new URL( `${ tempPath }/${ entry.name }` );
 
-    try {
-      Deno.removeSync( entryPath, { recursive: true } );
+      try {
+        Deno.removeSync( entryPath, { recursive: true } );
 
-      console.log( 'Removed temp file:', entry.name );
+        console.log( 'Removed temp file:', entry.name );
+      } catch {
+        console.error( 'Error removing temp file:', entryPath );
+      }
     }
-    catch {
-      console.error( 'Error removing temp file:', entryPath );
-    }
+  }
+  catch {
+    console.error( 'Error reading temp folder:', tempPath );
   }
 }
 
