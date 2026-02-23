@@ -1,4 +1,4 @@
-import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
+import { Router, RouterContext } from '@oak/oak';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
 import { ClientSettingsResult } from "../../../../frontend/src/app/customTypes.ts";
 

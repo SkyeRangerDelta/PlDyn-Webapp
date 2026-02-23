@@ -1,5 +1,5 @@
-import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
-import * as jose from 'https://deno.land/x/jose@v5.9.6/index.ts'
+import { Router, RouterContext } from '@oak/oak';
+import * as jose from 'jose'
 
 const router = new Router();
 
