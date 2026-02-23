@@ -1,5 +1,5 @@
 # Environment
-api/.env
+backend/.env
 
 # Temp data
 temp
