@@ -1,6 +1,6 @@
 // Main router handler
-import { Router, RouterContext } from 'https://deno.land/x/oak/mod.ts';
-import * as jose from 'https://deno.land/x/jose@v5.9.6/index.ts'
+import { Router, RouterContext } from '@oak/oak';
+import * as jose from 'jose';
 
 import { APIRouter } from "./v1/APIRouter.ts";
 import { JellyfinRouter } from "./v1/JellyfinRouter.ts";
@@ -8,8 +8,8 @@ import { JellyfinRouter } from "./v1/JellyfinRouter.ts";
 const MainRouter = new Router();
 
 MainRouter.use( authMiddleware );
-MainRouter.use('/backend/v1/jellyfin', JellyfinRouter.routes(), JellyfinRouter.allowedMethods());
-MainRouter.use('/backend/v1', APIRouter.routes(), APIRouter.allowedMethods());
+MainRouter.use( '/backend/v1/jellyfin', JellyfinRouter.routes(), JellyfinRouter.allowedMethods());
+MainRouter.use( '/backend/v1', APIRouter.routes(), APIRouter.allowedMethods());
 
 export { MainRouter };
 

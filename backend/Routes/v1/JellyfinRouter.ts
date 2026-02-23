@@ -1,5 +1,5 @@
 // backend/Routes/JellyfinRouter.ts
-import { Router } from 'https://deno.land/x/oak/mod.ts';
+import { Router } from '@oak/oak';
 import { getRouter } from "./RouteLoader.ts";
 
 const JellyfinRouter: Router = await getRouter('Jellyfin');
