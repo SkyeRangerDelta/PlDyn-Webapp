@@ -4,3 +4,4 @@ backend/.env
 # Temp data
 temp
 /.claude/
+CLAUDE.md
