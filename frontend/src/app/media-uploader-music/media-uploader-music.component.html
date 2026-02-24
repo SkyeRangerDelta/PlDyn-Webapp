@@ -3,12 +3,10 @@
     <div class="add-content-cols">
       <label for="file-uploader" class="custom-uploader">
         @if (isLoading) {
-          <span class="loading-icon"></span>
+          <i class="fa-solid fa-spinner fa-spin"></i>
         }
         @if (!isLoading) {
-          <span>
-            Add Songs
-          </span>
+          <span><i class="fa-solid fa-music"></i> Add Songs</span>
         }
       </label>
       <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
@@ -18,7 +16,7 @@
     </div>
 
     <div class="add-content-cols">
-      <button id="submit-btn" class="upload-btn" (click)="onSubmit()" [disabled]="!isFormValid()">Upload</button>
+      <button id="submit-btn" class="upload-btn" (click)="onSubmit()" [disabled]="!isFormValid()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
     </div>
   </div>
   <table>
@@ -71,7 +69,11 @@
 
         @if (row.type === 'song') {
           <tr class="song-row">
-            <td><button (click)="removeSong(row.song!)">X</button></td>
+            <td>
+              <button class="remove-btn" (click)="removeSong(row.song!)" title="Remove song">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
             <td><input [(ngModel)]="row.song!.title" required class="song-field-input" /></td>
             <td><input [(ngModel)]="row.song!.artist" required class="song-field-input" /></td>
             <td><input [(ngModel)]="row.song!.album"

@@ -64,6 +64,22 @@
       cursor: not-allowed;
     }
   }
+
+  .remove-btn {
+    padding: 0.35rem 0.6rem;
+    background-color: transparent;
+    color: colors.$primary-color;
+    border: 1px solid colors.$primary-color;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    line-height: 1;
+
+    &:hover {
+      background-color: rgba(#cc3333, 0.2);
+      border-color: #cc3333;
+      color: #ff8080;
+    }
+  }
 }
 
 .custom-uploader {
@@ -80,14 +96,8 @@
     background-color: colors.$button-hover;
   }
 
-  .loading-icon {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid colors.$text-color;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  .fa-spinner {
+    font-size: 1rem;
   }
 }
 
@@ -156,7 +166,7 @@ input[type="file"] {
 
     .progress-bar {
       height: 100%;
-      background: colors.$button-background;
+      background: colors.$primary-color;
       transition: width 0.3s ease;
       border-radius: 4px;
     }
@@ -216,7 +226,3 @@ input[type="file"] {
   background-color: color.adjust(colors.$row-background, $lightness: 5%);
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
