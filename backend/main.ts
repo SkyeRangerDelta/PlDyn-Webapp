@@ -28,6 +28,16 @@ const Mongo = new DBHandler();
 // Ready I/O
 cleanTempFolders();
 
+// Check ffmpeg availability
+try {
+  const ffmpeg = new Deno.Command('ffmpeg', { args: ['-version'], stdout: 'piped', stderr: 'piped' });
+  const { stdout } = await ffmpeg.output();
+  const firstLine = new TextDecoder().decode(stdout).split('\n')[0];
+  console.log(`ffmpeg detected: ${firstLine}`);
+} catch {
+  console.warn('%c⚠ WARNING: ffmpeg not found on PATH — audio processing will fail', 'color: yellow; font-weight: bold');
+}
+
 // Check JWT token
 let jwtSecret = Deno.env.get('JWT_SECRET');
 if ( !jwtSecret ) {
