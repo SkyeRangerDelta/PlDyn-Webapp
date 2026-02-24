@@ -6,5 +6,5 @@ backend/.env
 temp
 
 # AI Toolings
-/.claude/
+.claude/
 CLAUDE.md
