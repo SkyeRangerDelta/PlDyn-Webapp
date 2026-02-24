@@ -36,7 +36,7 @@ export class MediaService {
           // This error handler is for other errors (500, network issues, etc.)
           return of({
             status: error.status || 500,
-            message: error.message || 'Internal server error',
+            message: error.error?.message || error.message || 'Internal server error',
             error: true
           } as AudioUploadResponse );
         })
@@ -83,7 +83,7 @@ export class MediaService {
           // This error handler is for other errors (500, network issues, etc.)
           return of({
             status: error.status || 500,
-            message: error.message || 'Internal server error',
+            message: error.error?.message || error.message || 'Internal server error',
             error: true
           } as DeleteResponse );
         })
@@ -114,7 +114,7 @@ export class MediaService {
         // This error handler is for other errors (500, network issues, etc.)
         return of({
           status: error.status || 500,
-          message: error.message || 'Internal server error',
+          message: error.error?.message || error.message || 'Internal server error',
           error: true,
           processedCount: 0,
           failedFiles: []
