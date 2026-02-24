@@ -8,10 +8,10 @@ import { ClientContributionResult, ClientSettingsResult } from '../customTypes';
 })
 export class SettingsService {
 
-  private settingsEndpoint = '/backend/v1/GetSettings';
-  private updateSettingsEndpoint = '/backend/v1/UpdateSettings';
-  private contributionsEndpoint = '/backend/v1/GetRecentContributions';
-  private updateContributionsEndpoint = '/backend/v1/UpdateContributions';
+  private settingsEndpoint = '/api/v1/GetSettings';
+  private updateSettingsEndpoint = '/api/v1/UpdateSettings';
+  private contributionsEndpoint = '/api/v1/GetRecentContributions';
+  private updateContributionsEndpoint = '/api/v1/UpdateContributions';
 
   constructor( private httpClient: HttpClient ) { }
 

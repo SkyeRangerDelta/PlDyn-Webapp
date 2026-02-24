@@ -15,9 +15,9 @@ import { AuthService } from '../services/auth.service';
 export class AuthInterceptor implements HttpInterceptor {
 
   private excludedUrls = [
-    '/backend/v1/jellyfin/authenticate',
-    '/backend/v1/jellyfin/status',
-    '/backend/v1/status'
+    '/api/v1/jellyfin/authenticate',
+    '/api/v1/jellyfin/status',
+    '/api/v1/status'
   ];
 
   private authService: AuthService | null = null;

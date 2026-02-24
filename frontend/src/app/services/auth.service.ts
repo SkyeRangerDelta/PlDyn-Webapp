@@ -8,7 +8,7 @@ import { AuthResult } from '../customTypes';
 })
 export class AuthService {
 
-  private backendHost = '/backend/v1/jellyfin/authenticate';
+  private backendHost = '/api/v1/jellyfin/authenticate';
   private authState = new BehaviorSubject<boolean>(this.isAuthenticated);
   authState$ = this.authState.asObservable();
 
