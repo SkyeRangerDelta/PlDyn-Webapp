@@ -54,6 +54,6 @@ export class MediaDashboardComponent {
 
   selectMediaType(ev: string) {
     localStorage.setItem('lastUsedEditor', ev);
-    console.log(ev);
+    console.log( `Set editor type to ${ ev }` );
   }
 }
