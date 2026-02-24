@@ -5,6 +5,18 @@
 import { AudioFile } from "../Types/API_ObjectTypes.ts";
 
 /**
+ * Strip characters that are invalid in Windows and Unix path components,
+ * collapse repeated whitespace, and trim trailing dots/spaces.
+ */
+function sanitizePathComponent(name: string): string {
+  return name
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[. ]+$/, '');
+}
+
+/**
  * Write cover art image to temporary file
  * @param cover - Cover art object with format and base64 data
  * @param tempDir - Temporary directory path
@@ -33,7 +45,7 @@ export async function writeCoverArt(
   const coverFileName = `cover_${Date.now()}.${ext}`;
   const coverPath = `${tempDir}/${coverFileName}`;
 
-  Deno.writeFileSync(new URL(`file://${coverPath}`), imageData);
+  Deno.writeFileSync(coverPath, imageData);
 
   return coverPath;
 }
@@ -107,10 +119,10 @@ export function buildFfmpegCommand(
 }
 
 /**
- * Write metadata to audio file and move it to library
- * @param song - Audio file with metadata
- * @param tempDir - Temporary directory path
- * @param libraryDir - Library directory path
+ * Write metadata to audio file and move it to library.
+ *
+ * Output structure:
+ *   libraryDir/<AlbumArtist>/<Album> (<Year>)/<Track>. <Title>.<ext>
  */
 export async function writeMetadataToFile(
   song: AudioFile,
@@ -120,31 +132,31 @@ export async function writeMetadataToFile(
   // 1. Write cover art to temporary file
   const coverPath = await writeCoverArt(song.cover, tempDir);
 
-  // 2. Define file paths
+  // 2. Build destination directory: Artist / Album (Year)
+  const ext = song.fileName.split('.').pop()?.toLowerCase() || 'mp3';
+  const artistDir = `${libraryDir}/${sanitizePathComponent(song.albumArtist || song.artist)}`;
+  const albumDir  = `${artistDir}/${sanitizePathComponent(song.album)} (${song.year})`;
+
+  try {
+    Deno.mkdirSync(albumDir, { recursive: true });
+  } catch (error) {
+    if (!(error instanceof Deno.errors.AlreadyExists)) {
+      throw new Error(`Failed to create directory structure: ${(error as Error).message}`);
+    }
+  }
+
+  // 3. Build output filename: "01. Title.ext"
+  const trackNum = String(song.track).padStart(2, '0');
+  const outputFileName = `${trackNum}. ${sanitizePathComponent(song.title)}.${ext}`;
+  const finalOutputPath = `${albumDir}/${outputFileName}`;
+
+  // 4. Define temp paths
   const inputPath = `${tempDir}/${song.fileName}`;
   const tempOutputPath = `${tempDir}/processed_${song.fileName}`;
 
-  // Handle filename conflicts in library
-  let finalOutputPath = `${libraryDir}/${song.fileName}`;
-  try {
-    const fileExists = Deno.statSync(new URL(`file://${finalOutputPath}`));
-    if (fileExists) {
-      // File exists, append timestamp
-      const timestamp = Date.now();
-      const nameParts = song.fileName.split('.');
-      const ext = nameParts.pop();
-      const baseName = nameParts.join('.');
-      finalOutputPath = `${libraryDir}/${baseName}_${timestamp}.${ext}`;
-      console.warn(`File conflict: renamed to ${baseName}_${timestamp}.${ext}`);
-    }
-  } catch {
-    // File doesn't exist, continue with original path
-  }
-
-  // 3. Build ffmpeg command
+  // 5. Build and execute ffmpeg command
   const ffmpegArgs = buildFfmpegCommand(song, inputPath, tempOutputPath, coverPath);
 
-  // 4. Execute ffmpeg
   try {
     const command = new Deno.Command('ffmpeg', {
       args: ffmpegArgs,
@@ -159,37 +171,24 @@ export async function writeMetadataToFile(
       throw new Error(`ffmpeg failed: ${errorMessage}`);
     }
   } catch (error) {
-    // Clean up cover art before rethrowing
-    try {
-      Deno.removeSync(new URL(`file://${coverPath}`));
-    } catch {
-      // Ignore cleanup errors
-    }
+    try { Deno.removeSync(coverPath); } catch { /* ignore */ }
     throw error;
   }
 
-  // 5. Move processed file to library
+  // 6. Move processed file to library
   try {
-    Deno.renameSync(
-      new URL(`file://${tempOutputPath}`),
-      new URL(`file://${finalOutputPath}`)
-    );
+    Deno.renameSync(tempOutputPath, finalOutputPath);
   } catch (error) {
-    throw new Error(`Failed to move file to library: ${error.message}`);
+    throw new Error(`Failed to move file to library: ${(error as Error).message}`);
   }
 
-  // 6. Clean up temporary files
-  try {
-    Deno.removeSync(new URL(`file://${inputPath}`));
-  } catch (error) {
-    console.warn(`Failed to remove temp input file: ${error.message}`);
+  // 7. Clean up temporary files
+  try { Deno.removeSync(inputPath); } catch (error) {
+    console.warn(`Failed to remove temp input file: ${(error as Error).message}`);
+  }
+  try { Deno.removeSync(coverPath); } catch (error) {
+    console.warn(`Failed to remove temp cover file: ${(error as Error).message}`);
   }
 
-  try {
-    Deno.removeSync(new URL(`file://${coverPath}`));
-  } catch (error) {
-    console.warn(`Failed to remove temp cover file: ${error.message}`);
-  }
-
-  console.log(`Successfully processed: ${song.fileName}`);
+  console.log(`Successfully processed: ${artistDir.split('/').pop()}/${albumDir.split('/').pop()}/${outputFileName}`);
 }
