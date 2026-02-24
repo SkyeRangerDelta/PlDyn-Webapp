@@ -1,0 +1,14 @@
+services:
+  pldyn:
+    build: .
+    image: pldyn-webapp:latest
+    container_name: pldyn-webapp
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-4200}:4200"
+    env_file:
+      - backend/.env
+    environment:
+      - APP_HOST=0.0.0.0        # override .env — must bind 0.0.0.0 inside container
+    volumes:
+      - ${MUSIC_LIBRARY_PATH:-./library/music}:/app/library/music
