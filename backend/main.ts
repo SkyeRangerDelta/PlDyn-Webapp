@@ -13,6 +13,15 @@ import { cleanTempFolders } from "./Utilities/IOUtilities.ts";
 // Env
 await load( { export: true } );
 
+// Validate required environment variables
+const REQUIRED_ENV_VARS = ['MONGO_URI', 'MONGO_DB_NAME'];
+const missingVars = REQUIRED_ENV_VARS.filter(v => !Deno.env.get(v));
+if (missingVars.length > 0) {
+  console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
+  console.error('Copy backend/.env.example to backend/.env and fill in the values.');
+  Deno.exit(1);
+}
+
 // Globals
 // Force Oak to use native Deno HTTP server instead of Node.js adapter
 const app = new Application({
@@ -27,6 +36,16 @@ const Mongo = new DBHandler();
 
 // Ready I/O
 cleanTempFolders();
+
+// Check write access to library directory
+try {
+  const canary = `${Deno.cwd()}/library/music/.write-test`;
+  Deno.writeTextFileSync(canary, '');
+  Deno.removeSync(canary);
+  console.log('Write access to library/music: OK');
+} catch {
+  console.warn('%c⚠ WARNING: No write access to library/music — uploaded audio will not be saved', 'color: yellow; font-weight: bold');
+}
 
 // Check ffmpeg availability
 try {
