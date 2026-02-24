@@ -10,9 +10,6 @@
         }
       </label>
       <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
-      @if (uploadErrorMessage) {
-        <span class="uploadError-message">{{ uploadErrorMessage }}</span>
-      }
     </div>
 
     <div class="add-content-cols">

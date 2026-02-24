@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ContributionTile } from '../customTypes';
 import { SettingsService } from '../services/settings.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
     selector: 'app-media-dashboard',
@@ -24,7 +25,8 @@ export class MediaDashboardComponent {
   }
 
   constructor(
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private notificationService: NotificationService
   ) {
     this.lastUsedEditor = localStorage.getItem('lastUsedEditor') || 'Music';
 
@@ -45,9 +47,8 @@ export class MediaDashboardComponent {
       },
       error: (error) => {
         console.error( 'Error fetching contributions:', error );
+        this.notificationService.showError('Failed to load contributions.');
         this.contributions = [];
-
-        // Note: Auth errors (401) are handled by AuthInterceptor
       }
     });
   }

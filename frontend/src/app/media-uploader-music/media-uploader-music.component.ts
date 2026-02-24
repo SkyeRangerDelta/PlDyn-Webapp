@@ -4,6 +4,7 @@ import { HttpEventType } from '@angular/common/http';
 import { AudioUploadResponse, DeleteResponse, Song, AlbumGroup, TableRow } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
     selector: 'app-media-uploader-music',
@@ -15,8 +16,6 @@ export class MediaUploaderMusicComponent implements OnInit {
   musicForm: FormGroup;
   selectedFiles: File[] = [];
   songs: Song[] = [];
-
-  uploadErrorMessage = '';
 
   curTrackNumber = 1;
 
@@ -34,7 +33,8 @@ export class MediaUploaderMusicComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private MediaService: MediaService
+    private MediaService: MediaService,
+    private notificationService: NotificationService
   ) {
     // Auth check now handled by AuthGuard on the route
 
@@ -72,12 +72,9 @@ export class MediaUploaderMusicComponent implements OnInit {
 
     if (!input.files || input.files.length === 0) {
       console.log('No files selected');
-      this.uploadErrorMessage = '';
       return;
     }
 
-    // Clear any previous error messages when starting a new upload
-    this.uploadErrorMessage = '';
     this.isLoading = true;
     this.selectedFiles = Array.from( input.files );
 
@@ -89,7 +86,7 @@ export class MediaUploaderMusicComponent implements OnInit {
     if (!this.selectedFiles || this.selectedFiles.length === 0) {
       console.warn('Upload attempted with no files selected');
       this.isLoading = false;
-      this.uploadErrorMessage = 'No files selected for upload.';
+      this.notificationService.showError('No files selected for upload.');
       return;
     }
 
@@ -117,7 +114,7 @@ export class MediaUploaderMusicComponent implements OnInit {
         this.uploadProgress.uploadedCount++;
       } catch (error: any) {
         console.error(`Error uploading ${file.name}:`, error);
-        this.uploadErrorMessage = `Failed to upload ${file.name}: ${error.message || 'Unknown error'}`;
+        this.notificationService.showError(`Failed to upload ${file.name}: ${error.message || 'Unknown error'}`);
         // Continue with next file instead of stopping
       }
     }
@@ -142,15 +139,12 @@ export class MediaUploaderMusicComponent implements OnInit {
             const data = event.body as AudioUploadResponse;
 
             if (!data.error && data.uploadData && data.uploadData.length > 0) {
-              // Clear any previous error messages on successful upload
-              this.uploadErrorMessage = '';
-
               // Add the uploaded song to the table
               this.addSongsToTable(data.uploadData);
               resolve();
             } else {
               console.error('Error in response data:', data.message, data.status);
-              this.uploadErrorMessage = data.message;
+              this.notificationService.showError(data.message);
               reject(new Error(data.message));
             }
           }
@@ -158,7 +152,7 @@ export class MediaUploaderMusicComponent implements OnInit {
         error: (error) => {
           console.error('HTTP error during upload:', error);
           // Note: Auth errors (401) are now handled by AuthInterceptor
-          this.uploadErrorMessage = error.message || 'Internal server error';
+          this.notificationService.showError(error.message || 'Internal server error');
           reject(error);
         }
       });
@@ -185,16 +179,14 @@ export class MediaUploaderMusicComponent implements OnInit {
       next: (data: DeleteResponse) => {
         if ( data.error ) {
           console.error( 'Error deleting media:', data.message, data.status );
-          this.uploadErrorMessage = `Failed to delete ${song.fileName}: ${data.message}`;
+          this.notificationService.showError(`Failed to delete ${song.fileName}: ${data.message}`);
         } else {
           console.log( `Successfully deleted ${song.fileName}` );
-          // Clear error message on successful deletion
-          this.uploadErrorMessage = '';
         }
       },
       error: (error) => {
         console.error( 'Delete subscription error:', error );
-        this.uploadErrorMessage = `Failed to delete ${song.fileName}. Please try again.`;
+        this.notificationService.showError(`Failed to delete ${song.fileName}. Please try again.`);
 
         // Re-add the song to the list since deletion failed
         this.songs.splice( index, 0, song );
@@ -302,7 +294,6 @@ export class MediaUploaderMusicComponent implements OnInit {
     if (!this.isFormValid()) return;
 
     this.isLoading = true;
-    this.uploadErrorMessage = '';
 
     this.MediaService.finalizeUpload(this.songs).subscribe({
       next: (response) => {
@@ -311,20 +302,22 @@ export class MediaUploaderMusicComponent implements OnInit {
         if (response.status === 200) {
           // Complete success - clear all songs
           this.songs = [];
-          console.log('All files uploaded successfully');
+          this.notificationService.showSuccess('All files uploaded successfully');
         } else if (response.status === 207) {
           // Partial success - show error and remove successful files
-          this.uploadErrorMessage = `${response.processedCount} files uploaded. ${response.failedFiles.length} failed.`;
+          this.notificationService.showError(`${response.processedCount} files uploaded. ${response.failedFiles.length} failed.`);
 
           // Keep only failed files in table
           this.songs = this.songs.filter(song =>
             response.failedFiles.some(f => f.fileName === song.fileName)
           );
+        } else if (response.error) {
+          this.notificationService.showError(response.message || 'Upload failed. Please try again.');
         }
       },
       error: (error) => {
         this.isLoading = false;
-        this.uploadErrorMessage = error.message || 'Upload failed. Please try again.';
+        this.notificationService.showError(error.message || 'Upload failed. Please try again.');
       }
     });
   }
