@@ -1,7 +1,10 @@
 # Environment
 backend/.env
+/backend/library/
 
 # Temp data
 temp
+
+# AI Toolings
 /.claude/
 CLAUDE.md
