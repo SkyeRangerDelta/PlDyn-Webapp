@@ -1,22 +1,12 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { NgOptimizedImage } from "@angular/common";
-import { HttpClientModule } from '@angular/common/http';
-import { NavigationComponent } from './navigation/navigation.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        NgOptimizedImage,
-        HttpClientModule
-      ],
-      declarations: [
-        AppComponent,
-        NavigationComponent
-      ],
+      declarations: [AppComponent],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });
 

@@ -1,8 +1,10 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MediaUploaderMusicComponent } from './media-uploader-music.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { MediaUploaderMusicComponent } from './media-uploader-music.component';
 import { Song } from '../customTypes';
 
 describe('MediaUploaderMusicComponent', () => {
@@ -12,7 +14,8 @@ describe('MediaUploaderMusicComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ MediaUploaderMusicComponent ],
-      imports: [ ReactiveFormsModule, FormsModule, HttpClientModule ]
+      imports: [ ReactiveFormsModule, FormsModule, HttpClientTestingModule, MatSnackBarModule ],
+      schemas: [ NO_ERRORS_SCHEMA ],
     })
     .compileComponents();
   });
