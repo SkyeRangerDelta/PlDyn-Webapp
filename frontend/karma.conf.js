@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const BRAVE_WIN = 'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe';
 
 module.exports = function (config) {
@@ -10,6 +11,31 @@ module.exports = function (config) {
 
   config.set({
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    // esbuild rewrites CSS url('assets/images/bg/8bit.gif') to url('./media/8bit.gif'),
+    // but @angular-devkit/build-angular replaces the Karma files array so the media/
+    // directory is never registered with the file server. A beforeMiddleware plugin
+    // intercepts those requests before Karma's file server and serves them directly
+    // from the source asset path, bypassing the files list entirely.
+    plugins: [
+      'karma-*',
+      {
+        'middleware:serveMediaAssets': ['factory', function () {
+          return function (req, res, next) {
+            if (req.url.startsWith('/base/media/')) {
+              const filename = req.url.slice('/base/media/'.length);
+              const filePath = path.join(__dirname, 'src/assets/images/bg', filename);
+              if (fs.existsSync(filePath)) {
+                res.setHeader('Content-Type', 'image/gif');
+                fs.createReadStream(filePath).pipe(res);
+                return;
+              }
+            }
+            next();
+          };
+        }],
+      },
+    ],
+    beforeMiddleware: ['serveMediaAssets'],
     customLaunchers: {
       BraveHeadless: {
         base: 'ChromeHeadless',

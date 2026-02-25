@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MediaDashboardComponent } from './media-dashboard.component';
 import { MaterialModule } from '../material_module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MediaDashboardComponent', () => {
   let component: MediaDashboardComponent;
@@ -13,7 +13,7 @@ describe('MediaDashboardComponent', () => {
       declarations: [MediaDashboardComponent],
       imports: [
         MaterialModule,
-        HttpClientModule
+        HttpClientTestingModule
       ]
     })
     .compileComponents();
