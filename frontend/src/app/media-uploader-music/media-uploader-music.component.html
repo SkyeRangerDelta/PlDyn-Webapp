@@ -83,8 +83,11 @@
             <td><input [(ngModel)]="row.song!.composer" class="song-field-input" /></td>
             <td><input [(ngModel)]="row.song!.discNumber" type="number" required class="song-field-input" /></td>
             <td>
-              @if (row.song!.cover.data) {
-                <img [src]="row.song!.cover.data" height="50" width="50" />
+              @if (row.song!.cover?.data) {
+                <img [src]="row.song!.cover!.data" height="50" width="50" />
+              }
+              @else {
+                <img ngSrc="assets/images/placeholder.png" width="50" height="50" alt="Cover" />
               }
             </td>
           </tr>

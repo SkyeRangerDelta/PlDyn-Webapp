@@ -242,7 +242,7 @@ export class MediaUploaderMusicComponent implements OnInit {
           songs: [],
           year: song.year,
           albumArtist: song.albumArtist,
-          cover: song.cover
+          cover: song.cover ?? null
         });
       }
       albumMap.get(albumName)!.songs.push(song);

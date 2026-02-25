@@ -72,7 +72,7 @@ export interface Song {
   albumArtist: string;
   composer: string[];
   discNumber: number;
-  cover: {
+  cover?: {
     format: string;
     data: string;
   }
