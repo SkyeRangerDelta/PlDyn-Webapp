@@ -31,6 +31,8 @@ export class MediaUploaderMusicComponent implements OnInit {
     hasUploaded: false  // Track if any uploads have occurred
   };
 
+  private readonly clickHandler = () => this.cleanupMenus();
+
   constructor(
     private fb: FormBuilder,
     private MediaService: MediaService,
@@ -53,11 +55,11 @@ export class MediaUploaderMusicComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    document.addEventListener( 'click', () => this.cleanupMenus() );
+    document.addEventListener( 'click', this.clickHandler );
   }
 
   ngOnDestroy(): void {
-    document.removeEventListener( 'click', () => this.cleanupMenus() );
+    document.removeEventListener( 'click', this.clickHandler );
   }
 
   cleanupMenus(): void {
