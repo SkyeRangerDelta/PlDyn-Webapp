@@ -9,9 +9,21 @@ module.exports = function (config) {
   }
 
   config.set({
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
     customLaunchers: {
       BraveHeadless: {
         base: 'ChromeHeadless',
+      },
+    },
+    client: {
+      jasmine: {
+        // Disable random spec ordering to produce a stable execution sequence.
+        // Angular 21's test isolation (jasmine-cleanup) has a race condition that
+        // causes 'describe is not defined' for whichever spec file is loaded
+        // synchronously during the cleanup phase. A fixed order keeps the
+        // problematic slot occupied by the same spec every run, making it
+        // easier to diagnose and work around.
+        random: false,
       },
     },
   });
