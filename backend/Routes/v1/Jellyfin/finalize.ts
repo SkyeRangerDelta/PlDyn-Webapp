@@ -2,6 +2,7 @@ import { Router } from '@oak/oak';
 
 import { ensureFolderExists, checkFfmpegAvailable } from "../../../Utilities/IOUtilities.ts";
 import { writeMetadataToFile } from "../../../Utilities/MetadataWriter.ts";
+import { triggerMusicLibraryRefresh, extractJellyfinToken } from "../../../Utilities/JellyfinLibrary.ts";
 import {
   AudioFile,
   FinalizeUploadResponse,
@@ -112,6 +113,21 @@ router.post('/finalize', async (ctx) => {
         errorType: errorType,
         errorMessage: (error as Error).message
       });
+    }
+  }
+
+  // Trigger Jellyfin library refresh if any files were processed
+  if (processedCount > 0) {
+    const rawToken = ctx.request.headers.get('Authorization')?.split(' ')[1];
+    const jellyfinToken = rawToken ? extractJellyfinToken(rawToken) : undefined;
+
+    if (jellyfinToken) {
+      const refresh = await triggerMusicLibraryRefresh(jellyfinToken);
+      if (!refresh.triggered) {
+        console.warn(`[Jellyfin] Library refresh skipped: ${refresh.reason}`);
+      }
+    } else {
+      console.warn('[Jellyfin] Library refresh skipped: could not extract Jellyfin token from request');
     }
   }
 
