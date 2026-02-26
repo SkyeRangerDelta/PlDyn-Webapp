@@ -8,7 +8,7 @@ import { join } from '@std/path';
 import { MainRouter } from "./Routes/MainRouter.ts";
 import { generateRandomString } from "./Utilities/Generators.ts";
 import { DBHandler } from "./Utilities/DBHandler.ts";
-import { cleanTempFolders } from "./Utilities/IOUtilities.ts";
+import { cleanTempFolders, startTempCleanupScheduler } from "./Utilities/IOUtilities.ts";
 
 // Env
 await load( { export: true } );
@@ -36,6 +36,7 @@ const Mongo = new DBHandler();
 
 // Ready I/O
 cleanTempFolders();
+startTempCleanupScheduler();
 
 // Check write access to library directory
 try {

@@ -66,6 +66,36 @@ export function cleanTempFolders() {
   }
 }
 
+const TEMP_FILE_MAX_AGE_MS = 2 * 60 * 60 * 1000;  // 2 hours
+const CLEANUP_INTERVAL_MS  = 30 * 60 * 1000;        // 30 minutes
+
+/**
+ * Starts a periodic scheduler that removes files from temp/audio-uploads
+ * older than 2 hours. Runs every 30 minutes.
+ */
+export function startTempCleanupScheduler(): void {
+  setInterval(() => {
+    const tempPath = `${Deno.cwd()}/temp/audio-uploads`;
+    const cutoff = Date.now() - TEMP_FILE_MAX_AGE_MS;
+
+    try {
+      for (const entry of Deno.readDirSync(tempPath)) {
+        if (!entry.isFile) continue;
+        const filePath = `${tempPath}/${entry.name}`;
+        try {
+          const { mtime } = Deno.statSync(filePath);
+          if (mtime && mtime.getTime() < cutoff) {
+            Deno.removeSync(filePath);
+            console.log(`[TempCleanup] Removed stale file: ${entry.name}`);
+          }
+        } catch { /* file may have been removed concurrently */ }
+      }
+    } catch (error) {
+      console.error('[TempCleanup] Error during scheduled cleanup:', error);
+    }
+  }, CLEANUP_INTERVAL_MS);
+}
+
 /**
  * Check if ffmpeg is available in the system PATH
  * @returns Promise<boolean> - true if ffmpeg is available, false otherwise

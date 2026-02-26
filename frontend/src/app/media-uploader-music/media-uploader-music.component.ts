@@ -184,6 +184,11 @@ export class MediaUploaderMusicComponent implements OnInit {
           this.notificationService.showError(`Failed to delete ${song.fileName}: ${data.message}`);
         } else {
           console.log( `Successfully deleted ${song.fileName}` );
+          this.uploadProgress.uploadedCount--;
+          this.uploadProgress.totalFiles--;
+          if (this.uploadProgress.totalFiles <= 0) {
+            this.resetUploadProgress();
+          }
         }
       },
       error: (error) => {
@@ -292,6 +297,16 @@ export class MediaUploaderMusicComponent implements OnInit {
     console.log( 'Pasting cover:', song.title );
   }
 
+  private resetUploadProgress(): void {
+    this.uploadProgress = {
+      isUploading: false,
+      uploadedCount: 0,
+      totalFiles: 0,
+      currentFileProgress: 0,
+      hasUploaded: false
+    };
+  }
+
   onSubmit(): void {
     if (!this.isFormValid()) return;
 
@@ -302,8 +317,10 @@ export class MediaUploaderMusicComponent implements OnInit {
         this.isLoading = false;
 
         if (response.status === 200) {
-          // Complete success - clear all songs
+          // Complete success - clear all songs and reset all state
           this.songs = [];
+          this.resetUploadProgress();
+          this.curTrackNumber = 1;
           this.notificationService.showSuccess('All files uploaded successfully');
         } else if (response.status === 207) {
           // Partial success - show error and remove successful files
@@ -313,6 +330,12 @@ export class MediaUploaderMusicComponent implements OnInit {
           this.songs = this.songs.filter(song =>
             response.failedFiles.some(f => f.fileName === song.fileName)
           );
+
+          // Reset counters to reflect the remaining failed files
+          this.uploadProgress.uploadedCount = 0;
+          this.uploadProgress.totalFiles = response.failedFiles.length;
+          this.uploadProgress.currentFileProgress = 0;
+          // Leave hasUploaded = true so the counter UI remains visible
         } else if (response.error) {
           this.notificationService.showError(response.message || 'Upload failed. Please try again.');
         }
