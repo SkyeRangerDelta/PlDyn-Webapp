@@ -1,8 +1,9 @@
 name: Publish Container
 
 on:
-  pull_request:
-    types: [closed]
+  push:
+    tags:
+      - 'v*.*.*'
 
 env:
   REGISTRY: ghcr.io
@@ -10,10 +11,6 @@ env:
 
 jobs:
   test:
-    if: >
-      github.event.pull_request.merged == true &&
-      (github.event.pull_request.base.ref == 'master' ||
-       github.event.pull_request.base.ref == 'Experimental')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -54,14 +51,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Detect pre-release
+        id: prerelease
+        run: |
+          if [[ "${{ github.ref_name }}" == *"-E."* ]]; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
       - uses: docker/metadata-action@v5
         id: meta
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.event.pull_request.base.ref == 'master' }}
-            type=raw,value=experimental,enable=${{ github.event.pull_request.base.ref == 'Experimental' }}
-            type=sha,prefix=sha-,format=short
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable=${{ steps.prerelease.outputs.is_prerelease == 'false' }}
+            type=raw,value=experimental,enable=${{ steps.prerelease.outputs.is_prerelease == 'true' }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
