@@ -1,4 +1,5 @@
 {
+  "version": "0.0.0",
   "tasks": {
     "dev": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --allow-run --watch ./main.ts",
     "start": "cd webapp && npx ng serve --proxy-config proxy.conf.json",
