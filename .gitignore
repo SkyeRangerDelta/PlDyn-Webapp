@@ -9,3 +9,6 @@ temp
 .claude/
 CLAUDE.md
 /memory/
+
+# Node Modules
+/node_modules/
