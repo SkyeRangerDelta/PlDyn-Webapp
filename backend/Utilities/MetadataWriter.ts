@@ -175,11 +175,21 @@ export async function writeMetadataToFile(
     throw error;
   }
 
-  // 6. Move processed file to library
+  // 6. Move processed file to library (fall back to copy+delete across device boundaries)
   try {
     Deno.renameSync(tempOutputPath, finalOutputPath);
-  } catch (error) {
-    throw new Error(`Failed to move file to library: ${(error as Error).message}`);
+  } catch (renameError) {
+    const msg = (renameError as Error).message ?? '';
+    if (msg.includes('os error 18') || msg.toLowerCase().includes('cross-device')) {
+      try {
+        Deno.copyFileSync(tempOutputPath, finalOutputPath);
+        Deno.removeSync(tempOutputPath);
+      } catch (copyError) {
+        throw new Error(`Failed to move file to library: ${(copyError as Error).message}`);
+      }
+    } else {
+      throw new Error(`Failed to move file to library: ${msg}`);
+    }
   }
 
   // 7. Clean up temporary files
