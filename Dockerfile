@@ -7,13 +7,17 @@ COPY frontend/ ./
 RUN npm run build
 
 # ── Stage 2: Deno runtime ────────────────────────────────────────────────────
-FROM denoland/deno:alpine
-RUN apk add --no-cache ffmpeg
+FROM denoland/deno:debian
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Copy backend source
 COPY backend/ ./
+
+# Copy shared types needed by backend at the path its relative imports resolve to
+RUN mkdir -p /frontend/src/app
+COPY frontend/src/app/customTypes.ts /frontend/src/app/customTypes.ts
 
 # Copy built Angular app to path backend expects at Deno.cwd()
 COPY --from=frontend-builder /build/dist/webapp/browser ./frontend/dist/frontend/browser
