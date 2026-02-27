@@ -10,6 +10,7 @@ import { generateRandomString } from "./Utilities/Generators.ts";
 import { DBHandler } from "./Utilities/DBHandler.ts";
 import { cleanTempFolders, startTempCleanupScheduler } from "./Utilities/IOUtilities.ts";
 import { TempFileWatcher } from "./Utilities/TempFileWatcher.ts";
+import { RateLimiter } from "./Utilities/RateLimiter.ts";
 
 // Env
 await load( { export: true } );
@@ -98,6 +99,14 @@ app.use( async (ctx, next) => {
   );
   await next();
 });
+
+// Rate limiting
+const rateLimiter = new RateLimiter({
+  '/api/v1/jellyfin/authenticate': { max: 10, windowMs: 15 * 60_000 },  // 10 login attempts per 15 min
+  '/api/v1/jellyfin/upload':       { max: 60, windowMs: 15 * 60_000 },  // 60 uploads per 15 min
+  '/api/v1/jellyfin/finalize':     { max: 10, windowMs: 15 * 60_000 },  // 10 finalizations per 15 min
+});
+app.use( rateLimiter.middleware() );
 
 // Set Routes
 app.use( MainRouter.routes(), MainRouter.allowedMethods() );
