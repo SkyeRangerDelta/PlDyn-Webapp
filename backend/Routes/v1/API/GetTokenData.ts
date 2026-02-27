@@ -3,6 +3,9 @@ import * as jose from 'jose'
 
 const router = new Router();
 
+/** Claims that clients are allowed to read from the JWT. */
+const ALLOWED_CLAIMS = new Set([ 'User', 'ID' ]);
+
 router
   .post('/GetTokenData', async ( ctx: RouterContext<string> ) => {
 
@@ -23,10 +26,22 @@ router
       return;
     }
 
-    if ( !requestBody || !requestedParams || requestedParams.length === 0 ) {
+    if ( !requestBody || !Array.isArray(requestedParams) || requestedParams.length === 0 ) {
       ctx.response.status = 400;
       ctx.response.body = {
         message: 'Bad Request'
+      }
+
+      return;
+    }
+
+    // Filter to only allowed claims
+    const safeParams = requestedParams.filter(( p: unknown ) => typeof p === 'string' && ALLOWED_CLAIMS.has( p ));
+
+    if ( safeParams.length === 0 ) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        message: 'No permitted claims requested.'
       }
 
       return;
@@ -38,10 +53,10 @@ router
 
       ctx.response.body = {
         message: 'Success',
-        data: requestedParams.reduce(( acc: Record<string, any>, param: string ) => {
+        data: safeParams.reduce(( acc: Record<string, unknown>, param: string ) => {
           acc[param] = payload[param];
           return acc;
-        }, {})
+        }, {} as Record<string, unknown>)
       };
     }
     catch ( decodeErr ) {
