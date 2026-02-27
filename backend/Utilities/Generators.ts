@@ -1,6 +1,9 @@
 /**
- * Generates a random string (for JWT secret)
+ * Generates a cryptographically secure random string (for JWT secret).
+ * Returns 32 bytes (256 bits) encoded as base64.
  */
 export function generateRandomString(): string {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes));
 }

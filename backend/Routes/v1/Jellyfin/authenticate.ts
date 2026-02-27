@@ -2,7 +2,6 @@ import * as jose from 'jose'
 import { Router, RouterContext } from '@oak/oak';
 
 import { JellyfinAuthenticateRequest } from "../../../Types/API_ObjectTypes.ts";
-import { generateRandomString } from "../../../Utilities/Generators.ts";
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
 import {
   DB_UserSettingRecord,
@@ -95,7 +94,11 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   }
 
   // Generate JWT here
-  const secret = Deno.env.get('JWT_SECRET') || generateRandomString();
+  const secret = Deno.env.get('JWT_SECRET');
+  if ( !secret ) {
+    console.error('[Jellyfin] JWT_SECRET not set — cannot sign tokens.');
+    return { status: 500, message: 'Internal Server Error' };
+  }
   const jwtToken = await new jose.SignJWT({
     User: data.User.Name,
     AccessToken: data.AccessToken,
