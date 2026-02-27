@@ -79,12 +79,17 @@ export async function triggerMusicLibraryRefresh(
 }
 
 /**
- * Decode the Jellyfin access token from a PlDyn JWT string.
+ * Verify a PlDyn JWT and extract the Jellyfin access token from its claims.
+ * Uses full signature verification rather than a bare decode.
  */
-export function extractJellyfinToken(pldynJwt: string): string | undefined {
+export async function extractJellyfinToken(pldynJwt: string): Promise<string | undefined> {
   try {
-    const claims = jose.decodeJwt(pldynJwt);
-    return claims.AccessToken as string | undefined;
+    const secret = Deno.env.get('JWT_SECRET');
+    if (!secret) return undefined;
+
+    const encodedSecret = new TextEncoder().encode(secret);
+    const { payload } = await jose.jwtVerify(pldynJwt, encodedSecret);
+    return payload.AccessToken as string | undefined;
   } catch {
     return undefined;
   }

@@ -122,7 +122,7 @@ router.post('/finalize', async (ctx) => {
     const cookieToken = await ctx.cookies.get('pldyn-auth');
     const headerToken = ctx.request.headers.get('Authorization')?.split(' ')[1];
     const rawToken = cookieToken || headerToken;
-    const jellyfinToken = rawToken ? extractJellyfinToken(rawToken) : undefined;
+    const jellyfinToken = rawToken ? await extractJellyfinToken(rawToken) : undefined;
 
     if (jellyfinToken) {
       const refresh = await triggerMusicLibraryRefresh(jellyfinToken);
