@@ -9,7 +9,7 @@ function makeTestRouter(): Router {
   router.use(authMiddleware);
 
   router.get('/api/v1/test', (ctx) => {
-    ctx.response.body = { ok: true };
+    ctx.response.body = { ok: true, userId: ctx.state.userId ?? null };
   });
 
   router.get('/api/v1/status', (ctx) => {
@@ -94,6 +94,20 @@ Deno.test('auth middleware skips excluded routes', async () => {
 
   assertEquals(status, 200);
   assertEquals(body?.ok, true);
+});
+
+// ── userId is populated from JWT ID claim ────────────────────────────────────
+
+Deno.test('auth middleware sets ctx.state.userId from JWT ID claim', async () => {
+  Deno.env.set('JWT_SECRET', TEST_SECRET);
+  const token = await createTestJwt({ claims: { ID: 'jf-user-99' } });
+
+  const { status, body } = await testRequest(makeTestRouter(), '/api/v1/test', {
+    token,
+  });
+
+  assertEquals(status, 200);
+  assertEquals(body?.userId, 'jf-user-99');
 });
 
 // ── Missing JWT_SECRET on server ──────────────────────────────────────────────

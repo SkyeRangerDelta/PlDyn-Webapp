@@ -82,24 +82,40 @@ const CLEANUP_INTERVAL_MS  = 30 * 60 * 1000;        // 30 minutes
 
 /**
  * Starts a periodic scheduler that removes files from temp/audio-uploads
- * older than 2 hours. Runs every 30 minutes.
+ * older than 2 hours. Walks per-user subdirectories and removes empty ones.
+ * Runs every 30 minutes.
  */
 export function startTempCleanupScheduler(): void {
   setInterval(() => {
-    const tempPath = `${Deno.cwd()}/temp/audio-uploads`;
+    const basePath = `${Deno.cwd()}/temp/audio-uploads`;
     const cutoff = Date.now() - TEMP_FILE_MAX_AGE_MS;
 
     try {
-      for (const entry of Deno.readDirSync(tempPath)) {
-        if (!entry.isFile) continue;
-        const filePath = `${tempPath}/${entry.name}`;
+      for (const userDir of Deno.readDirSync(basePath)) {
+        if (!userDir.isDirectory) continue;
+        const userPath = `${basePath}/${userDir.name}`;
+
+        let remaining = 0;
         try {
-          const { mtime } = Deno.statSync(filePath);
-          if (mtime && mtime.getTime() < cutoff) {
-            Deno.removeSync(filePath);
-            console.log(`[TempCleanup] Removed stale file: ${entry.name}`);
+          for (const entry of Deno.readDirSync(userPath)) {
+            if (!entry.isFile) { remaining++; continue; }
+            const filePath = `${userPath}/${entry.name}`;
+            try {
+              const { mtime } = Deno.statSync(filePath);
+              if (mtime && mtime.getTime() < cutoff) {
+                Deno.removeSync(filePath);
+                console.log(`[TempCleanup] Removed stale file: ${userDir.name}/${entry.name}`);
+              } else {
+                remaining++;
+              }
+            } catch { /* file may have been removed concurrently */ }
           }
-        } catch { /* file may have been removed concurrently */ }
+        } catch { /* directory may have been removed concurrently */ }
+
+        // Remove empty user directories
+        if (remaining === 0) {
+          try { Deno.removeSync(userPath); } catch { /* ignore */ }
+        }
       }
     } catch (error) {
       console.error('[TempCleanup] Error during scheduled cleanup:', error);

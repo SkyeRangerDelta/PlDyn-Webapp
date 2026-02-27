@@ -57,7 +57,10 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
 
     // Verify the JWT signature and expiry
     const encodedSecret = new TextEncoder().encode( secret );
-    await jose.jwtVerify( token, encodedSecret );
+    const { payload } = await jose.jwtVerify( token, encodedSecret );
+
+    // Make the user's Jellyfin ID available to downstream routes
+    ctx.state.userId = payload.ID as string | undefined;
 
     await next();
   }

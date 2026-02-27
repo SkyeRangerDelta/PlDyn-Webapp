@@ -18,6 +18,17 @@ router.post('/clear', async ( ctx ) => {
     return;
   }
 
+  const userId = ctx.state.userId as string | undefined;
+  if ( !userId ) {
+    ctx.response.status = 401;
+    ctx.response.body = {
+      message: 'Missing user identity.',
+      status: 401,
+      error: true
+    } as DeleteResponse;
+    return;
+  }
+
   const reqBody = await ctx.request.body.json();
 
   // Clear the resource specified in the request
@@ -37,7 +48,7 @@ router.post('/clear', async ( ctx ) => {
 
   console.debug( 'Attempting to delete: ' + fileName );
 
-  const tempPath = new URL( `file://${ Deno.cwd() }/temp/audio-uploads/${fileName}` );
+  const tempPath = new URL( `file://${ Deno.cwd() }/temp/audio-uploads/${userId}/${fileName}` );
 
   try {
     const stat = Deno.statSync( tempPath );

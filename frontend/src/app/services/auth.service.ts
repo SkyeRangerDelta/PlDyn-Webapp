@@ -106,10 +106,15 @@ export class AuthService {
   }
 
   logout() {
-    // Fire-and-forget: ask the backend to clear the httpOnly cookie
-    this.httpClient.post('/api/v1/jellyfin/logout', {}).subscribe({
-      error: () => { /* best-effort — cookie may already be expired */ }
-    });
+    // Only call the backend if there's an active session (i.e. a cookie to clear).
+    // Without a session the backend would reject the request with 401, which the
+    // interceptor would catch and redirect to /login — causing a forced redirect
+    // even on public pages.
+    if (this.isAuthenticated) {
+      this.httpClient.post('/api/v1/jellyfin/logout', {}).subscribe({
+        error: () => { /* best-effort — cookie may already be expired */ }
+      });
+    }
 
     localStorage.removeItem('pldyn-session');
 

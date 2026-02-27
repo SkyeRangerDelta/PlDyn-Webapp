@@ -14,11 +14,17 @@ router.post('/upload', async (ctx) => {
     return;
   }
 
+  const userId = ctx.state.userId as string | undefined;
+  if ( !userId ) {
+    ctx.response.status = 401;
+    ctx.response.body = { message: 'Missing user identity.' };
+    return;
+  }
+
   const formData = await ctx.request.body.formData();
 
-  // Store the file data in a temp folder
-  // Ensure the folder exists
-  ensureFolderExists( Deno.cwd() + '/temp', 'audio-uploads' );
+  // Store the file data in a per-user temp folder
+  ensureFolderExists( Deno.cwd() + '/temp/audio-uploads', userId );
 
   // Save the file data to the temp folder
   const files = formData.getAll('files');
@@ -32,7 +38,7 @@ router.post('/upload', async (ctx) => {
       }
 
       const fileData = new Uint8Array( await file.arrayBuffer() );
-      const filePath = new URL( `file://${Deno.cwd()}/temp/audio-uploads/${ file.name }` );
+      const filePath = new URL( `file://${Deno.cwd()}/temp/audio-uploads/${userId}/${ file.name }` );
 
       try {
         Deno.writeFileSync( filePath, fileData );
@@ -54,8 +60,8 @@ router.post('/upload', async (ctx) => {
 
   // Read the metadata from titles in the directory
   const readTracks: AudioFile[] = [];
-  const strPath = `${ Deno.cwd() }/temp/audio-uploads`;
-  const tempPath = new URL( `file://${Deno.cwd()}/temp/audio-uploads` );
+  const strPath = `${ Deno.cwd() }/temp/audio-uploads/${userId}`;
+  const tempPath = new URL( `file://${Deno.cwd()}/temp/audio-uploads/${userId}` );
   const tempFolder = Deno.readDirSync( tempPath );
   for ( const entry of tempFolder ) {
     if ( !uploadedFileNames.includes( entry.name ) ) continue;

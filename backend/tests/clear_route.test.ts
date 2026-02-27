@@ -1,12 +1,26 @@
 import { assertEquals } from '@std/assert';
+import { Router } from '@oak/oak';
 import clearModule from '../Routes/v1/Jellyfin/clear.ts';
 import { testRequest } from './test_helpers.ts';
 
-const TEMP_DIR = `${Deno.cwd()}/temp/audio-uploads`;
+const TEST_USER_ID = 'test-user-42';
+const TEMP_DIR = `${Deno.cwd()}/temp/audio-uploads/${TEST_USER_ID}`;
+
+/** Wrap the clear router with middleware that injects a fake userId. */
+function makeClearRouter(): Router {
+  const wrapper = new Router();
+  wrapper.use(async (ctx, next) => {
+    ctx.state.userId = TEST_USER_ID;
+    await next();
+  });
+  wrapper.use(clearModule.router.routes());
+  wrapper.use(clearModule.router.allowedMethods());
+  return wrapper;
+}
 
 /** POST JSON to the /clear endpoint via app.handle(). */
 async function postClear(body: Record<string, unknown>) {
-  return await testRequest(clearModule.router, '/clear', {
+  return await testRequest(makeClearRouter(), '/clear', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -85,6 +99,9 @@ Deno.test('clear accepts filenames with leading dots like ...flac', async () => 
 // ── Non-existent file ─────────────────────────────────────────────────────────
 
 Deno.test('clear returns 500 for a file that does not exist', async () => {
+  // Ensure the user directory exists so we don't get a different error
+  await Deno.mkdir(TEMP_DIR, { recursive: true });
+
   const { status, body } = await postClear({ fileName: 'no-such-file.mp3' });
   assertEquals(status, 500);
   assertEquals(body?.error, true);
@@ -105,4 +122,18 @@ Deno.test('clear rejects deletion of a directory', async () => {
 
   // Cleanup
   await Deno.remove(`${TEMP_DIR}/${dirName}`);
+});
+
+// ── Missing userId rejects ───────────────────────────────────────────────────
+
+Deno.test('clear rejects request without userId in state', async () => {
+  // Use the raw router without the userId middleware
+  const { status, body } = await testRequest(clearModule.router, '/clear', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fileName: 'test.mp3' }),
+  });
+
+  assertEquals(status, 401);
+  assertEquals(body?.message, 'Missing user identity.');
 });

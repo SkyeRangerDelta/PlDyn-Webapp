@@ -13,6 +13,19 @@ import {
 const router = new Router();
 
 router.post('/finalize', async (ctx) => {
+  const userId = ctx.state.userId as string | undefined;
+  if (!userId) {
+    ctx.response.status = 401;
+    ctx.response.body = {
+      status: 401,
+      message: 'Missing user identity.',
+      error: true,
+      processedCount: 0,
+      failedFiles: []
+    } as FinalizeUploadResponse;
+    return;
+  }
+
   // Validate request has JSON body
   if (!ctx.request.hasBody || ctx.request.body.type() !== 'json') {
     ctx.response.status = 400;
@@ -88,7 +101,7 @@ router.post('/finalize', async (ctx) => {
   }
 
   // Process each song
-  const tempDir = `${Deno.cwd()}/temp/audio-uploads`;
+  const tempDir = `${Deno.cwd()}/temp/audio-uploads/${userId}`;
   const libraryDir = `${Deno.cwd()}/library/music`;
   const failedFiles: FileProcessingError[] = [];
   let processedCount = 0;
