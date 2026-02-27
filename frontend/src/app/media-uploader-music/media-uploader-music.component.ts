@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { AudioUploadResponse, DeleteResponse, Song, AlbumGroup, TableRow } from '../customTypes';
+import { AudioUploadResponse, DeleteResponse, Song, AlbumGroup } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
 import { NotificationService } from '../services/notification.service';
@@ -238,22 +238,17 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Getter that computes grouped table rows (auto-updates on songs changes)
-  get tableRows(): TableRow[] {
+  // Returns album groups sorted by name, with songs sorted by track within each
+  get albumGroups(): AlbumGroup[] {
     const albumMap = this.groupSongsByAlbum();
-    const sortedAlbumNames = Array.from(albumMap.keys()).sort();
-    const rows: TableRow[] = [];
+    const groups = Array.from(albumMap.values())
+      .sort((a, b) => a.albumName.localeCompare(b.albumName));
 
-    for (const albumName of sortedAlbumNames) {
-      const albumGroup = albumMap.get(albumName)!;
-      rows.push({ type: 'album-header', albumGroup });
-
-      const sortedSongs = albumGroup.songs.sort((a, b) => a.track - b.track);
-      for (const song of sortedSongs) {
-        rows.push({ type: 'song', song, albumName });
-      }
+    for (const group of groups) {
+      group.songs.sort((a, b) => a.track - b.track);
     }
-    return rows;
+
+    return groups;
   }
 
   // Groups songs by album name
@@ -290,13 +285,6 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
   onSongAlbumChange(song: Song, newAlbumName: string): void {
     song.album = newAlbumName;
     // tableRows getter auto-recomputes on next change detection
-  }
-
-  // Track by function for performance
-  trackByRow(index: number, row: TableRow): string {
-    return row.type === 'album-header'
-      ? `album-${row.albumGroup!.albumName}`
-      : `song-${row.song!.fileName}`;
   }
 
   toggleContextButtons(): void {

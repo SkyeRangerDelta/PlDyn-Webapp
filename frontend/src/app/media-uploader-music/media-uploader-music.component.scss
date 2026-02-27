@@ -18,7 +18,11 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 1rem;
+    table-layout: fixed;
+
+    &:not(.first-album-table) {
+      margin-top: 1.5rem;
+    }
 
     th, td {
       border: 1px solid colors.$button-background;
