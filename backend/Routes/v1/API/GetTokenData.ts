@@ -42,9 +42,10 @@ router
       };
     }
     catch ( decodeErr ) {
+      console.error('[GetTokenData] Token verification failed:', decodeErr);
       ctx.response.status = 400;
       ctx.response.body = {
-        message: `Something's not gone right.\n${ decodeErr }`
+        message: 'Invalid or expired token.'
       }
     }
   });

@@ -141,7 +141,8 @@ export async function writeMetadataToFile(
     Deno.mkdirSync(albumDir, { recursive: true });
   } catch (error) {
     if (!(error instanceof Deno.errors.AlreadyExists)) {
-      throw new Error(`Failed to create directory structure: ${(error as Error).message}`);
+      console.error('[MetadataWriter] Failed to create directory:', (error as Error).message);
+      throw new Error('Failed to create directory structure.');
     }
   }
 
@@ -168,7 +169,8 @@ export async function writeMetadataToFile(
 
     if (code !== 0) {
       const errorMessage = new TextDecoder().decode(stderr);
-      throw new Error(`ffmpeg failed: ${errorMessage}`);
+      console.error(`[MetadataWriter] ffmpeg failed for ${song.fileName}:`, errorMessage);
+      throw new Error('ffmpeg processing failed.');
     }
   } catch (error) {
     try { Deno.removeSync(coverPath); } catch { /* ignore */ }
@@ -185,10 +187,12 @@ export async function writeMetadataToFile(
         Deno.copyFileSync(tempOutputPath, finalOutputPath);
         Deno.removeSync(tempOutputPath);
       } catch (copyError) {
-        throw new Error(`Failed to move file to library: ${(copyError as Error).message}`);
+        console.error('[MetadataWriter] File copy failed:', (copyError as Error).message);
+        throw new Error('Failed to move file to library.');
       }
     } else {
-      throw new Error(`Failed to move file to library: ${msg}`);
+      console.error('[MetadataWriter] File rename failed:', msg);
+      throw new Error('Failed to move file to library.');
     }
   }
 

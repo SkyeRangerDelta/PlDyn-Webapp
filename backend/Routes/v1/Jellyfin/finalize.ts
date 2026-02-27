@@ -75,10 +75,11 @@ router.post('/finalize', async (ctx) => {
   try {
     ensureFolderExists(Deno.cwd() + '/library', 'music');
   } catch (error) {
+    console.error('[Finalize] Failed to create library directory:', (error as Error).message);
     ctx.response.status = 500;
     ctx.response.body = {
       status: 500,
-      message: `Failed to create library directory: ${(error as Error).message}`,
+      message: 'Failed to prepare library directory.',
       error: true,
       processedCount: 0,
       failedFiles: []
@@ -111,7 +112,7 @@ router.post('/finalize', async (ctx) => {
       failedFiles.push({
         fileName: song.fileName,
         errorType: errorType,
-        errorMessage: (error as Error).message
+        errorMessage: 'Processing failed.'
       });
     }
   }
