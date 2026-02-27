@@ -9,6 +9,7 @@ import { MainRouter } from "./Routes/MainRouter.ts";
 import { generateRandomString } from "./Utilities/Generators.ts";
 import { DBHandler } from "./Utilities/DBHandler.ts";
 import { cleanTempFolders, startTempCleanupScheduler } from "./Utilities/IOUtilities.ts";
+import { TempFileWatcher } from "./Utilities/TempFileWatcher.ts";
 
 // Env
 await load( { export: true } );
@@ -37,6 +38,10 @@ const Mongo = new DBHandler();
 // Ready I/O
 cleanTempFolders();
 startTempCleanupScheduler();
+
+// Watch temp directory for file removals (notifies frontend via SSE)
+const tempFileWatcher = new TempFileWatcher(`${Deno.cwd()}/temp/audio-uploads`);
+tempFileWatcher.start();
 
 // Check write access to library directory
 try {
@@ -68,9 +73,10 @@ if ( !jwtSecret ) {
   await Deno.writeTextFile( '.env', `\nJWT_SECRET=${ jwtSecret }\n`, { append: true } );
 }
 
-// Attach Mongo to CTX
+// Attach shared state to CTX
 app.use( async (ctx, next) => {
   ctx.state.Mongo = Mongo;
+  ctx.state.tempFileWatcher = tempFileWatcher;
   await next();
 });
 

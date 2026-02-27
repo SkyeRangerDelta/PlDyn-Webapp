@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, Observer } from 'rxjs';
 import { AudioUploadResponse, DeleteResponse, FinalizeUploadResponse, MediaResult, Song } from '../customTypes';
 
 @Injectable({
@@ -121,5 +121,31 @@ export class MediaService {
         } as FinalizeUploadResponse );
       })
     );
+  }
+
+  watchTempFiles(): Observable<string> {
+    return new Observable<string>((observer: Observer<string>) => {
+      const token = localStorage.getItem('pldyn-jfToken');
+      if (!token) {
+        observer.complete();
+        return;
+      }
+
+      const eventSource = new EventSource(`/api/v1/jellyfin/watch?token=${encodeURIComponent(token)}`);
+
+      eventSource.addEventListener('file-removed', (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        observer.next(data.fileName);
+      });
+
+      eventSource.onerror = () => {
+        // EventSource auto-reconnects on error; just log for debugging
+        console.warn('[MediaService] SSE connection error, will auto-reconnect');
+      };
+
+      return () => {
+        eventSource.close();
+      };
+    });
   }
 }

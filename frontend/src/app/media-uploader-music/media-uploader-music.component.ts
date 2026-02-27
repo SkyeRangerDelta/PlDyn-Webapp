@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { AudioUploadResponse, DeleteResponse, Song, AlbumGroup, TableRow } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
@@ -12,7 +13,7 @@ import { NotificationService } from '../services/notification.service';
     styleUrls: ['./media-uploader-music.component.scss'],
     standalone: false
 })
-export class MediaUploaderMusicComponent implements OnInit {
+export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
   musicForm: FormGroup;
   selectedFiles: File[] = [];
   songs: Song[] = [];
@@ -31,6 +32,7 @@ export class MediaUploaderMusicComponent implements OnInit {
     hasUploaded: false  // Track if any uploads have occurred
   };
 
+  private watchSub?: Subscription;
   private readonly clickHandler = () => this.cleanupMenus();
 
   constructor(
@@ -56,10 +58,28 @@ export class MediaUploaderMusicComponent implements OnInit {
 
   ngOnInit(): void {
     document.addEventListener( 'click', this.clickHandler );
+
+    // Watch for temp file removals via SSE
+    this.watchSub = this.MediaService.watchTempFiles().subscribe(fileName => {
+      const index = this.songs.findIndex(s => s.fileName === fileName);
+      if (index === -1) return; // Already removed (e.g. by finalize)
+
+      const song = this.songs[index];
+      this.songs.splice(index, 1);
+      this.uploadProgress.uploadedCount--;
+      this.uploadProgress.totalFiles--;
+
+      if (this.uploadProgress.totalFiles <= 0) {
+        this.resetUploadProgress();
+      }
+
+      this.notificationService.showError(`${song.title || fileName} was removed (temp file expired).`);
+    });
   }
 
   ngOnDestroy(): void {
     document.removeEventListener( 'click', this.clickHandler );
+    this.watchSub?.unsubscribe();
   }
 
   cleanupMenus(): void {
