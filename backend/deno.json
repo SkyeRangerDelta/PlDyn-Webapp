@@ -3,9 +3,11 @@
   "tasks": {
     "dev": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --allow-run --watch ./main.ts",
     "start": "cd webapp && npx ng serve --proxy-config proxy.conf.json",
-    "test": "cd webapp && npx ng test --browsers ChromeHeadless --code-coverage true --watch false"
+    "test": "cd webapp && npx ng test --browsers ChromeHeadless --code-coverage true --watch false",
+    "test:backend": "deno test --allow-net --allow-read --allow-write --allow-env --allow-sys --allow-run"
   },
   "imports": {
+    "@std/assert": "jsr:@std/assert@^1",
     "@db/mongo": "jsr:@db/mongo@^0.34.0",
     "@oak/oak": "jsr:@oak/oak@^17.2.0",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.5",

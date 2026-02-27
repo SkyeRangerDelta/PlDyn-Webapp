@@ -11,7 +11,7 @@ MainRouter.use( authMiddleware );
 MainRouter.use( '/api/v1/jellyfin', JellyfinRouter.routes(), JellyfinRouter.allowedMethods());
 MainRouter.use( '/api/v1', APIRouter.routes(), APIRouter.allowedMethods());
 
-export { MainRouter };
+export { MainRouter, authMiddleware };
 
 async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<unknown> ) {
   const excludedRoutes = [
