@@ -32,8 +32,12 @@ export class LoginComponent {
       pass: [ '', Validators.required ],
     });
 
-    // Get the return URL from query params, default to /media
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/media';
+    // Get the return URL from query params, default to /media.
+    // Only allow relative paths to prevent open redirect attacks.
+    const requested = this.route.snapshot.queryParams['returnUrl'];
+    this.returnUrl = (requested && requested.startsWith('/') && !requested.startsWith('//'))
+      ? requested
+      : '/media';
   }
 
   onSubmit() {
