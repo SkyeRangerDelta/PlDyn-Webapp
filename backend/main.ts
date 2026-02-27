@@ -92,6 +92,26 @@ app.use( async (ctx, next) => {
   await next();
 } );
 
+// CORS — same-origin by default; set CORS_ORIGINS=http://host1,http://host2 to allow specific origins
+const allowedOrigins = Deno.env.get('CORS_ORIGINS')?.split(',').map(o => o.trim()).filter(Boolean) || [];
+app.use( async (ctx, next) => {
+  const origin = ctx.request.headers.get('Origin');
+
+  if (origin && allowedOrigins.includes(origin)) {
+    ctx.response.headers.set('Access-Control-Allow-Origin', origin);
+    ctx.response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    ctx.response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    ctx.response.headers.set('Access-Control-Max-Age', '86400');
+  }
+
+  if (ctx.request.method === 'OPTIONS') {
+    ctx.response.status = 204;
+    return;
+  }
+
+  await next();
+});
+
 // Security headers
 app.use( async (ctx, next) => {
   ctx.response.headers.set('X-Content-Type-Options', 'nosniff');
