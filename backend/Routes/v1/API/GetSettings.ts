@@ -9,6 +9,18 @@ router
     const Mongo: DBHandler = ctx.state.Mongo;
 
     const uId = await ctx.request.body.json();
+
+    if ( !uId || typeof uId !== 'string' ) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        status: 400,
+        message: 'Bad Request',
+        settings: null,
+        success: false
+      };
+      return;
+    }
+
     const settingsRes = await Mongo.selectOneByFilter( 'UserSettings', { jfId: uId } );
 
     ctx.response.body = {

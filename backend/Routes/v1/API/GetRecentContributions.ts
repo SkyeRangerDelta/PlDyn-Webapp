@@ -10,7 +10,7 @@ router
 
     const req = await ctx.request.body.json();
 
-    if ( !req || !req.uid ) {
+    if ( !req || !req.uid || typeof req.uid !== 'string' ) {
       ctx.response.status = 400;
       ctx.response.body = {
         message: 'Bad Request',
@@ -19,6 +19,7 @@ router
           errorMessage: 'Invalid request body.'
         }
       } as JellyfinContributionsResponse;
+      return;
     }
 
     const uId = req.uid;
