@@ -86,6 +86,19 @@ app.use( async (ctx, next) => {
   await next();
 } );
 
+// Security headers
+app.use( async (ctx, next) => {
+  ctx.response.headers.set('X-Content-Type-Options', 'nosniff');
+  ctx.response.headers.set('X-Frame-Options', 'DENY');
+  ctx.response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  ctx.response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+  ctx.response.headers.set(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
+  );
+  await next();
+});
+
 // Set Routes
 app.use( MainRouter.routes(), MainRouter.allowedMethods() );
 
