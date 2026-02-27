@@ -16,7 +16,6 @@ export { MainRouter, authMiddleware };
 async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<unknown> ) {
   const excludedRoutes = [
     '/api/v1/jellyfin/authenticate',
-    '/api/v1/jellyfin/logout',
     '/api/v1/jellyfin/status',
     '/api/v1/jellyfin/watch',
     '/api/v1/status'
