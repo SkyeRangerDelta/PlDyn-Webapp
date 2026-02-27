@@ -47,6 +47,7 @@ tempFileWatcher.start();
 
 // SSE ticket store (short-lived, single-use tickets replace JWT in URL params)
 const ticketStore = new TicketStore();
+ticketStore.startCleanupScheduler();
 
 // Check write access to library directory
 try {
@@ -131,6 +132,7 @@ const rateLimiter = new RateLimiter({
   '/api/v1/jellyfin/upload':       { max: 60, windowMs: 15 * 60_000 },  // 60 uploads per 15 min
   '/api/v1/jellyfin/finalize':     { max: 10, windowMs: 15 * 60_000 },  // 10 finalizations per 15 min
 });
+rateLimiter.startCleanupScheduler();
 app.use( rateLimiter.middleware() );
 
 // Set Routes

@@ -30,4 +30,13 @@ export class TicketStore {
       }
     }
   }
+
+  /**
+   * Start a periodic cleanup timer that purges expired tickets.
+   * @param intervalMs How often to run cleanup (default 60 seconds).
+   * @returns The timer ID (for clearing in tests or shutdown).
+   */
+  startCleanupScheduler(intervalMs = 60_000): number {
+    return setInterval(() => this.cleanup(), intervalMs);
+  }
 }

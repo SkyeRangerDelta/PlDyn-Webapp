@@ -85,6 +85,15 @@ export class RateLimiter {
     return this.buckets.size;
   }
 
+  /**
+   * Start a periodic cleanup timer that purges expired buckets.
+   * @param intervalMs How often to run cleanup (default 5 minutes).
+   * @returns The timer ID (for clearing in tests or shutdown).
+   */
+  startCleanupScheduler(intervalMs = 5 * 60_000): number {
+    return setInterval(() => this.cleanup(), intervalMs);
+  }
+
   /** Reset all buckets (for testing). */
   reset(): void {
     this.buckets.clear();

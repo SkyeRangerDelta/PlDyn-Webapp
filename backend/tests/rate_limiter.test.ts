@@ -106,3 +106,21 @@ Deno.test('cleanup removes expired buckets', async () => {
   limiter.cleanup();
   assertEquals(limiter.getBucketCount(), 0);
 });
+
+// ── Scheduled cleanup fires automatically ────────────────────────────────────
+
+Deno.test('startCleanupScheduler purges expired buckets automatically', async () => {
+  const limiter = new RateLimiter({ '/limited': { max: 10, windowMs: 1 } });
+
+  await makeRequest(limiter, '/limited');
+  assertEquals(limiter.getBucketCount(), 1);
+
+  // Start scheduler with a very short interval
+  const timerId = limiter.startCleanupScheduler(15);
+
+  // Wait for the window to expire and the scheduler to fire
+  await new Promise(r => setTimeout(r, 50));
+
+  assertEquals(limiter.getBucketCount(), 0);
+  clearInterval(timerId);
+});

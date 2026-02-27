@@ -65,3 +65,23 @@ Deno.test('cleanup removes expired tickets', async () => {
   // Can't directly check count, but validating the long-lived one should still work
   // (we can't validate it because we didn't save the reference — this tests that cleanup doesn't crash)
 });
+
+// ── Scheduled cleanup fires automatically ────────────────────────────────────
+
+Deno.test('startCleanupScheduler purges expired tickets automatically', async () => {
+  const store = new TicketStore();
+  const shortTicket = store.create(1);   // expires in 1ms
+  const longTicket = store.create(60_000); // stays alive
+
+  // Start scheduler with a very short interval
+  const timerId = store.startCleanupScheduler(15);
+
+  // Wait for expiry + scheduler to fire
+  await new Promise(r => setTimeout(r, 50));
+
+  // Expired ticket should have been purged (validate returns false either way,
+  // but the long-lived one should still be valid — proving cleanup didn't wipe everything)
+  assertEquals(store.validate(shortTicket), false);
+  assertEquals(store.validate(longTicket), true);
+  clearInterval(timerId);
+});
