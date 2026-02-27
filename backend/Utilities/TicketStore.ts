@@ -3,28 +3,28 @@
  * Tickets replace long-lived JWTs in URL query parameters.
  */
 export class TicketStore {
-  private tickets = new Map<string, number>(); // ticket → expiresAt
+  private tickets = new Map<string, { expiresAt: number; userId: string }>();
 
-  /** Create a ticket that expires after `ttlMs` milliseconds (default 30s). */
-  create(ttlMs = 30_000): string {
+  /** Create a ticket bound to a user that expires after `ttlMs` milliseconds (default 30s). */
+  create(userId: string, ttlMs = 30_000): string {
     const ticket = crypto.randomUUID();
-    this.tickets.set(ticket, Date.now() + ttlMs);
+    this.tickets.set(ticket, { expiresAt: Date.now() + ttlMs, userId });
     return ticket;
   }
 
-  /** Consume a ticket. Returns true if valid (exists and not expired). Single-use: deleted after validation. */
-  validate(ticket: string): boolean {
-    const expiresAt = this.tickets.get(ticket);
+  /** Consume a ticket. Returns the associated userId if valid, or null if invalid/expired. Single-use: deleted after validation. */
+  validate(ticket: string): string | null {
+    const entry = this.tickets.get(ticket);
     this.tickets.delete(ticket); // Always delete — single use
 
-    if (!expiresAt) return false;
-    return Date.now() < expiresAt;
+    if (!entry) return null;
+    return Date.now() < entry.expiresAt ? entry.userId : null;
   }
 
   /** Purge expired tickets to prevent unbounded growth. */
   cleanup(): void {
     const now = Date.now();
-    for (const [ticket, expiresAt] of this.tickets) {
+    for (const [ticket, { expiresAt }] of this.tickets) {
       if (now >= expiresAt) {
         this.tickets.delete(ticket);
       }

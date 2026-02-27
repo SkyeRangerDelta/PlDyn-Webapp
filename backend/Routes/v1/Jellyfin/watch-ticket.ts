@@ -11,7 +11,14 @@ router.post('/watch-ticket', (ctx: RouterContext<string>) => {
     return;
   }
 
-  const ticket = ticketStore.create();
+  const userId = ctx.state.userId as string | undefined;
+  if (!userId) {
+    ctx.response.status = 401;
+    ctx.response.body = { message: 'Missing user identity.' };
+    return;
+  }
+
+  const ticket = ticketStore.create(userId);
 
   ctx.response.body = { ticket };
 });

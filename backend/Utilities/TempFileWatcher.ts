@@ -3,9 +3,9 @@
  * and notifies registered listeners (SSE connections).
  */
 
-import { basename } from '@std/path';
+import { basename, dirname } from '@std/path';
 
-type FileRemovedCallback = (fileName: string) => void;
+type FileRemovedCallback = (userId: string, fileName: string) => void;
 
 export class TempFileWatcher {
   private listeners = new Set<FileRemovedCallback>();
@@ -25,14 +25,15 @@ export class TempFileWatcher {
 
       for (const path of event.paths) {
         const fileName = basename(path);
+        const userId = basename(dirname(path));
 
         // Skip intermediate ffmpeg artifacts (never shown in the table)
         if (fileName.startsWith('processed_')) continue;
 
-        console.log(`[TempFileWatcher] File removed: ${fileName}`);
+        console.log(`[TempFileWatcher] File removed: ${userId}/${fileName}`);
 
         for (const listener of this.listeners) {
-          listener(fileName);
+          listener(userId, fileName);
         }
       }
     }

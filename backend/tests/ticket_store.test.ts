@@ -1,42 +1,44 @@
 import { assertEquals } from '@std/assert';
 import { TicketStore } from '../Utilities/TicketStore.ts';
 
+const TEST_USER = 'user-42';
+
 // ── Basic ticket lifecycle ────────────────────────────────────────────────────
 
-Deno.test('created ticket is valid on first use', () => {
+Deno.test('created ticket is valid on first use and returns userId', () => {
   const store = new TicketStore();
-  const ticket = store.create();
-  assertEquals(store.validate(ticket), true);
+  const ticket = store.create(TEST_USER);
+  assertEquals(store.validate(ticket), TEST_USER);
 });
 
-Deno.test('ticket is single-use — second validation fails', () => {
+Deno.test('ticket is single-use — second validation returns null', () => {
   const store = new TicketStore();
-  const ticket = store.create();
+  const ticket = store.create(TEST_USER);
 
-  assertEquals(store.validate(ticket), true);
-  assertEquals(store.validate(ticket), false);
+  assertEquals(store.validate(ticket), TEST_USER);
+  assertEquals(store.validate(ticket), null);
 });
 
-Deno.test('invalid ticket is rejected', () => {
+Deno.test('invalid ticket is rejected with null', () => {
   const store = new TicketStore();
-  assertEquals(store.validate('nonexistent-ticket'), false);
+  assertEquals(store.validate('nonexistent-ticket'), null);
 });
 
 // ── Expiry ────────────────────────────────────────────────────────────────────
 
-Deno.test('expired ticket is rejected', async () => {
+Deno.test('expired ticket returns null', async () => {
   const store = new TicketStore();
-  const ticket = store.create(1); // 1ms TTL
+  const ticket = store.create(TEST_USER, 1); // 1ms TTL
 
   await new Promise(r => setTimeout(r, 10));
 
-  assertEquals(store.validate(ticket), false);
+  assertEquals(store.validate(ticket), null);
 });
 
-Deno.test('ticket within TTL is accepted', () => {
+Deno.test('ticket within TTL returns userId', () => {
   const store = new TicketStore();
-  const ticket = store.create(60_000); // 60s TTL
-  assertEquals(store.validate(ticket), true);
+  const ticket = store.create(TEST_USER, 60_000); // 60s TTL
+  assertEquals(store.validate(ticket), TEST_USER);
 });
 
 // ── Uniqueness ────────────────────────────────────────────────────────────────
@@ -46,7 +48,7 @@ Deno.test('each ticket is unique', () => {
   const tickets = new Set<string>();
 
   for (let i = 0; i < 100; i++) {
-    tickets.add(store.create());
+    tickets.add(store.create(TEST_USER));
   }
 
   assertEquals(tickets.size, 100);
@@ -56,32 +58,36 @@ Deno.test('each ticket is unique', () => {
 
 Deno.test('cleanup removes expired tickets', async () => {
   const store = new TicketStore();
-  store.create(1); // expires immediately
-  store.create(60_000); // stays alive
+  store.create(TEST_USER, 1); // expires immediately
+  store.create(TEST_USER, 60_000); // stays alive
 
   await new Promise(r => setTimeout(r, 10));
   store.cleanup();
-
-  // Can't directly check count, but validating the long-lived one should still work
-  // (we can't validate it because we didn't save the reference — this tests that cleanup doesn't crash)
 });
 
 // ── Scheduled cleanup fires automatically ────────────────────────────────────
 
 Deno.test('startCleanupScheduler purges expired tickets automatically', async () => {
   const store = new TicketStore();
-  const shortTicket = store.create(1);   // expires in 1ms
-  const longTicket = store.create(60_000); // stays alive
+  const shortTicket = store.create(TEST_USER, 1);   // expires in 1ms
+  const longTicket = store.create(TEST_USER, 60_000); // stays alive
 
-  // Start scheduler with a very short interval
   const timerId = store.startCleanupScheduler(15);
 
-  // Wait for expiry + scheduler to fire
   await new Promise(r => setTimeout(r, 50));
 
-  // Expired ticket should have been purged (validate returns false either way,
-  // but the long-lived one should still be valid — proving cleanup didn't wipe everything)
-  assertEquals(store.validate(shortTicket), false);
-  assertEquals(store.validate(longTicket), true);
+  assertEquals(store.validate(shortTicket), null);
+  assertEquals(store.validate(longTicket), TEST_USER);
   clearInterval(timerId);
+});
+
+// ── User isolation ───────────────────────────────────────────────────────────
+
+Deno.test('ticket returns the correct userId for each user', () => {
+  const store = new TicketStore();
+  const ticketA = store.create('user-A');
+  const ticketB = store.create('user-B');
+
+  assertEquals(store.validate(ticketA), 'user-A');
+  assertEquals(store.validate(ticketB), 'user-B');
 });

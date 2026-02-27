@@ -13,7 +13,8 @@ router.get('/watch', async (ctx: RouterContext<string>) => {
   }
 
   const ticketStore = ctx.state.ticketStore;
-  if (!ticketStore || !ticketStore.validate(ticket)) {
+  const userId = ticketStore?.validate(ticket);
+  if (!userId) {
     ctx.response.status = 401;
     ctx.response.body = { message: 'Invalid or expired ticket.' };
     return;
@@ -22,9 +23,11 @@ router.get('/watch', async (ctx: RouterContext<string>) => {
   // Open SSE connection
   const target = await ctx.sendEvents();
 
-  // Register listener on the TempFileWatcher from app state
+  // Register listener on the TempFileWatcher from app state.
+  // Only forward events that belong to this user.
   const watcher = ctx.state.tempFileWatcher;
-  const unsubscribe = watcher.addListener((fileName: string) => {
+  const unsubscribe = watcher.addListener((eventUserId: string, fileName: string) => {
+    if (eventUserId !== userId) return;
     target.dispatchEvent(
       new ServerSentEvent('file-removed', { data: JSON.stringify({ fileName }) })
     );
