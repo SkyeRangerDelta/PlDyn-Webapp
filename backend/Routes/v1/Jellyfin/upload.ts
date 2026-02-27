@@ -1,7 +1,7 @@
 import { Router } from '@oak/oak';
 import { parseFile, selectCover } from 'music-metadata';
 
-import { ensureFolderExists } from '../../../Utilities/IOUtilities.ts';
+import { ensureFolderExists, isSafeFileName } from '../../../Utilities/IOUtilities.ts';
 import { AudioFile, AudioUploadResponse } from '../../../Types/API_ObjectTypes.ts';
 import { buildImgB64 } from '../../../Utilities/Formatters.ts';
 
@@ -25,6 +25,12 @@ router.post('/upload', async (ctx) => {
   const uploadedFileNames: string[] = [];
   for ( const file of files ) {
     if ( file instanceof File ) {
+      if ( !isSafeFileName( file.name ) ) {
+        ctx.response.status = 400;
+        ctx.response.body = { message: 'Invalid filename.' };
+        return;
+      }
+
       const fileData = new Uint8Array( await file.arrayBuffer() );
       const filePath = new URL( `file://${Deno.cwd()}/temp/audio-uploads/${ file.name }` );
 
@@ -66,7 +72,7 @@ router.post('/upload', async (ctx) => {
 
       try {
         const builtMetadata = {
-          filePath: entryPath,
+          filePath: entry.name,
           fileName: entry.name,
           title: metadata.common.title || '',
           artist: metadata.common.artist || '',

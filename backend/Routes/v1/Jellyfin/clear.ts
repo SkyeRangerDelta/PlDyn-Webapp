@@ -1,6 +1,7 @@
 import { Router } from '@oak/oak';
 
 import { DeleteResponse } from "../../../Types/API_ObjectTypes.ts";
+import { isSafeFileName } from "../../../Utilities/IOUtilities.ts";
 
 const router = new Router;
 
@@ -23,7 +24,7 @@ router.post('/clear', async ( ctx ) => {
   const fileName = reqBody.fileName;
 
   // Validate filename: reject directory separators to prevent path traversal
-  if ( !fileName || typeof fileName !== 'string' || /[\/\\]/.test( fileName ) ) {
+  if ( !isSafeFileName( fileName ) ) {
     ctx.response.status = 400;
     ctx.response.body = {
       message: 'Invalid filename.',

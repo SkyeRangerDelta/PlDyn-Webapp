@@ -3,6 +3,7 @@
  */
 
 import { AudioFile } from "../Types/API_ObjectTypes.ts";
+import { isSafeFileName } from "./IOUtilities.ts";
 
 /**
  * Strip characters that are invalid in Windows and Unix path components,
@@ -129,6 +130,11 @@ export async function writeMetadataToFile(
   tempDir: string,
   libraryDir: string
 ): Promise<void> {
+  // 0. Validate song.fileName to prevent path traversal
+  if (!isSafeFileName(song.fileName)) {
+    throw new Error('Invalid filename.');
+  }
+
   // 1. Write cover art to temporary file
   const coverPath = await writeCoverArt(song.cover, tempDir);
 

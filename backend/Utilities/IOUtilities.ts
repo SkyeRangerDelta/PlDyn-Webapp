@@ -3,6 +3,17 @@
  */
 
 /**
+ * Validate that a filename is safe (no path traversal, no directory separators).
+ * Returns `true` if the filename is safe, `false` otherwise.
+ */
+export function isSafeFileName(name: unknown): name is string {
+  if (!name || typeof name !== 'string') return false;
+  if (/[\/\\]/.test(name)) return false;           // directory separators
+  if (name === '.' || name === '..') return false;  // current/parent directory refs
+  return true;
+}
+
+/**
  * Ensure a folder exists
  * @param parentPath
  * @param folderName
