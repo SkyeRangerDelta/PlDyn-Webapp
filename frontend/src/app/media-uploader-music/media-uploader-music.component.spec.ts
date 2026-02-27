@@ -39,8 +39,10 @@ describe('MediaUploaderMusicComponent', () => {
     mediaServiceSpy = jasmine.createSpyObj('MediaService', [
       'uploadSingleFile',
       'clearMedia',
-      'finalizeUpload'
+      'finalizeUpload',
+      'watchTempFiles'
     ]);
+    mediaServiceSpy.watchTempFiles.and.returnValue(of());
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
       'showError',
       'showSuccess'
@@ -294,49 +296,48 @@ describe('MediaUploaderMusicComponent', () => {
     });
   });
 
-  // ── tableRows getter ──────────────────────────────────────────────────────
+  // ── albumGroups getter ───────────────────────────────────────────────────
 
-  describe('tableRows', () => {
+  describe('albumGroups', () => {
     it('should return an empty array when there are no songs', () => {
       component.songs = [];
-      expect(component.tableRows.length).toBe(0);
+      expect(component.albumGroups.length).toBe(0);
     });
 
-    it('should produce one album-header row and one song row for a single song', () => {
+    it('should produce one album group with one song for a single song', () => {
       component.songs = [makeSong()];
-      const rows = component.tableRows;
-      expect(rows.length).toBe(2);
-      expect(rows[0].type).toBe('album-header');
-      expect(rows[1].type).toBe('song');
+      const groups = component.albumGroups;
+      expect(groups.length).toBe(1);
+      expect(groups[0].songs.length).toBe(1);
     });
 
-    it('should group songs under the same album header', () => {
+    it('should group songs under the same album', () => {
       component.songs = [
         makeSong({ track: 1, fileName: 'a.mp3' }),
         makeSong({ track: 2, fileName: 'b.mp3' }),
       ];
-      const rows = component.tableRows;
-      expect(rows.filter(r => r.type === 'album-header').length).toBe(1);
-      expect(rows.filter(r => r.type === 'song').length).toBe(2);
+      const groups = component.albumGroups;
+      expect(groups.length).toBe(1);
+      expect(groups[0].songs.length).toBe(2);
     });
 
-    it('should create separate headers for different albums', () => {
+    it('should create separate groups for different albums', () => {
       component.songs = [
         makeSong({ album: 'Album A', fileName: 'a.mp3' }),
         makeSong({ album: 'Album B', fileName: 'b.mp3' }),
       ];
-      const rows = component.tableRows;
-      expect(rows.filter(r => r.type === 'album-header').length).toBe(2);
+      const groups = component.albumGroups;
+      expect(groups.length).toBe(2);
     });
 
-    it('should sort album headers alphabetically', () => {
+    it('should sort album groups alphabetically', () => {
       component.songs = [
         makeSong({ album: 'Zebra', fileName: 'z.mp3' }),
         makeSong({ album: 'Apple', fileName: 'a.mp3' }),
       ];
-      const headerRows = component.tableRows.filter(r => r.type === 'album-header');
-      expect(headerRows[0].albumGroup!.albumName).toBe('Apple');
-      expect(headerRows[1].albumGroup!.albumName).toBe('Zebra');
+      const groups = component.albumGroups;
+      expect(groups[0].albumName).toBe('Apple');
+      expect(groups[1].albumName).toBe('Zebra');
     });
 
     it('should sort songs within an album by track number', () => {
@@ -345,16 +346,16 @@ describe('MediaUploaderMusicComponent', () => {
         makeSong({ track: 1, fileName: 'a.mp3' }),
         makeSong({ track: 2, fileName: 'b.mp3' }),
       ];
-      const songRows = component.tableRows.filter(r => r.type === 'song');
-      expect(songRows[0].song!.track).toBe(1);
-      expect(songRows[1].song!.track).toBe(2);
-      expect(songRows[2].song!.track).toBe(3);
+      const songs = component.albumGroups[0].songs;
+      expect(songs[0].track).toBe(1);
+      expect(songs[1].track).toBe(2);
+      expect(songs[2].track).toBe(3);
     });
 
     it('should use "(Unknown Album)" for songs with empty album', () => {
       component.songs = [makeSong({ album: '' })];
-      const headerRow = component.tableRows.find(r => r.type === 'album-header');
-      expect(headerRow!.albumGroup!.albumName).toBe('(Unknown Album)');
+      const groups = component.albumGroups;
+      expect(groups[0].albumName).toBe('(Unknown Album)');
     });
   });
 
@@ -396,23 +397,6 @@ describe('MediaUploaderMusicComponent', () => {
       const song = makeSong({ album: 'Old Album' });
       component.onSongAlbumChange(song, 'New Album');
       expect(song.album).toBe('New Album');
-    });
-  });
-
-  // ── trackByRow ────────────────────────────────────────────────────────────
-
-  describe('trackByRow', () => {
-    it('should return "album-{name}" for album-header rows', () => {
-      const row = {
-        type: 'album-header' as const,
-        albumGroup: { albumName: 'My Album', songs: [], year: null, albumArtist: '', cover: null }
-      };
-      expect(component.trackByRow(0, row)).toBe('album-My Album');
-    });
-
-    it('should return "song-{fileName}" for song rows', () => {
-      const row = { type: 'song' as const, song: makeSong({ fileName: 'mysong.mp3' }) };
-      expect(component.trackByRow(0, row)).toBe('song-mysong.mp3');
     });
   });
 
