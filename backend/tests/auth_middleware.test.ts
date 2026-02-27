@@ -19,9 +19,23 @@ function makeTestRouter(): Router {
   return router;
 }
 
-// ── Valid token ────────────────────────────────────────────────────────────────
+// ── Valid token (cookie) ─────────────────────────────────────────────────────
 
-Deno.test('auth middleware allows a valid token', async () => {
+Deno.test('auth middleware allows a valid token via cookie', async () => {
+  Deno.env.set('JWT_SECRET', TEST_SECRET);
+  const token = await createTestJwt();
+
+  const { status, body } = await testRequest(makeTestRouter(), '/api/v1/test', {
+    token,
+  });
+
+  assertEquals(status, 200);
+  assertEquals(body?.ok, true);
+});
+
+// ── Valid token (Authorization header fallback) ──────────────────────────────
+
+Deno.test('auth middleware allows a valid token via Authorization header', async () => {
   Deno.env.set('JWT_SECRET', TEST_SECRET);
   const token = await createTestJwt();
 
@@ -51,7 +65,7 @@ Deno.test('auth middleware rejects a token signed with the wrong secret', async 
   const forgedToken = await createTestJwt({ secret: 'wrong-secret' });
 
   const { status, body } = await testRequest(makeTestRouter(), '/api/v1/test', {
-    headers: { Authorization: `Bearer ${forgedToken}` },
+    token: forgedToken,
   });
 
   assertEquals(status, 401);
@@ -65,7 +79,7 @@ Deno.test('auth middleware rejects an expired token', async () => {
   const expiredToken = await createTestJwt({ expiresIn: '-1h' });
 
   const { status } = await testRequest(makeTestRouter(), '/api/v1/test', {
-    headers: { Authorization: `Bearer ${expiredToken}` },
+    token: expiredToken,
   });
 
   assertEquals(status, 401);
@@ -89,7 +103,7 @@ Deno.test('auth middleware returns 500 when JWT_SECRET is not set', async () => 
   const token = await createTestJwt();
 
   const { status } = await testRequest(makeTestRouter(), '/api/v1/test', {
-    headers: { Authorization: `Bearer ${token}` },
+    token,
   });
 
   assertEquals(status, 500);

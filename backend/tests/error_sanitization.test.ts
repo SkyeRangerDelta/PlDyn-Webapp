@@ -9,10 +9,8 @@ Deno.test('GetTokenData returns generic message on invalid token', async () => {
 
   const { status, body } = await testRequest(getTokenDataModule.router, '/GetTokenData', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer totally-invalid-jwt',
-    },
+    headers: { 'Content-Type': 'application/json' },
+    token: 'totally-invalid-jwt',
     body: JSON.stringify({ params: ['User'] }),
   });
 

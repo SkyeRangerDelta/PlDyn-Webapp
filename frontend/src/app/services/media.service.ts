@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { catchError, map, Observable, of, Observer } from 'rxjs';
 import { AudioUploadResponse, DeleteResponse, FinalizeUploadResponse, MediaResult, Song } from '../customTypes';
 
@@ -13,13 +13,9 @@ export class MediaService {
   ) { }
 
   uploadMedia( formData: FormData ): Observable<AudioUploadResponse> {
-    const headers: HttpHeaders = new HttpHeaders()
-      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
-
     return this.httpClient.post<any>(
       '/api/v1/jellyfin/upload',
-      formData,
-      { headers: headers }
+      formData
     ).pipe (
         map( ( data: any ) => {
           return {
@@ -44,9 +40,6 @@ export class MediaService {
   }
 
   uploadSingleFile( file: File ): Observable<HttpEvent<AudioUploadResponse>> {
-    const headers: HttpHeaders = new HttpHeaders()
-      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
-
     const formData = new FormData();
     formData.append('files', file, file.name);
 
@@ -54,7 +47,6 @@ export class MediaService {
       '/api/v1/jellyfin/upload',
       formData,
       {
-        headers: headers,
         reportProgress: true,
         observe: 'events'
       }
@@ -62,14 +54,11 @@ export class MediaService {
   }
 
   clearMedia( mediaName: string ): Observable<DeleteResponse> {
-    const headers: HttpHeaders = new HttpHeaders()
-      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
     const payload = { 'fileName': mediaName };
 
     return this.httpClient.post<any>(
       `/api/v1/jellyfin/clear`,
-      payload,
-      { headers: headers }
+      payload
     ).pipe(
         map( ( data: any ) => {
           return {
@@ -91,14 +80,11 @@ export class MediaService {
   }
 
   finalizeUpload( songs: Song[] ): Observable<FinalizeUploadResponse> {
-    const headers: HttpHeaders = new HttpHeaders()
-      .set('Authorization', `Bearer ${ localStorage.getItem('pldyn-jfToken') }`);
     const payload = { songs };
 
     return this.httpClient.post<any>(
       '/api/v1/jellyfin/finalize',
-      payload,
-      { headers: headers }
+      payload
     ).pipe(
       map( ( data: any ) => {
         return {
@@ -133,7 +119,6 @@ export class MediaService {
           const res = await fetch('/api/v1/jellyfin/watch-ticket', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${localStorage.getItem('pldyn-jfToken')}`,
               'Content-Type': 'application/json'
             }
           });

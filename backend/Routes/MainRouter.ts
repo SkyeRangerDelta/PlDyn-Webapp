@@ -16,6 +16,7 @@ export { MainRouter, authMiddleware };
 async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<unknown> ) {
   const excludedRoutes = [
     '/api/v1/jellyfin/authenticate',
+    '/api/v1/jellyfin/logout',
     '/api/v1/jellyfin/status',
     '/api/v1/jellyfin/watch',
     '/api/v1/status'
@@ -26,7 +27,11 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
     return;
   }
 
-  const token = ctx.request.headers.get('Authorization')?.split(' ')[1];
+  // Read token from cookie first, fallback to Authorization header
+  const cookieToken = await ctx.cookies.get('pldyn-auth');
+  const headerToken = ctx.request.headers.get('Authorization')?.split(' ')[1];
+  const token = cookieToken || headerToken;
+
   if ( !token || token === 'null' ) {
     ctx.response.status = 401;
     ctx.response.body = {

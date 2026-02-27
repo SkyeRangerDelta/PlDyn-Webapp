@@ -20,8 +20,26 @@ router.post('/authenticate', async (ctx: RouterContext<string>) => {
 
   const result = await sendLoginRequest( reqBody.user, reqBody.pass );
 
+  // Set httpOnly cookie when authentication succeeds
+  if ( result.status === 200 && result.data ) {
+    const host = ctx.request.url.hostname;
+    const isSecure = host !== 'localhost' && host !== '127.0.0.1';
+
+    await ctx.cookies.set('pldyn-auth', result.data, {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 86400,
+      secure: isSecure,
+    });
+  }
+
   ctx.response.status = result.status;
-  ctx.response.body = result;
+  ctx.response.body = {
+    status: result.status,
+    message: result.message,
+    ...(result.username ? { username: result.username } : {})
+  };
 });
 
 async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinAuthenticateRequest> {
@@ -81,8 +99,6 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
       if ( !res || !res.success ) {
         throw new Error('Error updating user');
       }
-
-      setClientSettings( uid );
     }
   }
   catch (e) {
@@ -112,7 +128,8 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   return {
     status: 200,
     message: 'User authenticated',
-    data: jwtToken
+    data: jwtToken,
+    username: data.User.Name
   }
 }
 
@@ -145,15 +162,6 @@ async function updateUser( jfId: string ): Promise<UpdatedUserRes> {
     modified: 1,
     success: true
   } as UpdatedUserRes;
-}
-
-async function setClientSettings( jfId: string ) {
-  const settingsRes = await Mongo.selectOneByFilter( 'UserSettings', { jfId: jfId } ) as DB_UserSettingRecord;
-
-  if ( !settingsRes ) return;
-
-  // localStorage.setItem('lastUsedEditor', settingsRes.clientSettings.lastUsedEditor);
-  localStorage.setItem('clientSettings', JSON.stringify( settingsRes.clientSettings ));
 }
 
 export default {

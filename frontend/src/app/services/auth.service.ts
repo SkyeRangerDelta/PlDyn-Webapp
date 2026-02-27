@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { AuthResult } from '../customTypes';
 
@@ -16,7 +16,7 @@ export class AuthService {
   uname$ = this.uname.asObservable();
 
   public get isAuthenticated(): boolean {
-    return !!localStorage.getItem('pldyn-jfToken');
+    return localStorage.getItem('pldyn-session') === 'active';
   }
 
   public get getUsername(): string {
@@ -43,9 +43,8 @@ export class AuthService {
 
   authenticateUser( user: string, pass: string ): Observable<AuthResult> {
     const payload = { "user": user, "pass": pass };
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    return this.httpClient.post<any>( this.backendHost, payload, { headers: headers } )
+    return this.httpClient.post<any>( this.backendHost, payload )
       .pipe(
         map( (data: any) => {
           if ( data.status === 500 ) {
@@ -58,7 +57,7 @@ export class AuthService {
             } as AuthResult;
           }
 
-          if ( data.status !== 200 || !data.data ) {
+          if ( data.status !== 200 ) {
             console.log( 'Error authenticating user' );
 
             return {
@@ -68,13 +67,16 @@ export class AuthService {
             } as AuthResult;
           }
 
-          localStorage.setItem( 'pldyn-jfToken', data.data );
+          // Cookie is set automatically by the browser from the Set-Cookie header.
+          // We only store a lightweight session flag (no token).
+          localStorage.setItem( 'pldyn-session', 'active' );
 
           this.authState.next(true);
 
-          this.getTokenUsername().then( (username: string) => {
-            this.setUsername( username );
-          });
+          // Username comes directly from the login response
+          if ( data.username ) {
+            this.setUsername( data.username );
+          }
 
           return {
             status: 200,
@@ -86,10 +88,10 @@ export class AuthService {
             console.error( error );
 
             try {
-              localStorage.removeItem('pldyn-jfToken');
+              localStorage.removeItem('pldyn-session');
             }
             catch {
-              console.error( 'Couldnt remove local storage token (if any).' );
+              console.error( 'Couldnt remove local storage session flag (if any).' );
             }
 
             this.authState.next( false );
@@ -104,7 +106,12 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('pldyn-jfToken');
+    // Fire-and-forget: ask the backend to clear the httpOnly cookie
+    this.httpClient.post('/api/v1/jellyfin/logout', {}).subscribe({
+      error: () => { /* best-effort — cookie may already be expired */ }
+    });
+
+    localStorage.removeItem('pldyn-session');
 
     this.authState.next(false);
     this.uname.next('Program');
@@ -119,14 +126,7 @@ export class AuthService {
   }
 
   async getTokenUsername(): Promise<string> {
-    const clientToken = localStorage.getItem('pldyn-jfToken');
-
     if ( !this.isAuthenticated ) {
-      this.logout();
-      return '';
-    }
-
-    if ( !clientToken ) {
       this.logout();
       return '';
     }
@@ -134,8 +134,7 @@ export class AuthService {
     try {
       const data: any = await this.httpClient.post(
         '/api/v1/gettokendata',
-        { params: [ 'User' ] },
-        { headers: new HttpHeaders().set( 'Authorization', `Bearer ${ clientToken }` ) } )
+        { params: [ 'User' ] } )
         .toPromise();
 
       const uname: string = data.data.User;

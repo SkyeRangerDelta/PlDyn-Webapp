@@ -17,6 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private excludedUrls = [
     '/api/v1/jellyfin/authenticate',
+    '/api/v1/jellyfin/logout',
     '/api/v1/jellyfin/status',
     '/api/v1/status'
   ];
@@ -34,33 +35,25 @@ export class AuthInterceptor implements HttpInterceptor {
     const isProtectedEndpoint = !this.excludedUrls.some(url => request.url.includes(url));
 
     if (isProtectedEndpoint) {
-      // Verify token exists before making the request
-      const token = localStorage.getItem('pldyn-jfToken');
+      // Verify session flag exists before making the request
+      const hasSession = localStorage.getItem('pldyn-session') === 'active';
 
-      if (!token) {
-        console.warn('No token found - logging out user');
+      if (!hasSession) {
+        console.warn('No active session - logging out user');
         this.notificationService.showError('Authentication required.');
         this.getAuthService().logout();
         this.router.navigate(['/login']);
 
         // Return an error observable to prevent the request
         return throwError(() => new HttpErrorResponse({
-          error: 'No authentication token',
+          error: 'No active session',
           status: 401,
           statusText: 'Unauthorized'
         }));
       }
-
-      // Add Authorization header if not already present
-      if (!request.headers.has('Authorization')) {
-        request = request.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-      }
     }
 
+    // Cookie is sent automatically by the browser — no header injection needed
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

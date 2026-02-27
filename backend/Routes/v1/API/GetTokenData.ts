@@ -6,7 +6,10 @@ const router = new Router();
 router
   .post('/GetTokenData', async ( ctx: RouterContext<string> ) => {
 
-    const token = ctx.request.headers.get('authorization')?.split(' ')[1];
+    // Read token from cookie first, fallback to Authorization header
+    const cookieToken = await ctx.cookies.get('pldyn-auth');
+    const headerToken = ctx.request.headers.get('authorization')?.split(' ')[1];
+    const token = cookieToken || headerToken;
     const secret = new TextEncoder().encode( Deno.env.get('JWT_SECRET') );
     const requestBody = await ctx.request.body.json();
     const requestedParams = requestBody.params;

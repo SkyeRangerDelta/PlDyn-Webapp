@@ -119,7 +119,9 @@ router.post('/finalize', async (ctx) => {
 
   // Trigger Jellyfin library refresh if any files were processed
   if (processedCount > 0) {
-    const rawToken = ctx.request.headers.get('Authorization')?.split(' ')[1];
+    const cookieToken = await ctx.cookies.get('pldyn-auth');
+    const headerToken = ctx.request.headers.get('Authorization')?.split(' ')[1];
+    const rawToken = cookieToken || headerToken;
     const jellyfinToken = rawToken ? extractJellyfinToken(rawToken) : undefined;
 
     if (jellyfinToken) {

@@ -21,9 +21,9 @@ export class NavigationComponent {
 
   ngOnInit() {
     // Sync auth state with localStorage on init
-    const hasToken = !!localStorage.getItem('pldyn-jfToken');
-    if (!hasToken && this.authService.isAuthenticated) {
-      // Token was removed but authService still thinks user is authenticated
+    const hasSession = localStorage.getItem('pldyn-session') === 'active';
+    if (!hasSession && this.authService.isAuthenticated) {
+      // Session flag was removed but authService still thinks user is authenticated
       this.authService.logout();
     }
 
