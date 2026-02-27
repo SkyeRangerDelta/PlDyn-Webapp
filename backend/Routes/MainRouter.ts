@@ -51,26 +51,9 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
       return;
     }
 
-    // Decode the JWT token
-    const decRes = jose.decodeJwt( token );
-
-    // Check if the token is expired
-    if ( !decRes || !decRes.exp ) {
-      ctx.response.status = 401;
-      ctx.response.body = {
-        message: 'Invalid token.'
-      }
-
-      return;
-    }
-    else if ( decRes.exp < Math.floor( Date.now() / 1000 ) ) {
-      ctx.response.status = 401;
-      ctx.response.body = {
-        message: 'Token expired.'
-      }
-
-      return;
-    }
+    // Verify the JWT signature and expiry
+    const encodedSecret = new TextEncoder().encode( secret );
+    await jose.jwtVerify( token, encodedSecret );
 
     await next();
   }

@@ -13,15 +13,10 @@ router.get('/watch', async (ctx: RouterContext<string>) => {
     return;
   }
 
-  // Validate JWT (same decode + expiry check as MainRouter)
+  // Verify JWT signature and expiry
   try {
-    const decRes = jose.decodeJwt(token);
-
-    if (!decRes || !decRes.exp || decRes.exp < Math.floor(Date.now() / 1000)) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: 'Token expired or invalid.' };
-      return;
-    }
+    const secret = new TextEncoder().encode(Deno.env.get('JWT_SECRET'));
+    await jose.jwtVerify(token, secret);
   } catch {
     ctx.response.status = 401;
     ctx.response.body = { message: 'Invalid token.' };
