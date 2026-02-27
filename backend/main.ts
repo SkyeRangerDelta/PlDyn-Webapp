@@ -11,6 +11,7 @@ import { DBHandler } from "./Utilities/DBHandler.ts";
 import { cleanTempFolders, startTempCleanupScheduler } from "./Utilities/IOUtilities.ts";
 import { TempFileWatcher } from "./Utilities/TempFileWatcher.ts";
 import { RateLimiter } from "./Utilities/RateLimiter.ts";
+import { TicketStore } from "./Utilities/TicketStore.ts";
 
 // Env
 await load( { export: true } );
@@ -43,6 +44,9 @@ startTempCleanupScheduler();
 // Watch temp directory for file removals (notifies frontend via SSE)
 const tempFileWatcher = new TempFileWatcher(`${Deno.cwd()}/temp/audio-uploads`);
 tempFileWatcher.start();
+
+// SSE ticket store (short-lived, single-use tickets replace JWT in URL params)
+const ticketStore = new TicketStore();
 
 // Check write access to library directory
 try {
@@ -78,6 +82,7 @@ if ( !jwtSecret ) {
 app.use( async (ctx, next) => {
   ctx.state.Mongo = Mongo;
   ctx.state.tempFileWatcher = tempFileWatcher;
+  ctx.state.ticketStore = ticketStore;
   await next();
 });
 

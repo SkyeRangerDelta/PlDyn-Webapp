@@ -125,26 +125,44 @@ export class MediaService {
 
   watchTempFiles(): Observable<string> {
     return new Observable<string>((observer: Observer<string>) => {
-      const token = localStorage.getItem('pldyn-jfToken');
-      if (!token) {
-        observer.complete();
-        return;
-      }
+      let eventSource: EventSource | null = null;
 
-      const eventSource = new EventSource(`/api/v1/jellyfin/watch?token=${encodeURIComponent(token)}`);
+      // Fetch a short-lived ticket, then open SSE with it
+      const openConnection = async () => {
+        try {
+          const res = await fetch('/api/v1/jellyfin/watch-ticket', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('pldyn-jfToken')}`,
+              'Content-Type': 'application/json'
+            }
+          });
 
-      eventSource.addEventListener('file-removed', (event: MessageEvent) => {
-        const data = JSON.parse(event.data);
-        observer.next(data.fileName);
-      });
+          if (!res.ok) {
+            observer.complete();
+            return;
+          }
 
-      eventSource.onerror = () => {
-        // EventSource auto-reconnects on error; just log for debugging
-        console.warn('[MediaService] SSE connection error, will auto-reconnect');
+          const { ticket } = await res.json();
+          eventSource = new EventSource(`/api/v1/jellyfin/watch?ticket=${encodeURIComponent(ticket)}`);
+
+          eventSource.addEventListener('file-removed', (event: MessageEvent) => {
+            const data = JSON.parse(event.data);
+            observer.next(data.fileName);
+          });
+
+          eventSource.onerror = () => {
+            console.warn('[MediaService] SSE connection error');
+          };
+        } catch {
+          observer.complete();
+        }
       };
 
+      openConnection();
+
       return () => {
-        eventSource.close();
+        eventSource?.close();
       };
     });
   }

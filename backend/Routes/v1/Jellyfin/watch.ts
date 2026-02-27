@@ -1,25 +1,21 @@
 import { Router, RouterContext, ServerSentEvent } from '@oak/oak';
-import * as jose from 'jose';
 
 const router = new Router();
 
 router.get('/watch', async (ctx: RouterContext<string>) => {
-  // EventSource doesn't support custom headers, so JWT is passed as a query param
-  const token = ctx.request.url.searchParams.get('token');
+  // Use a short-lived, single-use ticket instead of the long-lived JWT
+  const ticket = ctx.request.url.searchParams.get('ticket');
 
-  if (!token) {
+  if (!ticket) {
     ctx.response.status = 401;
-    ctx.response.body = { message: 'Unauthorized (no token)' };
+    ctx.response.body = { message: 'Unauthorized (no ticket)' };
     return;
   }
 
-  // Verify JWT signature and expiry
-  try {
-    const secret = new TextEncoder().encode(Deno.env.get('JWT_SECRET'));
-    await jose.jwtVerify(token, secret);
-  } catch {
+  const ticketStore = ctx.state.ticketStore;
+  if (!ticketStore || !ticketStore.validate(ticket)) {
     ctx.response.status = 401;
-    ctx.response.body = { message: 'Invalid token.' };
+    ctx.response.body = { message: 'Invalid or expired ticket.' };
     return;
   }
 
