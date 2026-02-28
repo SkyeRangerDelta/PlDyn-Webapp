@@ -22,8 +22,9 @@ router.post('/authenticate', async (ctx: RouterContext<string>) => {
 
   // Set httpOnly cookie when authentication succeeds
   if ( result.status === 200 && result.data ) {
+    const proto = ctx.request.headers.get('x-forwarded-proto') || ctx.request.url.protocol;
     const host = ctx.request.url.hostname;
-    const isSecure = host !== 'localhost' && host !== '127.0.0.1';
+    const isSecure = proto === 'https' || proto === 'https:' || (host !== 'localhost' && host !== '127.0.0.1');
 
     await ctx.cookies.set('pldyn-auth', result.data, {
       httpOnly: true,
