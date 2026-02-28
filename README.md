@@ -1,6 +1,7 @@
 # PlDyn Webapp
 
 [![Release & Deploy](https://github.com/SkyeRangerDelta/PlDyn-Webapp/actions/workflows/app-ci.yml/badge.svg)](https://github.com/SkyeRangerDelta/PlDyn-Webapp/actions/workflows/app-ci.yml)
+[![Latest Image](https://img.shields.io/github/v/release/SkyeRangerDelta/PlDyn-Webapp?include_prereleases&label=latest+image)](https://github.com/SkyeRangerDelta/PlDyn-Webapp/pkgs/container/pldyn-webapp)
 
 Official webapp repository for Planetary Dynamics. It do be a website.
 
