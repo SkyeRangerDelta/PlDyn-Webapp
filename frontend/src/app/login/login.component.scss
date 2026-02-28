@@ -1,0 +1,80 @@
+@use '../../styles/colors';
+
+// Centering the login container
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+
+.login-subtext {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: rgba(colors.$text-color, 0.7);
+}
+
+// Semi-transparent overlay to focus on the login form
+.overlay {
+  background-color: colors.$background-color;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  align-content: center;
+  width: 20%;
+}
+
+// Login form styling
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+// Login header
+h1 {
+  font-family: 'Courier New', Courier, monospace;
+  color: colors.$text-color;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+// Input fields
+mat-form-field {
+  width: 100%;
+
+  .mat-form-field-wrapper {
+    background-color: colors.$input-background;
+    border-radius: 8px;
+    padding: 4px;
+  }
+
+  input {
+    padding: 10px;
+    border-radius: 8px;
+    color: colors.$input-background !important;
+  }
+
+  mat-label {
+    color: colors.$input-background;
+  }
+}
+
+// Submit button styling
+button {
+  color: colors.$text-color !important;
+  padding: 12px 0;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: colors.$button-hover !important;
+  }
+}

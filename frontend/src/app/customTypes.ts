@@ -1,0 +1,123 @@
+/**
+ * Custom types for the application
+ */
+
+export interface AuthResult {
+  status: number;
+  message: string;
+  success: boolean;
+}
+
+export interface MediaResult {
+  status: number;
+  message: string;
+  success: boolean;
+}
+
+export interface ContributionObject {
+  album: string;
+  albumArtist: string;
+  year: number;
+  songCount: number;
+  coverUrl: string | null;
+  date: string;
+}
+
+export interface NewUserRes {
+  inserted: number;
+  success: boolean;
+}
+
+export interface UpdatedUserRes {
+  modified: number;
+  success: boolean;
+}
+
+export interface DB_UserSettingRecord {
+  jfId: string;
+  clientSettings: ClientSettings;
+}
+
+export interface ClientSettings {
+  lastUsedEditor: string;
+}
+
+export interface ClientSettingsResult {
+  status: number;
+  message: string;
+  settings: ClientSettings;
+  success: boolean;
+}
+
+export interface ClientContributionResult {
+  message: string;
+  data: {
+    contributions: ContributionObject[];
+    totalAlbums: number;
+    totalSongs: number;
+    errorMessage: string;
+  }
+}
+
+export interface Song {
+  filePath: string;
+  fileName: string;
+  title: string;
+  artist: string;
+  album: string;
+  genre: string[];
+  year: number;
+  track: number;
+  albumArtist: string;
+  composer: string[];
+  discNumber: number;
+  cover?: {
+    format: string;
+    data: string;
+  }
+}
+
+export interface AudioUploadResponse {
+  message: string;
+  status: number;
+  error: boolean;
+  uploadData: Song[];
+}
+
+export interface DeleteResponse {
+  message: string;
+  status: number;
+  error: boolean;
+}
+
+export interface FinalizeUploadResponse {
+  status: number;
+  message: string;
+  error: boolean;
+  processedCount: number;
+  failedFiles: FileProcessingError[];
+}
+
+export interface FileProcessingError {
+  fileName: string;
+  errorType: 'metadata_write' | 'file_move' | 'ffmpeg_not_found';
+  errorMessage: string;
+}
+
+export interface AlbumGroup {
+  albumName: string;
+  songs: Song[];
+  year: number | null;
+  albumArtist: string;
+  cover: {
+    format: string;
+    data: string;
+  } | null;
+}
+
+export interface TableRow {
+  type: 'album-header' | 'song';
+  albumGroup?: AlbumGroup;
+  song?: Song;
+  albumName?: string;
+}

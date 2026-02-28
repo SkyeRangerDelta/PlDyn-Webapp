@@ -1,0 +1,226 @@
+@use '../../styles/colors';
+@use 'sass:color';
+
+/* Styles for the table layout */
+.media-uploader-music {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: colors.$background-color;
+  color: colors.$text-color;
+  border: 2px solid colors.$button-background;
+  border-radius: 8px;
+  max-width: 80%;
+  margin: 1rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    &:not(.first-album-table) {
+      margin-top: 1.5rem;
+    }
+
+    th, td {
+      border: 1px solid colors.$button-background;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: colors.$button-background;
+      color: colors.$text-color;
+    }
+
+    td {
+      background-color: colors.$row-background;
+      color: colors.$text-color;
+
+      input {
+        width: 90%;
+        padding: 0.5rem;
+        border: none;
+        background-color: transparent;
+        color: colors.$text-color;
+      }
+    }
+  }
+
+  /* Styles for the buttons */
+  button {
+    padding: 0.5rem 1rem;
+    background-color: colors.$button-background;
+    color: colors.$text-color;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: colors.$button-hover;
+    }
+
+    &:disabled {
+      background-color: rgba(colors.$button-background, 0.5);
+      cursor: not-allowed;
+    }
+  }
+
+  .remove-btn {
+    padding: 0.35rem 0.6rem;
+    background-color: transparent;
+    color: colors.$primary-color;
+    border: 1px solid colors.$primary-color;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    line-height: 1;
+
+    &:hover {
+      background-color: rgba(#cc3333, 0.2);
+      border-color: #cc3333;
+      color: #ff8080;
+    }
+  }
+}
+
+.custom-uploader {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background-color: colors.$button-background;
+  color: colors.$text-color;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: colors.$button-hover;
+  }
+
+  .fa-spinner {
+    font-size: 1rem;
+  }
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.add-content-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.add-content-cols {
+  display: flex;
+  flex-direction: row;
+}
+
+.upload-btn {
+  font-size: large;
+  padding: 0.5rem 1rem;
+}
+
+/* In `media-uploader-music.component.scss` */
+.context-btn-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: colors.$background-color;
+  border: 1px solid colors.$button-background;
+  padding: 10px;
+  z-index: 1000;
+  border-radius: 8px;
+}
+
+.context-btn-menu button {
+  margin: 5px 0;
+}
+
+/* Upload progress styles - compact single line */
+.upload-progress-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+
+  .progress-text {
+    color: colors.$text-color;
+    opacity: 0.9;
+    white-space: nowrap;
+  }
+
+  .progress-bar-inline {
+    width: 120px;
+    height: 8px;
+    background-color: rgba(colors.$button-background, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+
+    .progress-bar {
+      height: 100%;
+      background: colors.$primary-color;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+  }
+}
+
+// Album header row styling
+.album-header-row {
+  background-color: color.adjust(colors.$button-background, $lightness: 10%);
+  font-weight: bold;
+  border-bottom: 2px solid colors.$button-background;
+
+  td {
+    background-color: color.adjust(colors.$button-background, $lightness: 10%);
+    padding: 0.75rem 0.5rem;
+  }
+
+  .album-name-cell {
+    text-align: left;
+    font-size: 1.1rem;
+    padding-left: 1rem;
+  }
+
+  .album-field-input {
+    width: 90%;
+    padding: 0.5rem;
+    border: 1px solid colors.$text-color;
+    background-color: rgba(colors.$background-color, 0.8);
+    color: colors.$text-color;
+    border-radius: 4px;
+  }
+}
+
+// Song row styling (indented)
+.song-row {
+  td:nth-child(2) {
+    padding-left: 2rem; // Indent title column
+  }
+
+  .song-field-input {
+    width: 90%;
+    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    color: colors.$text-color;
+  }
+
+  .readonly-field {
+    color: colors.$text-color;
+    opacity: 0.7;
+    font-style: italic;
+    padding-left: 0.5rem;
+  }
+}
+
+.song-row:hover {
+  background-color: color.adjust(colors.$row-background, $lightness: 5%);
+}
+

@@ -3,62 +3,56 @@
     "master",
     {
       "name": "Experimental",
-      "prerelease": true,
-      "channel": "exp"
+      "prerelease": "E",
+      "channel": "E"
     }
   ],
+  "tagFormat": "v${version}",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "eslint",
-        "types": [
-          { "type": "Test",     "hidden": true },
-          { "type": "Perf",     "section": "Performance Changes", "release": "patch" },
-          { "type": "Refactor", "section": "Misc.",               "release": "patch" }
-        ],
+        "preset": "angular",
         "releaseRules": [
-          { "type": "Build",    "release": "patch"},
-          { "type": "Docs",     "release": "patch"},
-          { "type": "Chore",    "release": "patch"},
-          { "type": "Perf",     "release": "patch" },
-          { "type": "Refactor", "release": "patch" }
+          { "type": "docs", "scope": "README", "release": "patch" },
+          { "type": "style", "release": "patch" },
+          { "type": "refactor", "release": "patch" },
+          { "type": "fix", "release": "patch" }
         ]
       }
     ],
     [
       "@semantic-release/release-notes-generator",
       {
-        "preset": "eslint"
+        "preset": "angular"
       }
-
     ],
     [
       "@semantic-release/changelog",
       {
-        "changelogTitle": "|| V${version} Changelog ||"
+        "changelogFile": "CHANGELOG.md"
       }
     ],
-    ["@semantic-release/git", {
-      "assets": [
-        "package.json",
-        "package-lock.json",
-        "README.md",
-        "CHANGELOG.md"
-      ],
-      "message": "Chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-    }],
-    "@semantic-release/github",
     [
       "@semantic-release/npm",
       {
-        "npmPublish": false
+        "npmPublish": false,
+        "pkgRoot": "frontend"
       }
-    ]
-  ],
-  "tagFormat": "V${version}",
-  "GIT_AUTHOR_NAME": "SkyeRangerDelta",
-  "GIT_AUTHOR_EMAIL": "skyerangerdelta@pldyn.net",
-  "GIT_COMMITTER_NAME": "SkyeRangerDelta",
-  "GIT_COMMITTER_EMAIL": "skyerangerdelta@pldyn.net"
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "node scripts/update-deno-version.js ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["CHANGELOG.md", "frontend/package.json", "backend/deno.json"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    "@semantic-release/github"
+  ]
 }

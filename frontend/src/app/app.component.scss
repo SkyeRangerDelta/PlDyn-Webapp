@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+p {
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+  color: white;
+  font-size: large;
+}
+
+img {
+  color: white;
+}
+
+.mainDiv {
+  display: flex;
+  padding: 1%;
+}
+
+.UsernameBox {
+  width: 10%;
+  background-color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  align-content: center;
+}

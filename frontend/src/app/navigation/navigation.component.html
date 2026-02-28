@@ -1,0 +1,21 @@
+@if (!isLoginPage()) {
+  <div class="navigation-bar">
+    @if (authed) {
+      <button mat-flat-button routerLink="/" class="nav-button">Home</button>
+    }
+    @if (authed) {
+      <button mat-flat-button routerLink="/media" class="nav-button">Media</button>
+    }
+    @if (authed) {
+      <div class="username-box">
+        <span>Hello, {{username}}!</span>
+      </div>
+    }
+    @if (!authed) {
+      <button mat-flat-button routerLink="/login" class="nav-button">Login</button>
+    }
+    @if (authed) {
+      <button mat-flat-button (click)="logout()" class="nav-button">Logout</button>
+    }
+  </div>
+}
