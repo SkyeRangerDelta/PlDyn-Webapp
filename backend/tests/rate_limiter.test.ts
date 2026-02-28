@@ -13,6 +13,7 @@ async function makeRequest(
   const router = new Router();
   router.get('/limited', (ctx) => { ctx.response.body = { ok: true }; });
   router.get('/unlimited', (ctx) => { ctx.response.body = { ok: true }; });
+  router.get('/api/v1/jellyfin/watch-ticket', (ctx) => { ctx.response.body = { ok: true }; });
   app.use(router.routes());
   app.use(router.allowedMethods());
 
@@ -123,4 +124,22 @@ Deno.test('startCleanupScheduler purges expired buckets automatically', async ()
 
   assertEquals(limiter.getBucketCount(), 0);
   clearInterval(timerId);
+});
+
+// ── watch-ticket path is rate limited ────────────────────────────────────────
+
+Deno.test('watch-ticket path is rate limited', async () => {
+  const limiter = new RateLimiter({
+    '/api/v1/jellyfin/watch-ticket': { max: 3, windowMs: 60_000 },
+  });
+
+  // First 3 should pass
+  for (let i = 0; i < 3; i++) {
+    const { status } = await makeRequest(limiter, '/api/v1/jellyfin/watch-ticket');
+    assertEquals(status, 200);
+  }
+
+  // 4th should be blocked
+  const { status } = await makeRequest(limiter, '/api/v1/jellyfin/watch-ticket');
+  assertEquals(status, 429);
 });

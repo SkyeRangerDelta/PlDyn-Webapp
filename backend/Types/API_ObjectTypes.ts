@@ -17,8 +17,9 @@ export interface JellyfinContributionsResponse {
 
 export interface JellyfinContribution {
   title: string;
-  description: string;
-  recordId: string;
+  artist: string;
+  album: string;
+  date: string;
 }
 
 export interface AudioFile {

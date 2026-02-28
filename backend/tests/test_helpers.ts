@@ -30,7 +30,7 @@ export async function testRequest(
   router: Router,
   path: string,
   init: RequestInit & { token?: string } = {}
-): Promise<{ status: number; body: Record<string, unknown> | null }> {
+): Promise<{ status: number; headers: Headers; body: Record<string, unknown> | null }> {
   const app = new Application();
   app.use(router.routes());
   app.use(router.allowedMethods());
@@ -50,14 +50,15 @@ export async function testRequest(
   const request = new Request(`http://localhost${path}`, requestInit);
   const response = await app.handle(request);
 
-  if (!response) return { status: 404, body: null };
+  if (!response) return { status: 404, headers: new Headers(), body: null };
 
+  const headers = response.headers;
   let body = null;
   try {
     body = await response.json();
   } catch { /* non-JSON response */ }
 
-  return { status: response.status, body };
+  return { status: response.status, headers, body };
 }
 
 export { TEST_SECRET };

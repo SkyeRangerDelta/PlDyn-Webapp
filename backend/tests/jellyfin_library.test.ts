@@ -42,10 +42,15 @@ Deno.test('extractJellyfinToken rejects an expired JWT', async () => {
 
 Deno.test('extractJellyfinToken returns undefined when JWT_SECRET is missing', async () => {
   Deno.env.delete('JWT_SECRET');
-  const token = await createTestJwt({ claims: { AccessToken: 'jf-abc-123' } });
+  try {
+    const token = await createTestJwt({ claims: { AccessToken: 'jf-abc-123' } });
 
-  const result = await extractJellyfinToken(token);
-  assertEquals(result, undefined);
+    const result = await extractJellyfinToken(token);
+    assertEquals(result, undefined);
+  } finally {
+    // Restore so later tests in the same process aren't affected
+    Deno.env.set('JWT_SECRET', TEST_SECRET);
+  }
 });
 
 // ── Returns undefined when AccessToken claim is absent ───────────────────────

@@ -137,3 +137,13 @@ Deno.test('clear rejects request without userId in state', async () => {
   assertEquals(status, 401);
   assertEquals(body?.message, 'Missing user identity.');
 });
+
+// ── Cleanup ─────────────────────────────────────────────────────────────────
+
+Deno.test('cleanup: remove test-user temp directory', async () => {
+  try {
+    await Deno.remove(TEMP_DIR, { recursive: true });
+  } catch {
+    // Directory may already be gone — that's fine
+  }
+});

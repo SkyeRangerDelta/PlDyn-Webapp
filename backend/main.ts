@@ -119,6 +119,7 @@ app.use( async (ctx, next) => {
   ctx.response.headers.set('X-Frame-Options', 'DENY');
   ctx.response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   ctx.response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+  ctx.response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains');
   ctx.response.headers.set(
     'Content-Security-Policy',
     "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
@@ -128,9 +129,10 @@ app.use( async (ctx, next) => {
 
 // Rate limiting
 const rateLimiter = new RateLimiter({
-  '/api/v1/jellyfin/authenticate': { max: 10, windowMs: 15 * 60_000 },  // 10 login attempts per 15 min
-  '/api/v1/jellyfin/upload':       { max: 60, windowMs: 15 * 60_000 },  // 60 uploads per 15 min
-  '/api/v1/jellyfin/finalize':     { max: 10, windowMs: 15 * 60_000 },  // 10 finalizations per 15 min
+  '/api/v1/jellyfin/authenticate':  { max: 10, windowMs: 15 * 60_000 },  // 10 login attempts per 15 min
+  '/api/v1/jellyfin/upload':        { max: 60, windowMs: 15 * 60_000 },  // 60 uploads per 15 min
+  '/api/v1/jellyfin/finalize':      { max: 10, windowMs: 15 * 60_000 },  // 10 finalizations per 15 min
+  '/api/v1/jellyfin/watch-ticket':  { max: 10, windowMs: 60_000 },       // 10 tickets per 1 min
 });
 rateLimiter.startCleanupScheduler();
 app.use( rateLimiter.middleware() );
@@ -155,7 +157,7 @@ app.use( async (ctx, next) => {
 // Error handler
 app.use( async ctx => {
   ctx.response.status = 404;
-  ctx.response.body = `${ctx.request.url} not found`;
+  ctx.response.body = { message: 'Not found' };
 } )
 
 // Start

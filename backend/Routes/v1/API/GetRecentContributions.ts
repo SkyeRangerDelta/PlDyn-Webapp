@@ -7,23 +7,21 @@ const router = new Router();
 router
   .post('/GetRecentContributions', async ( ctx: RouterContext<string> ) => {
     const Mongo: DBHandler = ctx.state.Mongo;
+    const userId = ctx.state.userId as string | undefined;
 
-    const req = await ctx.request.body.json();
-
-    if ( !req || !req.uid || typeof req.uid !== 'string' ) {
-      ctx.response.status = 400;
+    if ( !userId || typeof userId !== 'string' ) {
+      ctx.response.status = 401;
       ctx.response.body = {
-        message: 'Bad Request',
+        message: 'Unauthorized',
         data: {
           contributions: [],
-          errorMessage: 'Invalid request body.'
+          errorMessage: 'Missing user identity.'
         }
       } as JellyfinContributionsResponse;
       return;
     }
 
-    const uId = req.uid;
-    const settingsRes = await Mongo.selectOneByFilter( 'UserContributions', { jfId: uId } );
+    const settingsRes = await Mongo.selectOneByFilter( 'UserContributions', { jfId: userId } );
 
     if ( !settingsRes ) {
       ctx.response.status = 200;

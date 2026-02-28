@@ -14,16 +14,11 @@ export interface MediaResult {
   success: boolean;
 }
 
-export interface ContributionTile {
-  thumbnailUrl: string;
-  title: string;
-  status: string;
-}
-
 export interface ContributionObject {
   title: string;
-  description: string;
-  recordId: string;
+  artist: string;
+  album: string;
+  date: string;
 }
 
 export interface NewUserRes {

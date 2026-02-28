@@ -110,15 +110,43 @@ Deno.test('auth middleware sets ctx.state.userId from JWT ID claim', async () =>
   assertEquals(body?.userId, 'jf-user-99');
 });
 
+// ── Cache-Control on authenticated responses ────────────────────────────────
+
+Deno.test('auth middleware sets Cache-Control: no-store on authenticated responses', async () => {
+  Deno.env.set('JWT_SECRET', TEST_SECRET);
+  const token = await createTestJwt();
+
+  const { status, headers } = await testRequest(makeTestRouter(), '/api/v1/test', {
+    token,
+  });
+
+  assertEquals(status, 200);
+  assertEquals(headers.get('Cache-Control'), 'no-store');
+});
+
+Deno.test('auth middleware does not set Cache-Control on excluded (public) routes', async () => {
+  Deno.env.set('JWT_SECRET', TEST_SECRET);
+
+  const { status, headers } = await testRequest(makeTestRouter(), '/api/v1/status');
+
+  assertEquals(status, 200);
+  assertEquals(headers.get('Cache-Control'), null);
+});
+
 // ── Missing JWT_SECRET on server ──────────────────────────────────────────────
 
 Deno.test('auth middleware returns 500 when JWT_SECRET is not set', async () => {
   Deno.env.delete('JWT_SECRET');
-  const token = await createTestJwt();
+  try {
+    const token = await createTestJwt();
 
-  const { status } = await testRequest(makeTestRouter(), '/api/v1/test', {
-    token,
-  });
+    const { status } = await testRequest(makeTestRouter(), '/api/v1/test', {
+      token,
+    });
 
-  assertEquals(status, 500);
+    assertEquals(status, 500);
+  } finally {
+    // Restore so later tests in the same process aren't affected
+    Deno.env.set('JWT_SECRET', TEST_SECRET);
+  }
 });

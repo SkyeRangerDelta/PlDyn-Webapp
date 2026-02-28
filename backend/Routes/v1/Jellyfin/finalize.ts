@@ -1,5 +1,6 @@
 import { Router } from '@oak/oak';
 
+import { DBHandler } from "../../../Utilities/DBHandler.ts";
 import { ensureFolderExists, checkFfmpegAvailable } from "../../../Utilities/IOUtilities.ts";
 import { writeMetadataToFile } from "../../../Utilities/MetadataWriter.ts";
 import { triggerMusicLibraryRefresh, extractJellyfinToken } from "../../../Utilities/JellyfinLibrary.ts";
@@ -7,6 +8,7 @@ import {
   AudioFile,
   FinalizeUploadResponse,
   FileProcessingError,
+  JellyfinContribution,
   RawAudioFile
 } from "../../../Types/API_ObjectTypes.ts";
 
@@ -104,12 +106,14 @@ router.post('/finalize', async (ctx) => {
   const tempDir = `${Deno.cwd()}/temp/audio-uploads/${userId}`;
   const libraryDir = `${Deno.cwd()}/library/music`;
   const failedFiles: FileProcessingError[] = [];
+  const successfulSongs: AudioFile[] = [];
   let processedCount = 0;
 
   for (const song of normalizedSongs) {
     try {
       await writeMetadataToFile(song, tempDir, libraryDir);
       processedCount++;
+      successfulSongs.push(song);
       console.log(`Processed ${processedCount}/${normalizedSongs.length}: ${song.fileName}`);
     } catch (error) {
       console.error(`Failed to process ${song.fileName}:`, (error as Error).message);
@@ -127,6 +131,24 @@ router.post('/finalize', async (ctx) => {
         errorType: errorType,
         errorMessage: 'Processing failed.'
       });
+    }
+  }
+
+  // Record contributions in the database
+  if (processedCount > 0) {
+    try {
+      const Mongo: DBHandler = ctx.state.Mongo;
+      const contributions: JellyfinContribution[] = successfulSongs.map(song => ({
+        title: song.title,
+        artist: song.artist,
+        album: song.album,
+        date: new Date().toISOString(),
+      }));
+      await Mongo.updateOne('UserContributions', { jfId: userId }, {
+        $push: { contributions: { $each: contributions } }
+      });
+    } catch (error) {
+      console.error('[Finalize] Failed to record contributions:', (error as Error).message);
     }
   }
 

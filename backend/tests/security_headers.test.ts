@@ -14,6 +14,7 @@ async function getHeaders(): Promise<Headers> {
     ctx.response.headers.set('X-Frame-Options', 'DENY');
     ctx.response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     ctx.response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+    ctx.response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains');
     ctx.response.headers.set(
       'Content-Security-Policy',
       "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
@@ -52,6 +53,11 @@ Deno.test('sets Referrer-Policy', async () => {
 Deno.test('sets Permissions-Policy', async () => {
   const headers = await getHeaders();
   assertEquals(headers.get('Permissions-Policy'), 'geolocation=(), microphone=(), camera=(), payment=()');
+});
+
+Deno.test('sets Strict-Transport-Security (HSTS)', async () => {
+  const headers = await getHeaders();
+  assertEquals(headers.get('Strict-Transport-Security'), 'max-age=63072000; includeSubDomains');
 });
 
 Deno.test('sets Content-Security-Policy', async () => {

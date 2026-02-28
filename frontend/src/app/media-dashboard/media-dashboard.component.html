@@ -6,11 +6,9 @@
       <div >
         @for (item of contributions; track item) {
           <div class="media-item">
-            <img [src]="item.thumbnailUrl" alt="Thumbnail" />
             <div class="title">{{ item.title }}</div>
-            <div class="status">{{ item.status }}</div>
-            <button>Edit</button>
-            <button>Delete</button>
+            <div class="artist">{{ item.artist }}</div>
+            <div class="date">{{ item.date }}</div>
           </div>
         }
       </div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ContributionTile } from '../customTypes';
+import { ContributionObject } from '../customTypes';
 import { SettingsService } from '../services/settings.service';
 import { NotificationService } from '../services/notification.service';
 
@@ -16,7 +16,7 @@ import { NotificationService } from '../services/notification.service';
 export class MediaDashboardComponent {
   lastUsedEditor: string = 'Music';
 
-  contributions: ContributionTile[] = [];
+  contributions: ContributionObject[] = [];
 
   newMedia = {
     title: '',

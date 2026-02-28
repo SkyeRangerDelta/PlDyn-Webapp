@@ -33,6 +33,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
   };
 
   private watchSub?: Subscription;
+  private finalizing = false;
   private readonly clickHandler = () => this.cleanupMenus();
 
   constructor(
@@ -61,8 +62,12 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
 
     // Watch for temp file removals via SSE
     this.watchSub = this.MediaService.watchTempFiles().subscribe(fileName => {
+      // Ignore file removals while finalize is processing — it deletes
+      // temp files as part of normal operation, not because they expired.
+      if (this.finalizing) return;
+
       const index = this.songs.findIndex(s => s.fileName === fileName);
-      if (index === -1) return; // Already removed (e.g. by finalize)
+      if (index === -1) return; // Already removed
 
       const song = this.songs[index];
       this.songs.splice(index, 1);
@@ -319,10 +324,12 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     if (!this.isFormValid()) return;
 
     this.isLoading = true;
+    this.finalizing = true;
 
     this.MediaService.finalizeUpload(this.songs).subscribe({
       next: (response) => {
         this.isLoading = false;
+        this.finalizing = false;
 
         if (response.status === 200) {
           // Complete success - clear all songs and reset all state
@@ -350,6 +357,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoading = false;
+        this.finalizing = false;
         this.notificationService.showError(error.message || 'Upload failed. Please try again.');
       }
     });

@@ -68,12 +68,12 @@ export class SettingsService {
       { headers: headers }
     ).pipe (
       map( (data: any) => {
-        if ( data.status !== 200 || !data.data ) {
+        if ( !data.data || !data.data.contributions ) {
           return {
             message: data.message,
             data: {
               contributions: [],
-              errorMessage: 'No contributions found.'
+              errorMessage: data.data?.errorMessage || 'No contributions found.'
             }
           } as ClientContributionResult;
         }
@@ -81,7 +81,7 @@ export class SettingsService {
         return {
           message: data.message,
           data: {
-            contributions: data.contributions,
+            contributions: data.data.contributions,
             errorMessage: ''
           }
         } as ClientContributionResult;

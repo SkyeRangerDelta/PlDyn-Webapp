@@ -62,6 +62,9 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
     // Make the user's Jellyfin ID available to downstream routes
     ctx.state.userId = payload.ID as string | undefined;
 
+    // Prevent caching of authenticated responses
+    ctx.response.headers.set('Cache-Control', 'no-store');
+
     await next();
   }
   catch ( error ) {
