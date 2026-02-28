@@ -1,3 +1,10 @@
+## [1.0.2-E.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.1...v1.0.2-E.2) (2026-02-28)
+
+
+### Bug Fixes
+
+* Corrected ref name in release pipeline ([7671e58](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/7671e58850e39aa755ace0763c0208c4675bf6a6))
+
 ## [1.0.2-E.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.1...v1.0.2-E.1) (2026-02-28)
 
 
