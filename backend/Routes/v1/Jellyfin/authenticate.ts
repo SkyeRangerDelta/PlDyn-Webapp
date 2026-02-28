@@ -43,9 +43,18 @@ router.post('/authenticate', async (ctx: RouterContext<string>) => {
 });
 
 async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinAuthenticateRequest> {
-  console.log( `[Jellyfin] Authenticating user ${ user }` );
+  console.log( '[Jellyfin] Processing authentication request' );
 
   const jellyfinHost = Deno.env.get('JELLYFIN_HOST') || 'http://localhost:8096';
+
+  // Refuse to send credentials over plaintext HTTP to a remote host
+  const jellyfinUrl = new URL( jellyfinHost );
+  const isLocalhost = jellyfinUrl.hostname === 'localhost' || jellyfinUrl.hostname === '127.0.0.1';
+  if ( jellyfinUrl.protocol === 'http:' && !isLocalhost ) {
+    console.error( '[Jellyfin] Refusing to authenticate: JELLYFIN_HOST uses plaintext HTTP to a remote host. Use HTTPS.' );
+    return { status: 500, message: 'Internal Server Error' };
+  }
+
   const url = `${ jellyfinHost }/Users/AuthenticateByName`;
 
   const response = await fetch( url, {
@@ -61,7 +70,7 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   });
 
   if ( response.status === 401 ) {
-    console.error( `[Jellyfin] Unauthorized user ${ user }` );
+    console.error( '[Jellyfin] Authentication failed: unauthorized' );
     return {
       status: 401,
       message: 'User Unauthorized'
@@ -69,7 +78,7 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   }
 
   if ( !response.ok ) {
-    console.error( `[Jellyfin] Error authenticating user ${ user }` );
+    console.error( '[Jellyfin] Authentication failed: unexpected error' );
     return {
       status: 500,
       message: 'Internal Server Error'
@@ -79,7 +88,7 @@ async function sendLoginRequest( user: string, pass: string ): Promise<JellyfinA
   const data = await response.json();
 
   // Map user ID to DB
-  console.log( `[Jellyfin] Mapping user...` );
+  console.log( '[Jellyfin] Mapping user...' );
   try {
     const uid: string = data.User.Id;
     const userRes = await Mongo.selectOneByFilter( 'UserMap', { jfId: uid } );

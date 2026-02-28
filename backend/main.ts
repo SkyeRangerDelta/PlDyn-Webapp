@@ -70,6 +70,19 @@ try {
   console.warn('%c⚠ WARNING: ffmpeg not found on PATH — audio processing will fail', 'color: yellow; font-weight: bold');
 }
 
+// Warn if Jellyfin host uses plaintext HTTP to a remote server
+const jellyfinHost = Deno.env.get('JELLYFIN_HOST') || 'http://localhost:8096';
+try {
+  const jfUrl = new URL( jellyfinHost );
+  const isLocal = jfUrl.hostname === 'localhost' || jfUrl.hostname === '127.0.0.1';
+  if ( jfUrl.protocol === 'http:' && !isLocal ) {
+    console.warn('%c⚠ WARNING: JELLYFIN_HOST uses plaintext HTTP to a remote host — credentials will be blocked at login. Use HTTPS.', 'color: yellow; font-weight: bold');
+  }
+} catch {
+  console.error(`Invalid JELLYFIN_HOST URL: ${jellyfinHost}`);
+  Deno.exit(1);
+}
+
 // Check JWT token
 let jwtSecret = Deno.env.get('JWT_SECRET');
 if ( !jwtSecret ) {
