@@ -1,3 +1,10 @@
+## [1.0.2-E.3](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.2...v1.0.2-E.3) (2026-02-28)
+
+
+### Bug Fixes
+
+* Manually define httpOnly cookie ([b895b01](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/b895b012f294d4126534bf0bfa92e431f6f724b9))
+
 ## [1.0.2-E.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.1...v1.0.2-E.2) (2026-02-28)
 
 
