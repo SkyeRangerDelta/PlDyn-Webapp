@@ -44,38 +44,40 @@ function postJson(router: Router, path: string, body: unknown) {
 }
 
 // ── GetSettings ──────────────────────────────────────────────────────────────
+// GetSettings now reads userId from ctx.state (set by auth middleware),
+// NOT from the request body.
 
-Deno.test('GetSettings rejects object body (NoSQL operator)', async () => {
+Deno.test('GetSettings returns 401 when no userId in state', async () => {
   const { router, calls } = withMockMongo(getSettingsModule);
-  const { status } = await postJson(router, '/GetSettings', { "$ne": null });
+  const { status } = await postJson(router, '/GetSettings', {});
 
-  assertEquals(status, 400);
-  assertEquals(calls.length, 0, 'DB should not be queried');
+  assertEquals(status, 401);
+  assertEquals(calls.length, 0, 'DB should not be queried without auth');
 });
 
-Deno.test('GetSettings rejects numeric body', async () => {
-  const { router, calls } = withMockMongo(getSettingsModule);
-  const { status } = await postJson(router, '/GetSettings', 12345);
-
-  assertEquals(status, 400);
-  assertEquals(calls.length, 0);
-});
-
-Deno.test('GetSettings rejects null body', async () => {
-  const { router, calls } = withMockMongo(getSettingsModule);
-  const { status } = await postJson(router, '/GetSettings', null);
-
-  assertEquals(status, 400);
-  assertEquals(calls.length, 0);
-});
-
-Deno.test('GetSettings accepts a plain string uid', async () => {
-  const { router, calls } = withMockMongo(getSettingsModule);
-  const { status } = await postJson(router, '/GetSettings', "user-abc-123");
+Deno.test('GetSettings returns settings when userId is in state', async () => {
+  const dbSettings = { jfId: 'user-abc-123', theme: 'dark' };
+  const { router, calls } = withMockMongo(getSettingsModule, {
+    userId: 'user-abc-123',
+    dbResult: dbSettings,
+  });
+  const { status } = await postJson(router, '/GetSettings', {});
 
   assertEquals(status, 200);
   assertEquals(calls.length, 1);
-  assertEquals(calls[0].filter, { jfId: "user-abc-123" });
+  assertEquals(calls[0].filter, { jfId: 'user-abc-123' });
+});
+
+Deno.test('GetSettings ignores uid in request body (uses state only)', async () => {
+  const { router, calls } = withMockMongo(getSettingsModule, {
+    userId: 'real-user',
+    dbResult: { jfId: 'real-user' },
+  });
+  const { status } = await postJson(router, '/GetSettings', 'other-user');
+
+  assertEquals(status, 200);
+  assertEquals(calls.length, 1);
+  assertEquals(calls[0].filter, { jfId: 'real-user' });
 });
 
 // ── GetRecentContributions ───────────────────────────────────────────────────
