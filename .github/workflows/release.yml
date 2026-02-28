@@ -74,7 +74,7 @@ jobs:
       - name: Detect pre-release
         id: prerelease
         run: |
-          if [[ "${{ github.ref_name }}" == *"-E."* ]]; then
+          if [[ "${{ github.ref_name }}" == "Experimental" ]]; then
             echo "is_prerelease=true" >> $GITHUB_OUTPUT
           else
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
