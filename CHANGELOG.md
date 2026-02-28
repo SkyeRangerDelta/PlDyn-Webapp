@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.0...v1.0.1) (2026-02-28)
+
+
+### Bug Fixes
+
+* Corrected CI publish bug ([4946a0c](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/4946a0c946992dd9cafcbffdcd1b516a0fede382))
+
 # 1.0.0 (2026-02-28)
 
 
