@@ -1,3 +1,10 @@
+## [1.0.2-E.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.1...v1.0.2-E.1) (2026-02-28)
+
+
+### Bug Fixes
+
+* Corrected a proxy issue with specified host ([3aa6f49](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/3aa6f49f485ab40f71f65807929d462b6ae76440))
+
 ## [1.0.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.0...v1.0.1) (2026-02-28)
 
 
