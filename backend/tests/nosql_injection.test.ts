@@ -93,7 +93,7 @@ Deno.test('GetRecentContributions returns 401 when no userId in state', async ()
 
 Deno.test('GetRecentContributions returns contributions when userId is in state', async () => {
   const dbContributions = [
-    { album: 'Album A', albumArtist: 'Artist A', year: 2026, songCount: 3, cover: { format: null, data: null }, date: '2026-01-01' },
+    { album: 'Album A', albumArtist: 'Artist A', year: 2026, songCount: 3, coverUrl: null, date: '2026-01-01' },
   ];
   const { router, calls } = withMockMongo(getContribsModule, {
     userId: 'user-abc-123',

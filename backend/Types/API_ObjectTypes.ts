@@ -22,7 +22,7 @@ export interface JellyfinContribution {
   albumArtist: string;
   year: number;
   songCount: number;
-  cover: { format: string | null; data: string | null };
+  coverUrl: string | null;
   date: string;
 }
 

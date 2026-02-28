@@ -140,9 +140,7 @@ router.post('/finalize', async (ctx) => {
       const Mongo: DBHandler = ctx.state.Mongo;
 
       // Group batch songs by album
-      // Note: cover art data is intentionally not stored in contributions
-      // to avoid BSON deserialization failures with large base64 strings.
-      const batchAlbums = new Map<string, { songCount: number; year: number; albumArtist: string; album: string; cover: { format: string | null; data: string | null } }>();
+      const batchAlbums = new Map<string, { songCount: number; year: number; albumArtist: string; album: string }>();
       for (const song of successfulSongs) {
         const key = `${song.album}::${song.albumArtist}`;
         const existing = batchAlbums.get(key);
@@ -152,12 +150,11 @@ router.post('/finalize', async (ctx) => {
           batchAlbums.set(key, {
             album: song.album, albumArtist: song.albumArtist, year: song.year,
             songCount: 1,
-            cover: { format: null, data: null },
           });
         }
       }
 
-      // Merge into existing contributions
+      // Merge into existing contributions (coverUrl is computed at read time)
       const doc = await Mongo.selectOneByFilter('UserContributions', { jfId: userId });
       const contributions: JellyfinContribution[] = doc?.contributions ?? [];
       const now = new Date().toISOString();
@@ -168,7 +165,7 @@ router.post('/finalize', async (ctx) => {
           contributions[idx].songCount += batch.songCount;
           contributions[idx].date = now;
         } else {
-          contributions.push({ ...batch, date: now });
+          contributions.push({ ...batch, coverUrl: null, date: now });
         }
       }
 

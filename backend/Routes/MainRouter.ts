@@ -21,7 +21,8 @@ async function authMiddleware( ctx: RouterContext<string>, next: () => Promise<u
     '/api/v1/status'
   ];
 
-  if ( excludedRoutes.includes( ctx.request.url.pathname ) ) {
+  if ( excludedRoutes.includes( ctx.request.url.pathname ) ||
+       ctx.request.url.pathname.startsWith('/api/v1/albumcover') ) {
     await next();
     return;
   }

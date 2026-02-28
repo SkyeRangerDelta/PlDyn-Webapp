@@ -6,22 +6,20 @@
   }
   <div class="contributions-section">
     @if (contributions.length > 0) {
-      <div>
-        @for (item of contributions; track item.album + item.albumArtist) {
-          <div class="media-item">
-            <div class="cover-wrapper">
-              @if (item.cover?.data) {
-                <img [src]="'data:' + item.cover.format + ';base64,' + item.cover.data" [alt]="item.album" />
-              } @else {
-                <div class="cover-placeholder"></div>
-              }
-              <span class="song-count">{{ item.songCount }}</span>
-            </div>
-            <div class="album-name">{{ item.album }}</div>
-            <div class="album-artist">{{ item.albumArtist }}</div>
+      @for (item of contributions; track item.album + item.albumArtist) {
+        <div class="media-item">
+          <div class="cover-wrapper">
+            @if (item.coverUrl) {
+              <img [src]="item.coverUrl" [alt]="item.album" />
+            } @else {
+              <div class="cover-placeholder"></div>
+            }
+            <span class="song-count">{{ item.songCount }}</span>
           </div>
-        }
-      </div>
+          <div class="album-name">{{ item.album }}</div>
+          <div class="album-artist">{{ item.albumArtist }}</div>
+        </div>
+      }
     } @else {
       <p>No contributions yet</p>
     }

@@ -9,7 +9,7 @@ import { isSafeFileName } from "./IOUtilities.ts";
  * Strip characters that are invalid in Windows and Unix path components,
  * collapse repeated whitespace, and trim trailing dots/spaces.
  */
-function sanitizePathComponent(name: string): string {
+export function sanitizePathComponent(name: string): string {
   return name
     .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
     .replace(/\s+/g, ' ')
@@ -199,6 +199,19 @@ export async function writeMetadataToFile(
     } else {
       console.error('[MetadataWriter] File rename failed:', msg);
       throw new Error('Failed to move file to library.');
+    }
+  }
+
+  // 6b. Save cover art to album directory (once per album)
+  const coverExt = coverPath.split('.').pop() || 'jpg';
+  const albumCoverPath = `${albumDir}/cover.${coverExt}`;
+  try {
+    Deno.lstatSync(albumCoverPath);
+  } catch {
+    try {
+      Deno.copyFileSync(coverPath, albumCoverPath);
+    } catch (e) {
+      console.warn(`[MetadataWriter] Failed to save album cover: ${(e as Error).message}`);
     }
   }
 

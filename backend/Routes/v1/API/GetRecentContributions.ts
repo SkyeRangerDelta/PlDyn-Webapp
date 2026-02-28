@@ -1,5 +1,6 @@
 import { Router, RouterContext } from '@oak/oak';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
+import { getAlbumDir, findAlbumCover } from "../../../Utilities/CoverStorage.ts";
 import { JellyfinContribution, JellyfinContributionsResponse } from "../../../Types/API_ObjectTypes.ts";
 
 const router = new Router();
@@ -44,6 +45,15 @@ router
     const totalAlbums = contributions.length;
     const totalSongs = contributions.reduce((sum, c) => sum + c.songCount, 0);
     const recent = [...contributions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
+
+    // Resolve cover URLs from album directories
+    for (const contrib of recent) {
+      const albumDir = getAlbumDir(contrib.albumArtist, contrib.album, contrib.year);
+      const coverPath = findAlbumCover(albumDir);
+      contrib.coverUrl = coverPath
+        ? `/api/v1/albumcover?artist=${encodeURIComponent(contrib.albumArtist)}&album=${encodeURIComponent(contrib.album)}&year=${contrib.year}`
+        : null;
+    }
 
     ctx.response.body = {
       message: 'Success',
