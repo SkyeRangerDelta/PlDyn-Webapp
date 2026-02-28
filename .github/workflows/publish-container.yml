@@ -19,6 +19,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Backend Tests
+        working-directory: backend
+        run: deno task test:backend
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}

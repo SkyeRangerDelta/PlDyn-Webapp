@@ -29,6 +29,10 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Backend Tests
+        working-directory: backend
+        run: deno task test:backend
+
       - name: Cache NodeJS Modules
         uses: actions/cache@v4
         with:
