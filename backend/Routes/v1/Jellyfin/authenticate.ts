@@ -21,17 +21,17 @@ router.post('/authenticate', async (ctx: RouterContext<string>) => {
   const result = await sendLoginRequest( reqBody.user, reqBody.pass );
 
   // Set httpOnly cookie when authentication succeeds
+  // Note: Set-Cookie is built manually because Oak's SecureCookieMap checks the
+  // raw transport, not X-Forwarded-Proto, so it throws behind a TLS-terminating
+  // reverse proxy (e.g. Traefik) even with app.proxy=true.
   if ( result.status === 200 && result.data ) {
+    const proto = ctx.request.headers.get('x-forwarded-proto') || ctx.request.url.protocol;
     const host = ctx.request.url.hostname;
-    const isSecure = host !== 'localhost' && host !== '127.0.0.1';
+    const isSecure = proto === 'https' || proto === 'https:' || (host !== 'localhost' && host !== '127.0.0.1');
 
-    await ctx.cookies.set('pldyn-auth', result.data, {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 86400,
-      secure: isSecure,
-    });
+    let cookie = `pldyn-auth=${result.data}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400`;
+    if ( isSecure ) cookie += '; Secure';
+    ctx.response.headers.append('Set-Cookie', cookie);
   }
 
   ctx.response.status = result.status;

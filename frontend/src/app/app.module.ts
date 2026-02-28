@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -36,6 +36,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     ReactiveFormsModule
   ],
   providers: [
+    provideZoneChangeDetection(),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
     {

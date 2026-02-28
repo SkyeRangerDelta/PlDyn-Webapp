@@ -28,7 +28,8 @@ if (missingVars.length > 0) {
 // Globals
 // Force Oak to use native Deno HTTP server instead of Node.js adapter
 const app = new Application({
-  serverConstructor: HttpServerNative
+  serverConstructor: HttpServerNative,
+  proxy: true
 });
 
 const port = parseInt( Deno.env.get('APP_PORT') || '3000' );
