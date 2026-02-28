@@ -146,7 +146,7 @@ router.post('/finalize', async (ctx) => {
       }));
       await Mongo.updateOne('UserContributions', { jfId: userId }, {
         $push: { contributions: { $each: contributions } }
-      });
+      }, { upsert: true });
     } catch (error) {
       console.error('[Finalize] Failed to record contributions:', (error as Error).message);
     }
