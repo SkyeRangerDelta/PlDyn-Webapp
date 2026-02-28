@@ -41,7 +41,7 @@ router
     ctx.response.body = {
       message: 'Success',
       data: {
-        contributions: req.contributions,
+        contributions: settingsRes.contributions ?? [],
         errorMessage: ''
       }
     } as JellyfinContributionsResponse;

@@ -107,6 +107,34 @@ Deno.test('GetRecentContributions accepts a plain string uid', async () => {
   assertEquals(calls[0].filter, { jfId: "user-abc-123" });
 });
 
+// ── GetRecentContributions: returns DB data, not request echo ────────────────
+
+Deno.test('GetRecentContributions returns data from DB, not from request body', async () => {
+  const dbContributions = [{ title: 'Song A', date: '2026-01-01' }];
+
+  // Build a mock that returns a real document
+  const wrapper = new Router();
+  wrapper.use(async (ctx, next) => {
+    ctx.state.Mongo = {
+      selectOneByFilter(_collection: string, _filter: object) {
+        return Promise.resolve({ jfId: 'user-abc-123', contributions: dbContributions });
+      }
+    };
+    await next();
+  });
+  wrapper.use(getContribsModule.router.routes());
+  wrapper.use(getContribsModule.router.allowedMethods());
+
+  // Send a request with a DIFFERENT contributions array to prove it's not echoed
+  const { status, body } = await postJson(wrapper, '/GetRecentContributions', {
+    uid: 'user-abc-123',
+    contributions: [{ title: 'INJECTED', date: 'never' }],
+  });
+
+  assertEquals(status, 200);
+  assertEquals((body?.data as Record<string, unknown>)?.contributions, dbContributions);
+});
+
 // ── GetRecentContributions: missing return regression ────────────────────────
 
 Deno.test('GetRecentContributions returns 400 body and does not fall through', async () => {
