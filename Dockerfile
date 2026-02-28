@@ -20,7 +20,7 @@ RUN mkdir -p /frontend/src/app
 COPY frontend/src/app/customTypes.ts /frontend/src/app/customTypes.ts
 
 # Copy built Angular app to path backend expects at Deno.cwd()
-COPY --from=frontend-builder /build/dist/webapp/browser ./frontend/dist/frontend/browser
+COPY --from=frontend-builder /build/dist/webapp/browser ./frontend/dist/webapp/browser
 
 # Pre-warm Deno module cache
 RUN deno cache main.ts

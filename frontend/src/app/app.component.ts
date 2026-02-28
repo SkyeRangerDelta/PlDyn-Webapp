@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component( {
     selector: 'app-root',
@@ -10,5 +11,7 @@ export class AppComponent {
   title = 'PlDyn Dashboard';
   flagshipLogo = 'assets/logo.png';
 
-  constructor() {}
+  constructor( private titleService: Title ) {
+    this.titleService.setTitle( this.title );
+  }
 }

@@ -8,13 +8,13 @@ router
   .post('/GetSettings', async ( ctx: RouterContext<string> ) => {
     const Mongo: DBHandler = ctx.state.Mongo;
 
-    const uId = await ctx.request.body.json();
+    const uId = ctx.state.userId as string | undefined;
 
-    if ( !uId || typeof uId !== 'string' ) {
-      ctx.response.status = 400;
+    if ( !uId ) {
+      ctx.response.status = 401;
       ctx.response.body = {
-        status: 400,
-        message: 'Bad Request',
+        status: 401,
+        message: 'Missing user identity.',
         settings: null,
         success: false
       };

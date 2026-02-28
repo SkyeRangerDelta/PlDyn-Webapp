@@ -25,7 +25,7 @@ export class SettingsService {
       { headers: headers }
     ).pipe (
       map( (data: any) => {
-        if ( data.status !== 200 || !data.data ) {
+        if ( data.status !== 200 || !data.success ) {
           console.error( 'Error fetching settings' );
 
           return {

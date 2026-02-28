@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of } from 'rxjs';
 import { AuthResult } from '../customTypes';
 
 @Injectable({
@@ -137,10 +137,9 @@ export class AuthService {
     }
 
     try {
-      const data: any = await this.httpClient.post(
-        '/api/v1/gettokendata',
-        { params: [ 'User' ] } )
-        .toPromise();
+      const data: any = await firstValueFrom(this.httpClient.post(
+        '/api/v1/GetTokenData',
+        { params: [ 'User' ] } ));
 
       const uname: string = data.data.User;
       if ( !data || !data.data || !uname ) {

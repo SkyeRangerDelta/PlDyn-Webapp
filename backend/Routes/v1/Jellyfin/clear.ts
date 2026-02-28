@@ -7,10 +7,10 @@ const router = new Router;
 
 router.post('/clear', async ( ctx ) => {
   if ( !ctx.request.hasBody || ctx.request.body.type() !== 'json' ) {
-    ctx.response.status = 500;
+    ctx.response.status = 400;
     ctx.response.body = {
       message: 'Invalid request type.',
-      status: 500,
+      status: 400,
       error: true
     } as DeleteResponse;
 

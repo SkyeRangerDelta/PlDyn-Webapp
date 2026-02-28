@@ -89,7 +89,7 @@ if ( !jwtSecret ) {
   console.error('JWT_SECRET not set in environment; creating one.');
   jwtSecret = generateRandomString();
   Deno.env.set('JWT_SECRET', jwtSecret);
-  await Deno.writeTextFile( '.env', `\nJWT_SECRET=${ jwtSecret }\n`, { append: true } );
+  await Deno.writeTextFile( join(import.meta.dirname!, '.env'), `\nJWT_SECRET=${ jwtSecret }\n`, { append: true } );
 }
 
 // Attach shared state to CTX
@@ -154,7 +154,7 @@ app.use( rateLimiter.middleware() );
 app.use( MainRouter.routes(), MainRouter.allowedMethods() );
 
 app.use( async (ctx, next) => {
-  const indexPath = join( Deno.cwd(), 'frontend/dist/frontend/browser' );
+  const indexPath = join( Deno.cwd(), 'frontend/dist/webapp/browser' );
 
   try {
     await ctx.send({
@@ -172,6 +172,9 @@ app.use( async ctx => {
   ctx.response.status = 404;
   ctx.response.body = { message: 'Not found' };
 } )
+
+// Wait for DB to be ready before accepting requests
+await Mongo.ready;
 
 // Start
 console.log(`Server running on http://${host}:${port}`);

@@ -38,7 +38,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private MediaService: MediaService,
+    private mediaService: MediaService,
     private notificationService: NotificationService
   ) {
     // Auth check now handled by AuthGuard on the route
@@ -61,7 +61,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     document.addEventListener( 'click', this.clickHandler );
 
     // Watch for temp file removals via SSE
-    this.watchSub = this.MediaService.watchTempFiles().subscribe(fileName => {
+    this.watchSub = this.mediaService.watchTempFiles().subscribe(fileName => {
       // Ignore removals for files currently being finalized — finalize deletes
       // temp files as part of normal processing, not because they expired.
       if (this.finalizingFiles.delete(fileName)) return;
@@ -154,7 +154,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
 
   private uploadSingleFile(file: File): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.MediaService.uploadSingleFile(file).subscribe({
+      this.mediaService.uploadSingleFile(file).subscribe({
         next: (event) => {
           if (event.type === HttpEventType.UploadProgress) {
             // Update upload progress
@@ -202,7 +202,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     const index = this.songs.indexOf( song );
     this.songs.splice( index, 1 );
 
-    this.MediaService.clearMedia( song.fileName ).subscribe({
+    this.mediaService.clearMedia( song.fileName ).subscribe({
       next: (data: DeleteResponse) => {
         if ( data.error ) {
           console.error( 'Error deleting media:', data.message, data.status );
@@ -279,7 +279,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
 
   // Updates all songs in an album with new header value
   updateAlbumField(albumName: string, field: 'year' | 'albumArtist' | 'cover', value: any): void {
-    const songsInAlbum = this.songs.filter(s => s.album === albumName);
+    const songsInAlbum = this.songs.filter(s => (s.album?.trim() || '(Unknown Album)') === albumName);
     for (const song of songsInAlbum) {
       // Use type assertion to bypass TypeScript's union type restriction
       (song as any)[field] = value;
@@ -292,7 +292,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     // tableRows getter auto-recomputes on next change detection
   }
 
-  toggleContextButtons(): void {
+  toggleContextButtons(event?: MouseEvent): void {
     console.log('Context buttons');
     event?.stopPropagation();
     this.showContextButtons = !this.showContextButtons;
@@ -326,7 +326,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.finalizingFiles = new Set(this.songs.map(s => s.fileName));
 
-    this.MediaService.finalizeUpload(this.songs).subscribe({
+    this.mediaService.finalizeUpload(this.songs).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.finalizingFiles.clear();

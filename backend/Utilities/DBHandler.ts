@@ -11,13 +11,15 @@ export class DBHandler {
 
   private database!: mongo.Database;
 
+  public readonly ready: Promise<void>;
+
   constructor() {
     // Initialize
     if ( !this.mongoURI ) {
       throw new Error('MONGO_URI not found in environment variables.');
     }
 
-    this.initialize().then(() => {
+    this.ready = this.initialize().then(() => {
       console.log('MongoDB connected.');
     });
   }
