@@ -68,7 +68,7 @@ npm test         # Unit tests (headless Chrome)
 | `MONGO_URI` | Yes | — | MongoDB connection string |
 | `MONGO_DB_NAME` | Yes | — | Database name |
 | `JELLYFIN_HOST` | No | `http://localhost:8096` | Jellyfin server URL |
-| `APP_PORT` | No | `4200` | Server port |
+| `APP_PORT` | No | `3000` | Server port |
 | `APP_HOST` | No | `localhost` (dev) / `0.0.0.0` (Docker) | Bind address |
 | `JWT_SECRET` | No | auto-generated | JWT signing secret |
 | `MUSIC_LIBRARY_PATH` | No | `./library/music` | Host path for music library (Docker only) |

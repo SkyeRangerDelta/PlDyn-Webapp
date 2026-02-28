@@ -50,7 +50,7 @@ jobs:
       - name: Test
         run: |
           cd frontend
-          npm i
+          npm ci
           npm run test:ci
 
       - name: Build

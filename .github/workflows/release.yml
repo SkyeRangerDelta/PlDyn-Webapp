@@ -1,8 +1,5 @@
 name: Release
 
-env:
-  GITHUB_TOKEN: ${{ secrets.WEBAPP_RELEASE_TOKEN }}
-
 on:
   push:
     branches:

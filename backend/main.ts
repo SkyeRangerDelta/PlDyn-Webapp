@@ -31,7 +31,7 @@ const app = new Application({
   serverConstructor: HttpServerNative
 });
 
-const port = parseInt( Deno.env.get('APP_PORT') || '4200' );
+const port = parseInt( Deno.env.get('APP_PORT') || '3000' );
 const host = Deno.env.get('APP_HOST') || 'localhost';
 
 // Configure RDS
@@ -135,7 +135,7 @@ app.use( async (ctx, next) => {
   ctx.response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains');
   ctx.response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'"
   );
   await next();
 });

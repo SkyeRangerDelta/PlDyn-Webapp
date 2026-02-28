@@ -90,8 +90,8 @@ router.post('/upload', async (ctx) => {
           composer: metadata.common.composer || [],
           discNumber: metadata.common.disk.no || 0,
           cover: {
-            format: coverData.format ? coverData.format : null,
-            data: coverData.data ? buildImgB64( coverData.data, coverData.format ) : null
+            format: coverData.format || null,
+            data: (coverData.data && coverData.format) ? buildImgB64( coverData.data, coverData.format ) : null
           }
         } as AudioFile;
 

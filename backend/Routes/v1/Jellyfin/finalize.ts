@@ -45,6 +45,18 @@ router.post('/finalize', async (ctx) => {
   const body = await ctx.request.body.json();
   const songs = body.songs;
 
+  if (!songs || !Array.isArray(songs) || songs.length === 0) {
+    ctx.response.status = 400;
+    ctx.response.body = {
+      status: 400,
+      message: 'Invalid request - songs array required',
+      error: true,
+      processedCount: 0,
+      failedFiles: []
+    } as FinalizeUploadResponse;
+    return;
+  }
+
   // Normalize songs data - convert string genre/composer to arrays
   const normalizedSongs: AudioFile[] = songs.map((song: RawAudioFile) => ({
     ...song,
@@ -59,18 +71,6 @@ router.post('/finalize', async (ctx) => {
         ? song.composer.split(',').map(c => c.trim()).filter(c => c.length > 0)
         : []
   }));
-
-  if (!songs || !Array.isArray(songs) || songs.length === 0) {
-    ctx.response.status = 400;
-    ctx.response.body = {
-      status: 400,
-      message: 'Invalid request - songs array required',
-      error: true,
-      processedCount: 0,
-      failedFiles: []
-    } as FinalizeUploadResponse;
-    return;
-  }
 
   // Pre-processing: Check if ffmpeg is available
   const ffmpegAvailable = await checkFfmpegAvailable();
