@@ -93,7 +93,7 @@ Deno.test('GetRecentContributions returns 401 when no userId in state', async ()
 
 Deno.test('GetRecentContributions returns contributions when userId is in state', async () => {
   const dbContributions = [
-    { title: 'Song A', artist: 'Artist A', album: 'Album A', date: '2026-01-01' },
+    { album: 'Album A', albumArtist: 'Artist A', year: 2026, songCount: 3, cover: { format: null, data: null }, date: '2026-01-01' },
   ];
   const { router, calls } = withMockMongo(getContribsModule, {
     userId: 'user-abc-123',
@@ -105,7 +105,10 @@ Deno.test('GetRecentContributions returns contributions when userId is in state'
   assertEquals(status, 200);
   assertEquals(calls.length, 1);
   assertEquals(calls[0].filter, { jfId: 'user-abc-123' });
-  assertEquals((body?.data as Record<string, unknown>)?.contributions, dbContributions);
+  const data = body?.data as Record<string, unknown>;
+  assertEquals(data?.contributions, dbContributions);
+  assertEquals(data?.totalAlbums, 1);
+  assertEquals(data?.totalSongs, 3);
 });
 
 Deno.test('GetRecentContributions returns empty array when no DB record', async () => {
@@ -117,7 +120,10 @@ Deno.test('GetRecentContributions returns empty array when no DB record', async 
 
   assertEquals(status, 200);
   assertEquals(calls.length, 1);
-  assertEquals((body?.data as Record<string, unknown>)?.contributions, []);
+  const data = body?.data as Record<string, unknown>;
+  assertEquals(data?.contributions, []);
+  assertEquals(data?.totalAlbums, 0);
+  assertEquals(data?.totalSongs, 0);
 });
 
 Deno.test('GetRecentContributions ignores uid in request body (uses state only)', async () => {

@@ -134,19 +134,46 @@ router.post('/finalize', async (ctx) => {
     }
   }
 
-  // Record contributions in the database
+  // Record contributions in the database (per-album)
   if (processedCount > 0) {
     try {
       const Mongo: DBHandler = ctx.state.Mongo;
-      const contributions: JellyfinContribution[] = successfulSongs.map(song => ({
-        title: song.title,
-        artist: song.artist,
-        album: song.album,
-        date: new Date().toISOString(),
-      }));
-      await Mongo.updateOne('UserContributions', { jfId: userId }, {
-        $push: { contributions: { $each: contributions } }
-      }, { upsert: true });
+
+      // Group batch songs by album
+      // Note: cover art data is intentionally not stored in contributions
+      // to avoid BSON deserialization failures with large base64 strings.
+      const batchAlbums = new Map<string, { songCount: number; year: number; albumArtist: string; album: string; cover: { format: string | null; data: string | null } }>();
+      for (const song of successfulSongs) {
+        const key = `${song.album}::${song.albumArtist}`;
+        const existing = batchAlbums.get(key);
+        if (existing) {
+          existing.songCount++;
+        } else {
+          batchAlbums.set(key, {
+            album: song.album, albumArtist: song.albumArtist, year: song.year,
+            songCount: 1,
+            cover: { format: null, data: null },
+          });
+        }
+      }
+
+      // Merge into existing contributions
+      const doc = await Mongo.selectOneByFilter('UserContributions', { jfId: userId });
+      const contributions: JellyfinContribution[] = doc?.contributions ?? [];
+      const now = new Date().toISOString();
+
+      for (const [, batch] of batchAlbums) {
+        const idx = contributions.findIndex(c => c.album === batch.album && c.albumArtist === batch.albumArtist);
+        if (idx !== -1) {
+          contributions[idx].songCount += batch.songCount;
+          contributions[idx].date = now;
+        } else {
+          contributions.push({ ...batch, date: now });
+        }
+      }
+
+      await Mongo.updateOne('UserContributions', { jfId: userId },
+        { $set: { contributions } }, { upsert: true });
     } catch (error) {
       console.error('[Finalize] Failed to record contributions:', (error as Error).message);
     }

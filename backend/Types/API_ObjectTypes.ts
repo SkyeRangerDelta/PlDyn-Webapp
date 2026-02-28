@@ -11,14 +11,18 @@ export interface JellyfinContributionsResponse {
   message: string;
   data: {
     contributions: JellyfinContribution[];
+    totalAlbums: number;
+    totalSongs: number;
     errorMessage: string;
   }
 }
 
 export interface JellyfinContribution {
-  title: string;
-  artist: string;
   album: string;
+  albumArtist: string;
+  year: number;
+  songCount: number;
+  cover: { format: string | null; data: string | null };
   date: string;
 }
 

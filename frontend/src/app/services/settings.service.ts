@@ -73,6 +73,8 @@ export class SettingsService {
             message: data.message,
             data: {
               contributions: [],
+              totalAlbums: 0,
+              totalSongs: 0,
               errorMessage: data.data?.errorMessage || 'No contributions found.'
             }
           } as ClientContributionResult;
@@ -82,6 +84,8 @@ export class SettingsService {
           message: data.message,
           data: {
             contributions: data.data.contributions,
+            totalAlbums: data.data.totalAlbums ?? 0,
+            totalSongs: data.data.totalSongs ?? 0,
             errorMessage: ''
           }
         } as ClientContributionResult;
@@ -95,6 +99,8 @@ export class SettingsService {
           message: err.message || 'Internal server error',
           data: {
             contributions: [],
+            totalAlbums: 0,
+            totalSongs: 0,
             errorMessage: err.message || 'Internal server error.'
           }
         } as ClientContributionResult );

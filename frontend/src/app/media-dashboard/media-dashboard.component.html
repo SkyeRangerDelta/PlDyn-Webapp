@@ -1,14 +1,24 @@
 <div class="media-dashboard">
   <!-- Contributions Section -->
   Recent uploads
+  @if (totalAlbums > 0) {
+    <div class="contributions-totals">{{ totalAlbums }} albums, {{ totalSongs }} songs contributed</div>
+  }
   <div class="contributions-section">
     @if (contributions.length > 0) {
-      <div >
-        @for (item of contributions; track item) {
+      <div>
+        @for (item of contributions; track item.album + item.albumArtist) {
           <div class="media-item">
-            <div class="title">{{ item.title }}</div>
-            <div class="artist">{{ item.artist }}</div>
-            <div class="date">{{ item.date }}</div>
+            <div class="cover-wrapper">
+              @if (item.cover?.data) {
+                <img [src]="'data:' + item.cover.format + ';base64,' + item.cover.data" [alt]="item.album" />
+              } @else {
+                <div class="cover-placeholder"></div>
+              }
+              <span class="song-count">{{ item.songCount }}</span>
+            </div>
+            <div class="album-name">{{ item.album }}</div>
+            <div class="album-artist">{{ item.albumArtist }}</div>
           </div>
         }
       </div>

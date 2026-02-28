@@ -1,6 +1,6 @@
 import { Router, RouterContext } from '@oak/oak';
 import { DBHandler } from "../../../Utilities/DBHandler.ts";
-import { JellyfinContributionsResponse } from "../../../Types/API_ObjectTypes.ts";
+import { JellyfinContribution, JellyfinContributionsResponse } from "../../../Types/API_ObjectTypes.ts";
 
 const router = new Router();
 
@@ -15,6 +15,8 @@ router
         message: 'Unauthorized',
         data: {
           contributions: [],
+          totalAlbums: 0,
+          totalSongs: 0,
           errorMessage: 'Missing user identity.'
         }
       } as JellyfinContributionsResponse;
@@ -29,6 +31,8 @@ router
         message: 'No Contributions',
         data: {
           contributions: [],
+          totalAlbums: 0,
+          totalSongs: 0,
           errorMessage: 'No contributions found.'
         }
       } as JellyfinContributionsResponse;
@@ -36,10 +40,17 @@ router
       return;
     }
 
+    const contributions: JellyfinContribution[] = settingsRes.contributions ?? [];
+    const totalAlbums = contributions.length;
+    const totalSongs = contributions.reduce((sum, c) => sum + c.songCount, 0);
+    const recent = [...contributions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
+
     ctx.response.body = {
       message: 'Success',
       data: {
-        contributions: settingsRes.contributions ?? [],
+        contributions: recent,
+        totalAlbums,
+        totalSongs,
         errorMessage: ''
       }
     } as JellyfinContributionsResponse;

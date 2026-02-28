@@ -17,6 +17,8 @@ export class MediaDashboardComponent {
   lastUsedEditor: string = 'Music';
 
   contributions: ContributionObject[] = [];
+  totalAlbums: number = 0;
+  totalSongs: number = 0;
 
   newMedia = {
     title: '',
@@ -34,21 +36,26 @@ export class MediaDashboardComponent {
   }
 
   getContributions() {
-    // fetch contributions
     this.settingsService.getContributions().subscribe({
       next: (data: any) => {
         if ( !data || !data.data || !data.data.contributions ) {
           console.log( 'No contribution data.' );
           this.contributions = [];
+          this.totalAlbums = 0;
+          this.totalSongs = 0;
         }
         else {
           this.contributions = data.data.contributions;
+          this.totalAlbums = data.data.totalAlbums ?? 0;
+          this.totalSongs = data.data.totalSongs ?? 0;
         }
       },
       error: (error) => {
         console.error( 'Error fetching contributions:', error );
         this.notificationService.showError('Failed to load contributions.');
         this.contributions = [];
+        this.totalAlbums = 0;
+        this.totalSongs = 0;
       }
     });
   }

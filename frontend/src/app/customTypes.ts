@@ -15,9 +15,11 @@ export interface MediaResult {
 }
 
 export interface ContributionObject {
-  title: string;
-  artist: string;
   album: string;
+  albumArtist: string;
+  year: number;
+  songCount: number;
+  cover: { format: string | null; data: string | null };
   date: string;
 }
 
@@ -48,10 +50,12 @@ export interface ClientSettingsResult {
 }
 
 export interface ClientContributionResult {
-  message: string,
+  message: string;
   data: {
-    contributions: ContributionObject[],
-    errorMessage: string
+    contributions: ContributionObject[];
+    totalAlbums: number;
+    totalSongs: number;
+    errorMessage: string;
   }
 }
 
