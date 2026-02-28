@@ -89,7 +89,6 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
 
   cleanupMenus(): void {
     if ( this.showContextButtons ) {
-      console.log('Cleanup menus');
       this.showContextButtons = false;
     }
   }
