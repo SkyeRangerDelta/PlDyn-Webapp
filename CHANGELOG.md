@@ -1,3 +1,13 @@
+## [1.0.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.1...v1.0.2) (2026-02-28)
+
+
+### Bug Fixes
+
+* Corrected a proxy issue with specified host ([3aa6f49](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/3aa6f49f485ab40f71f65807929d462b6ae76440))
+* Corrected an issue Copilot introduced ([2802e9a](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/2802e9a342c1dcd0ae37cde0c4f628595570783f))
+* Corrected ref name in release pipeline ([7671e58](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/7671e58850e39aa755ace0763c0208c4675bf6a6))
+* Manually define httpOnly cookie ([b895b01](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/b895b012f294d4126534bf0bfa92e431f6f724b9))
+
 ## [1.0.2-E.5](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.4...v1.0.2-E.5) (2026-02-28)
 
 ## [1.0.2-E.4](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.3...v1.0.2-E.4) (2026-02-28)
