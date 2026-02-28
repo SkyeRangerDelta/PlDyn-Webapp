@@ -1,0 +1,40 @@
+<div class="media-dashboard">
+  <!-- Contributions Section -->
+  Recent uploads
+  @if (totalAlbums > 0) {
+    <div class="contributions-totals">{{ totalAlbums }} albums, {{ totalSongs }} songs contributed</div>
+  }
+  <div class="contributions-section">
+    @if (contributions.length > 0) {
+      @for (item of contributions; track item.album + item.albumArtist) {
+        <div class="media-item">
+          <div class="cover-wrapper">
+            @if (item.coverUrl) {
+              <img [src]="item.coverUrl" [alt]="item.album" />
+            } @else {
+              <div class="cover-placeholder"></div>
+            }
+            <span class="song-count">{{ item.songCount }}</span>
+          </div>
+          <div class="album-name">{{ item.album }}</div>
+          <div class="album-artist">{{ item.albumArtist }}</div>
+        </div>
+      }
+    } @else {
+      <p>No contributions yet</p>
+    }
+  </div>
+
+  Upload editor
+  <!-- Uploader Section -->
+  <div class="media-type-buttons">
+    <div class="btns-left">
+      <button mat-flat-button color="primary" (click)="selectMediaType('music')">Music</button>
+      <button mat-flat-button color="primary" disabled (click)="selectMediaType('movies')">Movies</button>
+      <button mat-flat-button color="primary" disabled (click)="selectMediaType('shows')">Shows</button>
+    </div>
+    <div class="btns-right">
+      <button mat-flat-button color="primary" routerLink="/music-editor">Open Editor →</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+@use './styles/colors';
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #091a3a;
+  background-image: url('assets/images/bg/8bit.gif');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Snackbar panel styles */
+.snack-error .mdc-snackbar__surface {
+  background-color: #7a1a1a !important;
+  color: #ffffff !important;
+}
+
+.snack-error .mdc-snackbar__label {
+  color: #ffffff !important;
+}
+
+.snack-error .mat-mdc-snack-bar-action {
+  color: #ff9999 !important;
+}
+
+.snack-success .mdc-snackbar__surface {
+  background-color: #0159B5 !important;
+  color: #ffffff !important;
+}
+
+.snack-success .mdc-snackbar__label {
+  color: #ffffff !important;
+}

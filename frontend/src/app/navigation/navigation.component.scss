@@ -1,0 +1,43 @@
+@use '../../styles/colors';
+
+// Navigation Bar Container
+.navigation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem;
+  background-color: colors.$background-color; // Semi-transparent background
+  border-bottom: 2px solid colors.$button-background; // Neon green border
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+// Button Styling
+.nav-button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: colors.$button-background; // Neon green background
+  color: colors.$text-color; // White text
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: colors.$button-hover; // Yellow hover effect
+    color: #000000; // Dark text on hover
+  }
+}
+
+// Username Box Styling
+.username-box {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(colors.$background-color, 0.5); // Semi-transparent dark background
+  border-radius: 8px;
+  border: 1px solid colors.$button-background; // Neon green border
+  color: colors.$text-color; // White text
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}

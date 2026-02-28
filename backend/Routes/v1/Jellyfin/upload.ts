@@ -1,0 +1,132 @@
+import { Router } from '@oak/oak';
+import { parseFile, selectCover } from 'music-metadata';
+
+import { ensureFolderExists, isSafeFileName } from '../../../Utilities/IOUtilities.ts';
+import { AudioFile, AudioUploadResponse } from '../../../Types/API_ObjectTypes.ts';
+import { buildImgB64 } from '../../../Utilities/Formatters.ts';
+
+const router = new Router;
+
+router.post('/upload', async (ctx) => {
+  if ( !ctx.request.hasBody || ctx.request.body.type() !== 'form-data' ) {
+    ctx.response.status = 400;
+    ctx.response.body = { message: 'Invalid request' };
+    return;
+  }
+
+  const userId = ctx.state.userId as string | undefined;
+  if ( !userId ) {
+    ctx.response.status = 401;
+    ctx.response.body = { message: 'Missing user identity.' };
+    return;
+  }
+
+  const formData = await ctx.request.body.formData();
+
+  // Store the file data in a per-user temp folder
+  ensureFolderExists( Deno.cwd() + '/temp/audio-uploads', userId );
+
+  // Save the file data to the temp folder
+  const files = formData.getAll('files');
+  const uploadedFileNames: string[] = [];
+  for ( const file of files ) {
+    if ( file instanceof File ) {
+      if ( !isSafeFileName( file.name ) ) {
+        ctx.response.status = 400;
+        ctx.response.body = { message: 'Invalid filename.' };
+        return;
+      }
+
+      const fileData = new Uint8Array( await file.arrayBuffer() );
+      const filePath = new URL( `file://${Deno.cwd()}/temp/audio-uploads/${userId}/${ file.name }` );
+
+      try {
+        Deno.writeFileSync( filePath, fileData );
+      }
+      catch {
+        console.error( 'Error writing file:', filePath, file.name );
+        ctx.response.status = 500;
+        ctx.response.body = { message: 'Error writing file' };
+        return;
+      }
+
+      console.debug(' Uploaded file:', file.name );
+
+      uploadedFileNames.push( file.name );
+    }
+  }
+
+  console.debug(` Total uploaded files: ${ uploadedFileNames.length }`);
+
+  // Read the metadata from titles in the directory
+  const readTracks: AudioFile[] = [];
+  const strPath = `${ Deno.cwd() }/temp/audio-uploads/${userId}`;
+  const tempPath = new URL( `file://${Deno.cwd()}/temp/audio-uploads/${userId}` );
+  const tempFolder = Deno.readDirSync( tempPath );
+  for ( const entry of tempFolder ) {
+    if ( !uploadedFileNames.includes( entry.name ) ) continue;
+
+    const entryPath = `${strPath}/${entry.name}`;
+
+    try {
+      const metadata = await parseFile( entryPath );
+
+      const coverData = selectCover( metadata.common.picture ) || {
+        format: null,
+        data: null
+      };
+
+      try {
+        const builtMetadata = {
+          filePath: entry.name,
+          fileName: entry.name,
+          title: metadata.common.title || '',
+          artist: metadata.common.artist || '',
+          album: metadata.common.album || '',
+          genre: metadata.common.genre || [],
+          year: metadata.common.year || 0,
+          track: metadata.common.track.no || 0,
+          albumArtist: metadata.common.albumartist || '',
+          composer: metadata.common.composer || [],
+          discNumber: metadata.common.disk.no || 0,
+          cover: {
+            format: coverData.format || null,
+            data: (coverData.data && coverData.format) ? buildImgB64( coverData.data, coverData.format ) : null
+          }
+        } as AudioFile;
+
+        readTracks.push( builtMetadata );
+      }
+      catch {
+        console.error( 'Error reading metadata:', entryPath );
+      }
+    }
+    catch ( e ) {
+      console.error( 'Error reading metadata:', entryPath, e );
+    }
+  }
+
+  if ( readTracks.length === 0 ) {
+    ctx.response.status = 500;
+    ctx.response.body = {
+      message: 'Error reading metadata',
+      status: 500,
+      error: true,
+      uploadData: []
+    } as AudioUploadResponse;
+    return;
+  }
+
+  ctx.response.status = 200;
+  ctx.response.body = {
+    message: 'Success',
+    status: 200,
+    error: false,
+    uploadData: readTracks
+  } as AudioUploadResponse;
+});
+
+export default {
+  name: 'Upload',
+  router: router
+};

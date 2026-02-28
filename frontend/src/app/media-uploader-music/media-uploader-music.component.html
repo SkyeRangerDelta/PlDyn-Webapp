@@ -1,0 +1,107 @@
+<div class="media-uploader-music">
+  <div class="add-content-btns">
+    <div class="add-content-cols">
+      <label for="file-uploader" class="custom-uploader">
+        @if (isLoading) {
+          <i class="fa-solid fa-spinner fa-spin"></i>
+        }
+        @if (!isLoading) {
+          <span><i class="fa-solid fa-music"></i> Add Songs</span>
+        }
+      </label>
+      <input id="file-uploader" type="file" (change)="onFileSelect($event)" accept=".mp3, .wav, .flac" multiple />
+    </div>
+
+    <div class="add-content-cols">
+      <button id="submit-btn" class="upload-btn" (click)="onSubmit()" [disabled]="!isFormValid()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
+    </div>
+  </div>
+  @for (group of albumGroups; track group.albumName; let first = $first) {
+    <table [class.first-album-table]="first">
+      @if (first) {
+        <thead>
+          <tr>
+            <th>Clear</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Year</th>
+            <th>Track</th>
+            <th>Album Artist</th>
+            <th>Composer</th>
+            <th>Disc #</th>
+            <th>Cover</th>
+          </tr>
+        </thead>
+      }
+      <tbody>
+        <tr class="album-header-row">
+          <td></td>
+          <td colspan="5" class="album-name-cell">
+            <strong>{{ group.albumName }}</strong>
+          </td>
+          <td>
+            <input type="number"
+              [ngModel]="group.year"
+              (ngModelChange)="updateAlbumField(group.albumName, 'year', $event)"
+              class="album-field-input" />
+          </td>
+          <td>
+            <input
+              [ngModel]="group.albumArtist"
+              (ngModelChange)="updateAlbumField(group.albumName, 'albumArtist', $event)"
+              class="album-field-input" />
+          </td>
+          <td colspan="2"></td>
+          <td>
+            @if (group.cover && group.cover.data) {
+              <img [src]="group.cover.data" height="50" width="50" />
+            } @else {
+              <img ngSrc="assets/images/placeholder.png" width="50" height="50" alt="Album" />
+            }
+          </td>
+        </tr>
+        @for (song of group.songs; track song.fileName) {
+          <tr class="song-row">
+            <td>
+              <button class="remove-btn" (click)="removeSong(song)" title="Remove song">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+            <td><input [(ngModel)]="song.title" required class="song-field-input" /></td>
+            <td><input [(ngModel)]="song.artist" required class="song-field-input" /></td>
+            <td><input [(ngModel)]="song.album"
+                       (ngModelChange)="onSongAlbumChange(song, $event)"
+                       required class="song-field-input" /></td>
+            <td><input [(ngModel)]="song.genre" required class="song-field-input" /></td>
+            <td><span class="readonly-field">{{ song.year }}</span></td>
+            <td><input [(ngModel)]="song.track" type="number" required class="song-field-input" /></td>
+            <td><span class="readonly-field">{{ song.albumArtist }}</span></td>
+            <td><input [(ngModel)]="song.composer" class="song-field-input" /></td>
+            <td><input [(ngModel)]="song.discNumber" type="number" required class="song-field-input" /></td>
+            <td>
+              @if (song.cover?.data) {
+                <img [src]="song.cover!.data" height="50" width="50" />
+              }
+              @else {
+                <img ngSrc="assets/images/placeholder.png" width="50" height="50" alt="Cover" />
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (uploadProgress.hasUploaded) {
+    <div class="upload-progress-line">
+      <span class="progress-text">{{ uploadProgress.uploadedCount }} of {{ uploadProgress.totalFiles }} uploaded</span>
+      @if (uploadProgress.isUploading) {
+        <div class="progress-bar-inline">
+          <div class="progress-bar" [style.width.%]="uploadProgress.currentFileProgress"></div>
+        </div>
+      }
+    </div>
+  }
+</div>
