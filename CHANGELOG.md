@@ -1,3 +1,15 @@
+# [1.1.0-E.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.5...v1.1.0-E.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* Added error handling ([ec917a3](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/ec917a3bf56ad7a66a469b72e83312278d9477b4))
+
+
+### Features
+
+* Added album art upload support ([1e73284](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/1e732849652ef57b11811406fc12c36de3e5ae3e))
+
 ## [1.0.2-E.5](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.4...v1.0.2-E.5) (2026-02-28)
 
 ## [1.0.2-E.4](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.3...v1.0.2-E.4) (2026-02-28)
