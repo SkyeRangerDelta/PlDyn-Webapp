@@ -2,10 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { AudioUploadResponse, DeleteResponse, Song, AlbumGroup } from '../customTypes';
 
 import { MediaService } from '../services/media.service';
 import { NotificationService } from '../services/notification.service';
+import { CoverSearchDialogComponent } from './cover-search-dialog/cover-search-dialog.component';
 
 @Component({
     selector: 'app-media-uploader-music',
@@ -21,7 +23,6 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
   curTrackNumber = 1;
 
   isLoading = false;
-  showContextButtons = false;
 
   // Upload progress tracking
   uploadProgress = {
@@ -36,10 +37,13 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
   private finalizingFiles = new Set<string>();
   private readonly clickHandler = () => this.cleanupMenus();
 
+  private static readonly ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
   constructor(
     private fb: FormBuilder,
     private mediaService: MediaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private dialog: MatDialog
   ) {
     // Auth check now handled by AuthGuard on the route
 
@@ -88,9 +92,7 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
   }
 
   cleanupMenus(): void {
-    if ( this.showContextButtons ) {
-      this.showContextButtons = false;
-    }
+    // MatMenu handles its own lifecycle; kept for document click handler cleanup
   }
 
   onFileSelect(event: Event): void {
@@ -291,22 +293,75 @@ export class MediaUploaderMusicComponent implements OnInit, OnDestroy {
     // tableRows getter auto-recomputes on next change detection
   }
 
-  toggleContextButtons(event?: MouseEvent): void {
-    console.log('Context buttons');
-    event?.stopPropagation();
-    this.showContextButtons = !this.showContextButtons;
+  uploadCover(albumName: string): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/jpeg,image/png,image/webp,image/gif';
+    input.style.display = 'none';
+    input.addEventListener('change', () => {
+      const file = input.files?.[0];
+      if (file) {
+        this.processImageFile(file, albumName);
+      }
+      input.remove();
+    });
+    document.body.appendChild(input);
+    input.click();
   }
 
-  searchCover( song: Song ) {
-    console.log( 'Searching for cover:', song.title );
+  searchCover(albumName: string): void {
+    const group = this.albumGroups.find(g => g.albumName === albumName);
+    const artist = group?.songs[0]?.albumArtist || group?.songs[0]?.artist || '';
+
+    const dialogRef = this.dialog.open(CoverSearchDialogComponent, {
+      width: '700px',
+      maxHeight: '80vh',
+      panelClass: 'dark-dialog',
+      data: { artist, album: albumName }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.updateAlbumField(albumName, 'cover', result);
+      }
+    });
   }
 
-  uploadCover( song: Song ) {
-    console.log( 'Uploading cover:', song.title );
+  processImageFile(file: File, albumName: string): void {
+    if (!MediaUploaderMusicComponent.ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      this.notificationService.showError('Invalid image type. Use JPEG, PNG, WebP, or GIF.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const img = new Image();
+      img.onload = () => {
+        if (img.naturalWidth !== img.naturalHeight) {
+          this.notificationService.showError('Cover art must be square.');
+          return;
+        }
+        this.updateAlbumField(albumName, 'cover', { format: file.type, data: dataUrl });
+      };
+      img.onerror = () => {
+        this.notificationService.showError('Failed to load image.');
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
   }
 
-  pasteCover( song: Song ) {
-    console.log( 'Pasting cover:', song.title );
+  onCoverDrop(event: DragEvent, albumName: string): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      this.processImageFile(file, albumName);
+    }
+  }
+
+  onCoverDragOver(event: DragEvent): void {
+    event.preventDefault();
   }
 
   private resetUploadProgress(): void {
