@@ -46,27 +46,25 @@ Deno.test('cover-fetch rejects localhost', async () => {
   assertEquals(body?.message, 'Domain not allowed');
 });
 
-// ── Allowed domains ──────────────────────────────────────────────────────────
+// ── Allowed domains (network tests) ─────────────────────────────────────────
 
-Deno.test('cover-fetch accepts coverartarchive.org domain', async () => {
-  // This will likely return a 502 since the URL doesn't exist, but it should NOT be 403
+Deno.test({ name: 'cover-fetch accepts coverartarchive.org domain', sanitizeResources: false, fn: async () => {
+  // Will likely return 502 since the URL doesn't exist, but should NOT be 403
   const { status } = await postFetch({ url: 'https://coverartarchive.org/release/test/front.jpg' });
-  // Should be 200 or 502, but NOT 403
   assertEquals(status !== 403, true);
-});
+}});
 
-Deno.test('cover-fetch accepts archive.org subdomain', async () => {
+Deno.test({ name: 'cover-fetch accepts archive.org subdomain', sanitizeResources: false, fn: async () => {
   const { status } = await postFetch({ url: 'https://ia601234.us.archive.org/image.jpg' });
   assertEquals(status !== 403, true);
-});
+}});
 
-// ── Response shape ───────────────────────────────────────────────────────────
+// ── Response shape (network test) ────────────────────────────────────────────
 
-Deno.test('cover-fetch response has cover field', async () => {
+Deno.test({ name: 'cover-fetch response has cover field', sanitizeResources: false, fn: async () => {
   const { body } = await postFetch({ url: 'https://coverartarchive.org/release/nonexistent/front.jpg' });
   assertExists(body);
-  // Should have status, message, cover fields
   assertExists(body.status);
   assertExists(body.message);
   assertEquals('cover' in body, true);
-});
+}});

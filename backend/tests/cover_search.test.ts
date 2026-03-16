@@ -30,10 +30,9 @@ Deno.test('cover-search returns 400 when both params are missing', async () => {
   assertExists(body?.message);
 });
 
-// ── Response shape ───────────────────────────────────────────────────────────
+// ── Response shape (network test) ────────────────────────────────────────────
 
-Deno.test('cover-search returns 200 with results array when params provided', async () => {
-  // This test hits real APIs, but validates the response shape
+Deno.test({ name: 'cover-search returns 200 with results array when params provided', sanitizeResources: false, fn: async () => {
   const { status, body } = await testRequest(
     makeRouter(),
     '/cover-search?artist=test&album=test'
@@ -41,4 +40,4 @@ Deno.test('cover-search returns 200 with results array when params provided', as
   assertEquals(status, 200);
   assertExists(body?.results);
   assertEquals(Array.isArray(body?.results), true);
-});
+}});
