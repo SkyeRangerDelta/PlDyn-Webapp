@@ -121,3 +121,25 @@ export interface TableRow {
   song?: Song;
   albumName?: string;
 }
+
+export interface CoverArtSearchResult {
+  releaseId: string;
+  title: string;
+  artist: string;
+  date: string;
+  thumbnailUrl: string;
+  fullUrl: string;
+  source: 'musicbrainz' | 'itunes';
+}
+
+export interface CoverArtSearchResponse {
+  status: number;
+  message: string;
+  results: CoverArtSearchResult[];
+}
+
+export interface CoverArtFetchResponse {
+  status: number;
+  message: string;
+  cover: { format: string; data: string } | null;
+}

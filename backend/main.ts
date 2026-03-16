@@ -136,7 +136,7 @@ app.use( async (ctx, next) => {
   ctx.response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains');
   ctx.response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'"
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://coverartarchive.org https://*.archive.org https://*.mzstatic.com; connect-src 'self'"
   );
   await next();
 });
@@ -147,6 +147,8 @@ const rateLimiter = new RateLimiter({
   '/api/v1/jellyfin/upload':        { max: 60, windowMs: 15 * 60_000 },  // 60 uploads per 15 min
   '/api/v1/jellyfin/finalize':      { max: 10, windowMs: 15 * 60_000 },  // 10 finalizations per 15 min
   '/api/v1/jellyfin/watch-ticket':  { max: 10, windowMs: 60_000 },       // 10 tickets per 1 min
+  '/api/v1/jellyfin/cover-search':  { max: 20, windowMs: 5 * 60_000 },   // 20 searches per 5 min
+  '/api/v1/jellyfin/cover-fetch':   { max: 30, windowMs: 5 * 60_000 },   // 30 fetches per 5 min
 });
 rateLimiter.startCleanupScheduler();
 app.use( rateLimiter.middleware() );

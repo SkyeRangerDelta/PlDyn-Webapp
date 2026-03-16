@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { catchError, map, Observable, of, Observer } from 'rxjs';
-import { AudioUploadResponse, DeleteResponse, FinalizeUploadResponse, MediaResult, Song } from '../customTypes';
+import { AudioUploadResponse, CoverArtSearchResponse, CoverArtFetchResponse, DeleteResponse, FinalizeUploadResponse, MediaResult, Song } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -105,6 +105,36 @@ export class MediaService {
           processedCount: 0,
           failedFiles: []
         } as FinalizeUploadResponse );
+      })
+    );
+  }
+
+  searchCoverArt(artist: string, album: string): Observable<CoverArtSearchResponse> {
+    return this.httpClient.get<CoverArtSearchResponse>(
+      '/api/v1/jellyfin/cover-search',
+      { params: { artist, album } }
+    ).pipe(
+      catchError(error => {
+        return of({
+          status: error.status || 500,
+          message: error.error?.message || error.message || 'Cover art search failed',
+          results: []
+        } as CoverArtSearchResponse);
+      })
+    );
+  }
+
+  fetchCoverArt(url: string): Observable<CoverArtFetchResponse> {
+    return this.httpClient.post<CoverArtFetchResponse>(
+      '/api/v1/jellyfin/cover-fetch',
+      { url }
+    ).pipe(
+      catchError(error => {
+        return of({
+          status: error.status || 500,
+          message: error.error?.message || error.message || 'Cover art fetch failed',
+          cover: null
+        } as CoverArtFetchResponse);
       })
     );
   }
