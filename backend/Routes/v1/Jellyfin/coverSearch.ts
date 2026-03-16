@@ -57,7 +57,9 @@ router.get('/cover-search', async (ctx) => {
     const mbUrl = `https://musicbrainz.org/ws/2/release/?query=${mbQuery}&fmt=json&limit=10`;
     const mbRes = await throttledFetch(mbUrl);
 
-    if (mbRes.ok) {
+    if (!mbRes.ok) {
+      await mbRes.body?.cancel();
+    } else {
       const mbData: MBSearchResponse = await mbRes.json();
 
       if (mbData.releases) {
@@ -69,7 +71,10 @@ router.get('/cover-search', async (ctx) => {
               redirect: 'follow'
             });
 
-            if (!caaRes.ok) return null;
+            if (!caaRes.ok) {
+              await caaRes.body?.cancel();
+              return null;
+            }
 
             const caaData: CAAResponse = await caaRes.json();
             if (!caaData.images || caaData.images.length === 0) return null;
@@ -111,7 +116,9 @@ router.get('/cover-search', async (ctx) => {
       const itunesUrl = `https://itunes.apple.com/search?term=${itunesQuery}&media=music&entity=album&limit=10`;
       const itunesRes = await fetch(itunesUrl, { headers: { 'User-Agent': USER_AGENT } });
 
-      if (itunesRes.ok) {
+      if (!itunesRes.ok) {
+        await itunesRes.body?.cancel();
+      } else {
         const itunesData = await itunesRes.json();
 
         for (const result of itunesData.results || []) {

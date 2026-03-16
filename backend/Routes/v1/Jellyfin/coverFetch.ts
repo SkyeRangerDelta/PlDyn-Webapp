@@ -51,6 +51,7 @@ router.post('/cover-fetch', async (ctx) => {
     });
 
     if (!res.ok) {
+      await res.body?.cancel();
       ctx.response.status = 502;
       ctx.response.body = { status: 502, message: `Upstream returned ${res.status}`, cover: null };
       return;
@@ -58,6 +59,7 @@ router.post('/cover-fetch', async (ctx) => {
 
     const contentLength = res.headers.get('content-length');
     if (contentLength && parseInt(contentLength) > MAX_RESPONSE_SIZE) {
+      await res.body?.cancel();
       ctx.response.status = 413;
       ctx.response.body = { status: 413, message: 'Image too large', cover: null };
       return;
