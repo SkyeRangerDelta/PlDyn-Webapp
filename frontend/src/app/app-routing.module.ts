@@ -5,6 +5,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { MediaDashboardComponent } from './media-dashboard/media-dashboard.component';
 import { MediaUploaderMusicComponent } from './media-uploader-music/media-uploader-music.component';
+import { SettingsComponent } from './settings/settings.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'media', component: MediaDashboardComponent, canActivate: [AuthGuard] },
   { path: 'music-editor', component: MediaUploaderMusicComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 
