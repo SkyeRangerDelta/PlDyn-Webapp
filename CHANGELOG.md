@@ -1,3 +1,19 @@
+# [1.1.0](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2...v1.1.0) (2026-03-17)
+
+
+### Bug Fixes
+
+* Added error handling ([ec917a3](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/ec917a3bf56ad7a66a469b72e83312278d9477b4))
+* Prevent login redirect on root page when token expires ([7294098](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/729409851a61f5db0052957a83015c62dbd17cdd))
+
+
+### Features
+
+* Added activity and contributions listing ([6bfb080](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/6bfb080d7baf4d825d1c7b25ee03cec7e69ec870))
+* Added album art upload support ([1e73284](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/1e732849652ef57b11811406fc12c36de3e5ae3e))
+* Added Jellyfin warning on login if service is down ([73ff17d](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/73ff17d4187c6e02e7b89244f0fbc6768b1d4e43))
+* Added settings page ([a10eb50](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/a10eb50619b0986b718150fea84e48592c4d391d))
+
 # [1.1.0-E.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.1.0-E.1...v1.1.0-E.2) (2026-03-17)
 
 
