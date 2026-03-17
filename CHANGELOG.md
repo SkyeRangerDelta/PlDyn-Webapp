@@ -1,12 +1,28 @@
-## [1.0.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.1...v1.0.2) (2026-02-28)
+# [1.1.0-E.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.1.0-E.1...v1.1.0-E.2) (2026-03-17)
 
 
 ### Bug Fixes
 
-* Corrected a proxy issue with specified host ([3aa6f49](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/3aa6f49f485ab40f71f65807929d462b6ae76440))
-* Corrected an issue Copilot introduced ([2802e9a](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/2802e9a342c1dcd0ae37cde0c4f628595570783f))
-* Corrected ref name in release pipeline ([7671e58](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/7671e58850e39aa755ace0763c0208c4675bf6a6))
-* Manually define httpOnly cookie ([b895b01](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/b895b012f294d4126534bf0bfa92e431f6f724b9))
+* Prevent login redirect on root page when token expires ([7294098](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/729409851a61f5db0052957a83015c62dbd17cdd))
+
+
+### Features
+
+* Added activity and contributions listing ([6bfb080](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/6bfb080d7baf4d825d1c7b25ee03cec7e69ec870))
+* Added Jellyfin warning on login if service is down ([73ff17d](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/73ff17d4187c6e02e7b89244f0fbc6768b1d4e43))
+* Added settings page ([a10eb50](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/a10eb50619b0986b718150fea84e48592c4d391d))
+
+# [1.1.0-E.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.5...v1.1.0-E.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* Added error handling ([ec917a3](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/ec917a3bf56ad7a66a469b72e83312278d9477b4))
+
+
+### Features
+
+* Added album art upload support ([1e73284](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/1e732849652ef57b11811406fc12c36de3e5ae3e))
 
 ## [1.0.2-E.5](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.4...v1.0.2-E.5) (2026-02-28)
 

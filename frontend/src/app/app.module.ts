@@ -16,6 +16,8 @@ import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@a
 import { NavigationComponent } from './navigation/navigation.component';
 import { MediaDashboardComponent } from './media-dashboard/media-dashboard.component';
 import { MediaUploaderMusicComponent } from './media-uploader-music/media-uploader-music.component';
+import { CoverSearchDialogComponent } from './media-uploader-music/cover-search-dialog/cover-search-dialog.component';
+import { SettingsComponent } from './settings/settings.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
@@ -25,7 +27,9 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     LoginComponent,
     NavigationComponent,
     MediaDashboardComponent,
-    MediaUploaderMusicComponent
+    MediaUploaderMusicComponent,
+    CoverSearchDialogComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

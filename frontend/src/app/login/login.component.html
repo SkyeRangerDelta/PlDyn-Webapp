@@ -3,6 +3,13 @@
     <h1>Login</h1>
     <p class="login-subtext">Use your Jellyfin Credentials</p>
 
+    @if (jellyfinOffline) {
+      <div class="jellyfin-warning">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Jellyfin server is unreachable — login may not work.
+      </div>
+    }
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>

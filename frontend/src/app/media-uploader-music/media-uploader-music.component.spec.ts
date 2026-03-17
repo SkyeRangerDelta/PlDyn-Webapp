@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { of, throwError, Observable } from 'rxjs';
 import { HttpEventType } from '@angular/common/http';
@@ -34,26 +36,31 @@ describe('MediaUploaderMusicComponent', () => {
   let fixture: ComponentFixture<MediaUploaderMusicComponent>;
   let mediaServiceSpy: jasmine.SpyObj<MediaService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let matDialogSpy: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
     mediaServiceSpy = jasmine.createSpyObj('MediaService', [
       'uploadSingleFile',
       'clearMedia',
       'finalizeUpload',
-      'watchTempFiles'
+      'watchTempFiles',
+      'searchCoverArt',
+      'fetchCoverArt'
     ]);
     mediaServiceSpy.watchTempFiles.and.returnValue(of());
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', [
       'showError',
       'showSuccess'
     ]);
+    matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
       declarations: [ MediaUploaderMusicComponent ],
-      imports: [ ReactiveFormsModule, FormsModule, HttpClientTestingModule, MatSnackBarModule ],
+      imports: [ ReactiveFormsModule, FormsModule, HttpClientTestingModule, MatSnackBarModule, MatMenuModule ],
       providers: [
         { provide: MediaService, useValue: mediaServiceSpy },
         { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: MatDialog, useValue: matDialogSpy },
       ],
       schemas: [ NO_ERRORS_SCHEMA ],
     })
@@ -83,32 +90,140 @@ describe('MediaUploaderMusicComponent', () => {
   // ── cleanupMenus ────────────────────────────────────────────────────────────
 
   describe('cleanupMenus', () => {
-    it('should set showContextButtons to false when it was true', () => {
-      component.showContextButtons = true;
-      component.cleanupMenus();
-      expect(component.showContextButtons).toBeFalse();
-    });
-
-    it('should leave showContextButtons false when already false', () => {
-      component.showContextButtons = false;
-      component.cleanupMenus();
-      expect(component.showContextButtons).toBeFalse();
+    it('should not throw when called', () => {
+      expect(() => component.cleanupMenus()).not.toThrow();
     });
   });
 
-  // ── toggleContextButtons ────────────────────────────────────────────────────
+  // ── uploadCover ────────────────────────────────────────────────────────────
 
-  describe('toggleContextButtons', () => {
-    it('should set showContextButtons to true when it was false', () => {
-      component.showContextButtons = false;
-      component.toggleContextButtons();
-      expect(component.showContextButtons).toBeTrue();
+  describe('uploadCover', () => {
+    it('should create a file input and trigger click', () => {
+      const clickSpy = spyOn(HTMLInputElement.prototype, 'click');
+      component.uploadCover('Test Album');
+      expect(clickSpy).toHaveBeenCalled();
+    });
+  });
+
+  // ── processImageFile ─────────────────────────────────────────────────────
+
+  describe('processImageFile', () => {
+    it('should reject non-image types', () => {
+      const file = new File(['hello'], 'test.txt', { type: 'text/plain' });
+      component.processImageFile(file, 'Test Album');
+      expect(notificationServiceSpy.showError).toHaveBeenCalledWith('Invalid image type. Use JPEG, PNG, WebP, or GIF.');
     });
 
-    it('should set showContextButtons to false when it was true', () => {
-      component.showContextButtons = true;
-      component.toggleContextButtons();
-      expect(component.showContextButtons).toBeFalse();
+    it('should accept valid square images and call updateAlbumField', (done) => {
+      // Create a 1x1 square PNG
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      canvas.toBlob((blob) => {
+        if (!blob) { done.fail('Failed to create blob'); return; }
+        const file = new File([blob], 'cover.png', { type: 'image/png' });
+
+        spyOn(component, 'updateAlbumField');
+        component.songs = [makeSong({ album: 'Test Album' })];
+        component.processImageFile(file, 'Test Album');
+
+        // Wait for FileReader + Image load
+        setTimeout(() => {
+          expect(component.updateAlbumField).toHaveBeenCalledWith('Test Album', 'cover', jasmine.objectContaining({ format: 'image/png' }));
+          done();
+        }, 500);
+      }, 'image/png');
+    });
+
+    it('should reject non-square images', (done) => {
+      // Create a 2x1 non-square PNG
+      const canvas = document.createElement('canvas');
+      canvas.width = 2;
+      canvas.height = 1;
+      canvas.toBlob((blob) => {
+        if (!blob) { done.fail('Failed to create blob'); return; }
+        const file = new File([blob], 'cover.png', { type: 'image/png' });
+
+        component.processImageFile(file, 'Test Album');
+
+        setTimeout(() => {
+          expect(notificationServiceSpy.showError).toHaveBeenCalledWith('Cover art must be square.');
+          done();
+        }, 500);
+      }, 'image/png');
+    });
+  });
+
+  // ── searchCover ─────────────────────────────────────────────────────────
+
+  describe('searchCover', () => {
+    it('should open MatDialog with correct data', () => {
+      component.songs = [makeSong({ album: 'Test Album', albumArtist: 'Test Artist' })];
+      const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
+      dialogRefSpy.afterClosed.and.returnValue(of(null));
+      matDialogSpy.open.and.returnValue(dialogRefSpy);
+
+      component.searchCover('Test Album');
+
+      expect(matDialogSpy.open).toHaveBeenCalledWith(
+        jasmine.any(Function),
+        jasmine.objectContaining({
+          data: { artist: 'Test Artist', album: 'Test Album' }
+        })
+      );
+    });
+
+    it('should update cover on dialog result', () => {
+      component.songs = [makeSong({ album: 'Test Album', albumArtist: 'Test Artist' })];
+      const coverData = { format: 'image/jpeg', data: 'data:image/jpeg;base64,abc' };
+      const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
+      dialogRefSpy.afterClosed.and.returnValue(of(coverData));
+      matDialogSpy.open.and.returnValue(dialogRefSpy);
+
+      spyOn(component, 'updateAlbumField');
+      component.searchCover('Test Album');
+
+      expect(component.updateAlbumField).toHaveBeenCalledWith('Test Album', 'cover', coverData);
+    });
+
+    it('should not update cover when dialog is cancelled', () => {
+      component.songs = [makeSong({ album: 'Test Album', albumArtist: 'Test Artist' })];
+      const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
+      dialogRefSpy.afterClosed.and.returnValue(of(null));
+      matDialogSpy.open.and.returnValue(dialogRefSpy);
+
+      spyOn(component, 'updateAlbumField');
+      component.searchCover('Test Album');
+
+      expect(component.updateAlbumField).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── onCoverDrop ─────────────────────────────────────────────────────────
+
+  describe('onCoverDrop', () => {
+    it('should prevent default and call processImageFile', () => {
+      const file = new File([''], 'cover.png', { type: 'image/png' });
+      const event = {
+        preventDefault: jasmine.createSpy('preventDefault'),
+        dataTransfer: { files: [file] }
+      } as unknown as DragEvent;
+
+      spyOn(component, 'processImageFile');
+      component.onCoverDrop(event, 'Test Album');
+
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(component.processImageFile).toHaveBeenCalledWith(file, 'Test Album');
+    });
+  });
+
+  // ── onCoverDragOver ─────────────────────────────────────────────────────
+
+  describe('onCoverDragOver', () => {
+    it('should prevent default', () => {
+      const event = { preventDefault: jasmine.createSpy('preventDefault') } as unknown as DragEvent;
+      component.onCoverDragOver(event);
+      expect(event.preventDefault).toHaveBeenCalled();
     });
   });
 

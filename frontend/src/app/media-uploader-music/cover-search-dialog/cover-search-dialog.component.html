@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Search Cover Art</h2>
+<p class="search-info">{{ data.artist }} &mdash; {{ data.album }}</p>
+
+<mat-dialog-content>
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="disc-loader">
+        <div class="disc-ring"></div>
+        <div class="disc-ring"></div>
+        <div class="disc-center">
+          <i class="fa-solid fa-compact-disc"></i>
+        </div>
+      </div>
+      <p class="loading-text">Searching for cover art<span class="loading-dots"></span></p>
+    </div>
+  } @else if (results.length === 0) {
+    <div class="empty-container">
+      <p>No results found</p>
+    </div>
+  } @else {
+    <div class="results-grid">
+      @for (result of results; track result.releaseId) {
+        <div class="result-card" (click)="selectCover(result)" [class.disabled]="isFetching">
+          <img [src]="result.thumbnailUrl" [alt]="result.title" class="result-thumbnail" />
+          <div class="result-info">
+            <span class="result-title">{{ result.title }}</span>
+            <span class="result-artist">{{ result.artist }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (isFetching) {
+    <div class="fetching-overlay">
+      <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+      <p>Downloading cover art...</p>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

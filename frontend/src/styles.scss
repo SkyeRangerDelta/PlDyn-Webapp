@@ -34,3 +34,18 @@ body {
 .snack-success .mdc-snackbar__label {
   color: #ffffff !important;
 }
+
+/* Dark theme overrides for settings page select */
+app-settings .mat-mdc-select-value-text {
+  color: #ffffff !important;
+}
+
+app-settings .mat-mdc-select-arrow {
+  color: #ffffff !important;
+}
+
+/* Dark theme dialog for cover search */
+.dark-dialog .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: #1a1a2e;
+  color: #ffffff;
+}

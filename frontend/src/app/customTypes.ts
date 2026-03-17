@@ -55,6 +55,8 @@ export interface ClientContributionResult {
     contributions: ContributionObject[];
     totalAlbums: number;
     totalSongs: number;
+    totalPages: number;
+    currentPage: number;
     errorMessage: string;
   }
 }
@@ -120,4 +122,26 @@ export interface TableRow {
   albumGroup?: AlbumGroup;
   song?: Song;
   albumName?: string;
+}
+
+export interface CoverArtSearchResult {
+  releaseId: string;
+  title: string;
+  artist: string;
+  date: string;
+  thumbnailUrl: string;
+  fullUrl: string;
+  source: 'musicbrainz' | 'itunes';
+}
+
+export interface CoverArtSearchResponse {
+  status: number;
+  message: string;
+  results: CoverArtSearchResult[];
+}
+
+export interface CoverArtFetchResponse {
+  status: number;
+  message: string;
+  cover: { format: string; data: string } | null;
 }
