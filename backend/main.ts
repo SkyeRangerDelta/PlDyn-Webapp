@@ -149,6 +149,7 @@ const rateLimiter = new RateLimiter({
   '/api/v1/jellyfin/watch-ticket':  { max: 10, windowMs: 60_000 },       // 10 tickets per 1 min
   '/api/v1/jellyfin/cover-search':  { max: 20, windowMs: 5 * 60_000 },   // 20 searches per 5 min
   '/api/v1/jellyfin/cover-fetch':   { max: 30, windowMs: 5 * 60_000 },   // 30 fetches per 5 min
+  '/api/v1/jellyfin/status':        { max: 30, windowMs: 5 * 60_000 },   // 30 status checks per 5 min
 });
 rateLimiter.startCleanupScheduler();
 app.use( rateLimiter.middleware() );

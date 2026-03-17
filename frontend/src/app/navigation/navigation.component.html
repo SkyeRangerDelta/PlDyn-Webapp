@@ -7,6 +7,9 @@
       <button mat-flat-button routerLink="/media" class="nav-button">Media</button>
     }
     @if (authed) {
+      <button mat-flat-button routerLink="/settings" class="nav-button">Settings</button>
+    }
+    @if (authed) {
       <div class="username-box">
         <span>Hello, {{username}}!</span>
       </div>

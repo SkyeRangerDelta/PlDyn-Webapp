@@ -18,6 +18,8 @@ router
           contributions: [],
           totalAlbums: 0,
           totalSongs: 0,
+          totalPages: 0,
+          currentPage: 0,
           errorMessage: 'Missing user identity.'
         }
       } as JellyfinContributionsResponse;
@@ -34,6 +36,8 @@ router
           contributions: [],
           totalAlbums: 0,
           totalSongs: 0,
+          totalPages: 0,
+          currentPage: 0,
           errorMessage: 'No contributions found.'
         }
       } as JellyfinContributionsResponse;
@@ -41,13 +45,20 @@ router
       return;
     }
 
+    const body = await ctx.request.body.json().catch(() => ({}));
+    const page = Math.max(1, parseInt(body.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(body.limit) || 10));
+
     const contributions: JellyfinContribution[] = settingsRes.contributions ?? [];
     const totalAlbums = contributions.length;
     const totalSongs = contributions.reduce((sum, c) => sum + c.songCount, 0);
-    const recent = [...contributions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
+    const totalPages = Math.max(1, Math.ceil(totalAlbums / limit));
+
+    const sorted = [...contributions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const paginated = sorted.slice((page - 1) * limit, page * limit);
 
     // Resolve cover URLs from album directories
-    for (const contrib of recent) {
+    for (const contrib of paginated) {
       const albumDir = getAlbumDir(contrib.albumArtist, contrib.album, contrib.year);
       const coverPath = findAlbumCover(albumDir);
       contrib.coverUrl = coverPath
@@ -58,9 +69,11 @@ router
     ctx.response.body = {
       message: 'Success',
       data: {
-        contributions: recent,
+        contributions: paginated,
         totalAlbums,
         totalSongs,
+        totalPages,
+        currentPage: page,
         errorMessage: ''
       }
     } as JellyfinContributionsResponse;

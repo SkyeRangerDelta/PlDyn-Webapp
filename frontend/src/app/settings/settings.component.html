@@ -1,0 +1,24 @@
+<div class="settings-container">
+  <h2>Settings</h2>
+
+  @if (isLoading) {
+    <p class="loading-text">Loading settings...</p>
+  } @else {
+    <div class="settings-group">
+      <div class="setting-row">
+        <label>Last Used Editor</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-select [(value)]="settings.lastUsedEditor">
+            <mat-option value="Music">Music</mat-option>
+            <mat-option value="Movies">Movies</mat-option>
+            <mat-option value="Shows">Shows</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="settings-actions">
+      <button mat-flat-button (click)="saveSettings()">Save Settings</button>
+    </div>
+  }
+</div>

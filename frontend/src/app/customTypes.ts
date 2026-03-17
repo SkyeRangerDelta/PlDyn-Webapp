@@ -55,6 +55,8 @@ export interface ClientContributionResult {
     contributions: ContributionObject[];
     totalAlbums: number;
     totalSongs: number;
+    totalPages: number;
+    currentPage: number;
     errorMessage: string;
   }
 }

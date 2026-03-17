@@ -19,6 +19,8 @@ export class MediaDashboardComponent {
   contributions: ContributionObject[] = [];
   totalAlbums: number = 0;
   totalSongs: number = 0;
+  currentPage: number = 1;
+  totalPages: number = 1;
 
   newMedia = {
     title: '',
@@ -35,19 +37,23 @@ export class MediaDashboardComponent {
     this.getContributions();
   }
 
-  getContributions() {
-    this.settingsService.getContributions().subscribe({
+  getContributions(page: number = 1) {
+    this.settingsService.getContributions(page).subscribe({
       next: (data: any) => {
         if ( !data || !data.data || !data.data.contributions ) {
           console.log( 'No contribution data.' );
           this.contributions = [];
           this.totalAlbums = 0;
           this.totalSongs = 0;
+          this.totalPages = 1;
+          this.currentPage = 1;
         }
         else {
           this.contributions = data.data.contributions;
           this.totalAlbums = data.data.totalAlbums ?? 0;
           this.totalSongs = data.data.totalSongs ?? 0;
+          this.totalPages = data.data.totalPages ?? 1;
+          this.currentPage = data.data.currentPage ?? 1;
         }
       },
       error: (error) => {
@@ -58,6 +64,18 @@ export class MediaDashboardComponent {
         this.totalSongs = 0;
       }
     });
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.getContributions(this.currentPage + 1);
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.getContributions(this.currentPage - 1);
+    }
   }
 
   selectMediaType(ev: string) {

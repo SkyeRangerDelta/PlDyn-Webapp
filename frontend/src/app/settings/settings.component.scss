@@ -1,0 +1,67 @@
+@use '../../styles/colors';
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: colors.$background-color;
+  color: colors.$text-color;
+  border: 2px solid colors.$button-background;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 1rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  h2 {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+  }
+}
+
+.loading-text {
+  color: rgba(colors.$text-color, 0.7);
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  label {
+    min-width: 140px;
+    font-size: 0.95rem;
+  }
+
+  mat-form-field {
+    flex: 1;
+    --mdc-outlined-text-field-container-shape: 4px;
+    --mat-form-field-container-height: 40px;
+    --mat-form-field-container-vertical-padding: 8px;
+  }
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    padding: 0.5rem 1.5rem;
+    background-color: colors.$button-background;
+    color: colors.$text-color;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: colors.$button-hover;
+    }
+  }
+}

@@ -42,7 +42,9 @@ export class AuthInterceptor implements HttpInterceptor {
         console.warn('No active session - logging out user');
         this.notificationService.showError('Authentication required.');
         this.getAuthService().logout();
-        this.router.navigate(['/login']);
+        if (this.router.url !== '/') {
+          this.router.navigate(['/login']);
+        }
 
         // Return an error observable to prevent the request
         return throwError(() => new HttpErrorResponse({
@@ -61,7 +63,9 @@ export class AuthInterceptor implements HttpInterceptor {
           console.warn('401 Unauthorized - logging out user');
           this.notificationService.showError('Session expired. Please log in again.');
           this.getAuthService().logout();
-          this.router.navigate(['/login']);
+          if (this.router.url !== '/') {
+            this.router.navigate(['/login']);
+          }
         }
 
         // Re-throw the error so services can still handle it if needed

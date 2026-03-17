@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
@@ -15,17 +16,19 @@ import { AuthResult } from '../customTypes';
     ],
     standalone: false
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isSuccess: boolean = true;
   submitText: string = '';
   returnUrl: string = '/media';
+  jellyfinOffline: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) {
     this.loginForm = this.fb.group({
       user: [ '', Validators.required ],
@@ -38,6 +41,17 @@ export class LoginComponent {
     this.returnUrl = (requested && requested.startsWith('/') && !requested.startsWith('//'))
       ? requested
       : '/media';
+  }
+
+  ngOnInit(): void {
+    this.http.get<any>('/api/v1/jellyfin/status').subscribe({
+      next: (res) => {
+        this.jellyfinOffline = res?.jellyfin !== 'online';
+      },
+      error: () => {
+        this.jellyfinOffline = true;
+      }
+    });
   }
 
   onSubmit() {

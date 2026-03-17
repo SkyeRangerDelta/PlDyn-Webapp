@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
-import { ClientContributionResult, ClientSettingsResult } from '../customTypes';
+import { ClientContributionResult, ClientSettings, ClientSettingsResult } from '../customTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -58,13 +58,13 @@ export class SettingsService {
     );
   }
 
-  getContributions(): Observable<ClientContributionResult> {
+  getContributions(page: number = 1, limit: number = 10): Observable<ClientContributionResult> {
     const headers: HttpHeaders = new HttpHeaders()
       .set('Content-Type', 'application/json');
 
     return this.httpClient.post<any>(
       this.contributionsEndpoint,
-      {},
+      { page, limit },
       { headers: headers }
     ).pipe (
       map( (data: any) => {
@@ -75,6 +75,8 @@ export class SettingsService {
               contributions: [],
               totalAlbums: 0,
               totalSongs: 0,
+              totalPages: 0,
+              currentPage: 0,
               errorMessage: data.data?.errorMessage || 'No contributions found.'
             }
           } as ClientContributionResult;
@@ -86,6 +88,8 @@ export class SettingsService {
             contributions: data.data.contributions,
             totalAlbums: data.data.totalAlbums ?? 0,
             totalSongs: data.data.totalSongs ?? 0,
+            totalPages: data.data.totalPages ?? 1,
+            currentPage: data.data.currentPage ?? 1,
             errorMessage: ''
           }
         } as ClientContributionResult;
@@ -101,9 +105,39 @@ export class SettingsService {
             contributions: [],
             totalAlbums: 0,
             totalSongs: 0,
+            totalPages: 0,
+            currentPage: 0,
             errorMessage: err.message || 'Internal server error.'
           }
         } as ClientContributionResult );
+      })
+    );
+  }
+
+  updateSettings(settings: ClientSettings): Observable<ClientSettingsResult> {
+    const headers: HttpHeaders = new HttpHeaders()
+      .set('Content-Type', 'application/json');
+
+    return this.httpClient.post<any>(
+      this.updateSettingsEndpoint,
+      { clientSettings: settings },
+      { headers: headers }
+    ).pipe(
+      map( (data: any) => {
+        return {
+          status: data.status,
+          message: data.message,
+          settings: settings,
+          success: data.success ?? false
+        } as ClientSettingsResult;
+      }),
+      catchError( (err: any) => {
+        return of({
+          status: err.status || 500,
+          message: err.message || 'Internal server error',
+          settings: {} as ClientSettings,
+          success: false
+        } as ClientSettingsResult );
       })
     );
   }
