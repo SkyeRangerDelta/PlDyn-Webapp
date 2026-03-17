@@ -1,3 +1,17 @@
+# [1.1.0-E.2](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.1.0-E.1...v1.1.0-E.2) (2026-03-17)
+
+
+### Bug Fixes
+
+* Prevent login redirect on root page when token expires ([7294098](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/729409851a61f5db0052957a83015c62dbd17cdd))
+
+
+### Features
+
+* Added activity and contributions listing ([6bfb080](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/6bfb080d7baf4d825d1c7b25ee03cec7e69ec870))
+* Added Jellyfin warning on login if service is down ([73ff17d](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/73ff17d4187c6e02e7b89244f0fbc6768b1d4e43))
+* Added settings page ([a10eb50](https://github.com/SkyeRangerDelta/PlDyn-Webapp/commit/a10eb50619b0986b718150fea84e48592c4d391d))
+
 # [1.1.0-E.1](https://github.com/SkyeRangerDelta/PlDyn-Webapp/compare/v1.0.2-E.5...v1.1.0-E.1) (2026-03-16)
 
 
