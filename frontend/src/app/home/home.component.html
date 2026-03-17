@@ -1,16 +1,34 @@
 <div class="mainDiv">
-  <div class="">
+  <div>
     <img ngSrc="{{flagshipLogo}}" width="150" height="150" alt="PlDyn Flagship Logo" priority/>
   </div>
-  <div>
-    <p>
-      You've arrived at the PlDyn main site, but there's no content here.
-    </p>
-    <p>
-      I don't know what else to say about this.
-    </p>
+
+  @if (authed) {
+    <div class="welcome-section">
+      <h2>Welcome back, {{ username }}</h2>
+      <div class="quick-links">
+        <button mat-flat-button routerLink="/media">
+          <i class="fa-solid fa-compact-disc"></i> Media Dashboard
+        </button>
+        <button mat-flat-button routerLink="/music-editor">
+          <i class="fa-solid fa-music"></i> Music Editor
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div>
+      <p>
+        You've arrived at the PlDyn main site, but there's no content here.
+      </p>
+      <p>
+        I don't know what else to say about this.
+      </p>
+    </div>
+  }
+</div>
+
+@if (!authed) {
+  <div style="padding: 1%">
+    <button id="funButton" mat-flat-button (click)="generateRandomLink()">Go Somewhere Fun</button>
   </div>
-</div>
-<div style="padding: 1%">
-  <button id="funButton" mat-flat-button (click)="generateRandomLink()">Go Somewhere Fun</button>
-</div>
+}
