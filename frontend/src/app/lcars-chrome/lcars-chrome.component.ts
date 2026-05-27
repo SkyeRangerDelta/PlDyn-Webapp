@@ -24,7 +24,7 @@ export class LcarsChromeComponent implements OnInit, OnDestroy {
   active: ThemeId = 'default';
   pageLabel = 'MAIN';
   stardate = '';
-  sectionLabels = ['NAV', 'OPS', 'DB-LINK', 'SEC-3', 'AUX'];
+  sectionLabels = ['NAV', 'OPS', 'DB-LINK', 'SEC-3', 'AUX', 'SUB-NET', 'COMMS'];
 
   authed = false;
   username = 'Program!';

@@ -7,9 +7,9 @@
  * 0.5× outer-radius. */
 
 $gap: 0.4rem;
-$elbow-spacing: 1.6rem;        /* width of the ::after notch — must be ≥ inner-radius */
-$elbow-outer-radius: 3rem;     /* outer corner radius */
-$elbow-inner-radius: 1.4rem;   /* inner curve radius */
+$elbow-spacing: 2.4rem;        /* width of the ::after notch — must be ≥ inner-radius */
+$elbow-outer-radius: 4.5rem;   /* outer corner radius — chunky LCARS proportions */
+$elbow-inner-radius: 2.2rem;   /* inner curve radius (~half outer, per Garrett ref) */
 
 :host { display: contents; }
 
@@ -35,7 +35,7 @@ $elbow-inner-radius: 1.4rem;   /* inner curve radius */
   top: 0;
   left: 0;
   width: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing});
-  height: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 1.75rem));
+  height: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 2.5rem));
   background: var(--lcars-elbow-color, var(--accent));
   border-top-left-radius: $elbow-outer-radius;
 }
@@ -73,7 +73,7 @@ $elbow-inner-radius: 1.4rem;   /* inner curve radius */
   bottom: 0;
   left: 0;
   width: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing});
-  height: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 1.75rem));
+  height: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 2.5rem));
   background: var(--lcars-elbow-color, var(--accent));
   border-bottom-left-radius: $elbow-outer-radius;
 }
@@ -108,8 +108,8 @@ $elbow-inner-radius: 1.4rem;   /* inner curve radius */
  * ============================================================ */
 .lcars-chrome__sidebar {
   position: absolute;
-  top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 1.75rem) + #{$gap});
-  bottom: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 1.75rem) + #{$gap});
+  top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 2.5rem) + #{$gap});
+  bottom: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 2.5rem) + #{$gap});
   left: 0;
   width: var(--lcars-chrome-sidebar-w);
   display: flex;
@@ -147,13 +147,14 @@ $elbow-inner-radius: 1.4rem;   /* inner curve radius */
 button.lcars-chrome__bar { cursor: pointer; }
 button.lcars-chrome__bar:hover { filter: brightness(1.18); }
 
-/* Color tones across the palette */
-.lcars-chrome__bar[data-tone='0'] { background: var(--accent); }
-.lcars-chrome__bar[data-tone='1'] { background: var(--accent-2); }
-.lcars-chrome__bar[data-tone='2'] { background: var(--accent-4); }
-.lcars-chrome__bar[data-tone='3'] { background: var(--primary); }
-.lcars-chrome__bar[data-tone='alert'] { background: var(--accent-3); }
-.lcars-chrome__bar[data-tone='user'] { background: #000; color: var(--on-surface); border: 1px solid var(--accent-2); }
+/* Color tones — orange → peach → periwinkle → purple rotation, with
+ * red reserved for alerts and a dedicated user-chip tone. */
+.lcars-chrome__bar[data-tone='0'] { background: var(--accent); }       /* orange  */
+.lcars-chrome__bar[data-tone='1'] { background: var(--primary); }      /* peach   */
+.lcars-chrome__bar[data-tone='2'] { background: var(--accent-2); }     /* periwinkle */
+.lcars-chrome__bar[data-tone='3'] { background: var(--accent-4); }     /* purple  */
+.lcars-chrome__bar[data-tone='alert'] { background: var(--accent-3); } /* red     */
+.lcars-chrome__bar[data-tone='user']   { background: #000; color: var(--on-surface); border: 1px solid var(--accent-2); }
 .lcars-chrome__bar[data-tone='header'] { background: var(--primary); color: #000; }
 
 /* Header title segment */

@@ -12,8 +12,8 @@
 
       @if (authed) {
         <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="0" routerLink="/">HOME</button>
-        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="2" routerLink="/media">MEDIA</button>
-        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="1" routerLink="/music-editor">EDITOR</button>
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="1" routerLink="/media">MEDIA</button>
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="2" routerLink="/music-editor">EDITOR</button>
         <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="3" routerLink="/settings">CONFIG</button>
         <span class="lcars-chrome__bar lcars-chrome__bar--user" data-tone="user">{{ username }}</span>
         <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="alert" (click)="logout()">LOGOUT</button>
@@ -27,7 +27,7 @@
     <!-- LEFT SIDEBAR: column of bars + theme button + bottom-left elbow -->
     <aside class="lcars-chrome__sidebar">
       @for (label of sectionLabels; track label; let i = $index) {
-        <span class="lcars-chrome__bar lcars-chrome__bar--side" [attr.data-tone]="i % 3">{{ label }}</span>
+        <span class="lcars-chrome__bar lcars-chrome__bar--side" [attr.data-tone]="i % 4">{{ label }}</span>
       }
       <span class="lcars-chrome__sidebar-filler"></span>
       <button
