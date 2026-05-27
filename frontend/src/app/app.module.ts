@@ -18,6 +18,9 @@ import { MediaDashboardComponent } from './media-dashboard/media-dashboard.compo
 import { MediaUploaderMusicComponent } from './media-uploader-music/media-uploader-music.component';
 import { CoverSearchDialogComponent } from './media-uploader-music/cover-search-dialog/cover-search-dialog.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.component';
+import { LcarsFrameComponent } from './lcars-frame/lcars-frame.component';
+import { LcarsChromeComponent } from './lcars-chrome/lcars-chrome.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
@@ -29,7 +32,10 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MediaDashboardComponent,
     MediaUploaderMusicComponent,
     CoverSearchDialogComponent,
-    SettingsComponent
+    SettingsComponent,
+    ThemeSwitcherComponent,
+    LcarsFrameComponent,
+    LcarsChromeComponent
   ],
   imports: [
     BrowserModule,

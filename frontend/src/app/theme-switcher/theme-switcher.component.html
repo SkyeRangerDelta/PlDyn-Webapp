@@ -1,0 +1,29 @@
+<button
+  mat-fab
+  class="theme-fab"
+  aria-label="Change theme"
+  [matMenuTriggerFor]="themeMenu"
+  matTooltip="Theme"
+  matTooltipPosition="right">
+  <mat-icon>settings</mat-icon>
+</button>
+
+<mat-menu #themeMenu="matMenu" xPosition="after" yPosition="above" [class]="'theme-menu'">
+  <div class="theme-menu-header" mat-menu-item disabled>
+    <span>Theme</span>
+  </div>
+  @for (t of themes; track t.id) {
+    <button mat-menu-item (click)="select(t.id)" class="theme-option">
+      <span class="swatch" [style.background]="t.surface">
+        <span class="swatch-accent" [style.background]="t.accent"></span>
+      </span>
+      <span class="theme-label">
+        <span class="theme-name">{{ t.label }}</span>
+        <span class="theme-desc">{{ t.description }}</span>
+      </span>
+      @if (active === t.id) {
+        <mat-icon class="theme-check">check</mat-icon>
+      }
+    </button>
+  }
+</mat-menu>

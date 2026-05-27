@@ -1,0 +1,26 @@
+<div class="lcars-frame" [class.has-header]="headerBand" [class.has-sidebar]="sidebar" [attr.data-elbow]="elbowCorner">
+  @if (headerBand) {
+    <div class="lcars-frame__header">
+      <span class="lcars-frame__header-label">{{ headerLabel || 'LCARS' }}</span>
+      <span class="lcars-frame__header-fill"></span>
+    </div>
+  }
+  @if (sidebar) {
+    <aside class="lcars-frame__sidebar">
+      <span class="lcars-frame__sidebar-bar lcars-frame__sidebar-bar--elbow"></span>
+      @for (label of sidebarLabels; track label; let i = $index) {
+        <span class="lcars-frame__sidebar-bar" [attr.data-tone]="i % 3">{{ label }}</span>
+      }
+      @if (sidebarLabels.length === 0) {
+        <span class="lcars-frame__sidebar-bar" data-tone="0"></span>
+        <span class="lcars-frame__sidebar-bar" data-tone="1"></span>
+        <span class="lcars-frame__sidebar-bar" data-tone="2"></span>
+        <span class="lcars-frame__sidebar-bar" data-tone="0"></span>
+      }
+      <span class="lcars-frame__sidebar-bar lcars-frame__sidebar-bar--foot"></span>
+    </aside>
+  }
+  <section class="lcars-frame__content">
+    <ng-content></ng-content>
+  </section>
+</div>

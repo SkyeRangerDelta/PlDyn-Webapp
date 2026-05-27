@@ -1,0 +1,74 @@
+/*
+ * LCARS structural mixins. Apply inside `:host-context(body.theme-lcars47)`
+ * blocks in component SCSS to add LCARS-style affordances without
+ * altering the default theme.
+ */
+
+@mixin lcars-pill {
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  padding-inline: 1.25rem;
+}
+
+@mixin lcars-header-band($color: var(--frame-header-band-color)) {
+  background: $color;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  padding: 0.4rem 1rem 0.4rem 1.5rem;
+  border-radius: var(--frame-elbow-radius) 0 0 0;
+}
+
+@mixin lcars-elbow-tl {
+  border-top-left-radius: var(--frame-elbow-radius);
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@mixin lcars-elbow-tr {
+  border-top-right-radius: var(--frame-elbow-radius);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@mixin lcars-asymmetric-panel {
+  border-radius: 36px 36px 36px 36px;
+  background: var(--surface-2);
+  color: var(--on-surface);
+  padding: 1.25rem 1.5rem;
+}
+
+@mixin lcars-sidebar-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--frame-gap);
+
+  & > * {
+    background: var(--frame-sidebar-color-1);
+    min-height: 1.5rem;
+    border-radius: 0;
+  }
+  & > *:first-child {
+    @include lcars-elbow-tl;
+    min-height: 3rem;
+    background: var(--frame-elbow-color);
+  }
+  & > *:nth-child(3n + 2) {
+    background: var(--frame-sidebar-color-2);
+  }
+  & > *:nth-child(3n + 3) {
+    background: var(--frame-sidebar-color-3);
+  }
+  & > *:last-child {
+    border-bottom-left-radius: var(--frame-elbow-radius);
+    min-height: 3rem;
+    background: var(--frame-sidebar-color-2);
+  }
+}

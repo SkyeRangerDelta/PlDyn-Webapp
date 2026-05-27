@@ -1,44 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-navigation',
-    templateUrl: './navigation.component.html',
-    styleUrl: './navigation.component.scss',
-    standalone: false
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrl: './navigation.component.scss',
+  standalone: false,
 })
-export class NavigationComponent {
+export class NavigationComponent implements OnInit, OnDestroy {
+  authed = false;
+  username = 'Program!';
 
-  authed: boolean = false;
-  username: string = 'Program!';
+  private subs: Subscription[] = [];
 
-  constructor( private authService: AuthService, private router: Router ) {
-    // Initialize with default values - subscriptions will update them
-    this.authed = false;
-    this.username = 'Program!';
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    // Sync auth state with localStorage on init
     const hasSession = localStorage.getItem('pldyn-session') === 'active';
     if (!hasSession && this.authService.isAuthenticated) {
-      // Session flag was removed but authService still thinks user is authenticated
       this.authService.logout();
     }
 
-    // Subscribe to auth state changes
-    this.authService.authState$.subscribe( (authed: boolean) => {
-      this.authed = authed;
-    });
+    this.subs.push(
+      this.authService.authState$.subscribe((authed: boolean) => (this.authed = authed))
+    );
+    this.subs.push(
+      this.authService.uname$.subscribe((uname: string) => (this.username = uname))
+    );
 
-    this.authService.uname$.subscribe( (uname: string) => {
-      this.username = uname;
-    });
-
-    // Set initial state from observables
     this.authed = this.authService.isAuthenticated;
     this.username = this.authService.getUsername;
+  }
+
+  ngOnDestroy() {
+    for (const s of this.subs) s.unsubscribe();
   }
 
   logout() {

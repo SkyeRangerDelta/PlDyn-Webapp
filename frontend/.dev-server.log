@@ -1,0 +1,6 @@
+
+> webapp@1.1.0-E.2 start
+> ng serve
+
+[1m[31mAn unhandled exception occurred: Port 4200 is already in use. Use '--port' to specify a different port.
+See "C:\Users\Skye\AppData\Local\Temp\ng-S5vFIa\angular-errors.log" for further details.[39m[22m

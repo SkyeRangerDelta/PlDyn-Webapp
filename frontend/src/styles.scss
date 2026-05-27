@@ -1,51 +1,84 @@
-@use './styles/colors';
+@use './styles/tokens';
+@use './styles/material-overrides';
 
 html, body { height: 100%; }
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #091a3a;
-  background-image: url('assets/images/bg/8bit.gif');
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  font-family: var(--font-ui);
+  color: var(--on-surface);
+  background-color: var(--app-bg);
+  background-image: var(--app-bg-image);
+  background-size: var(--app-bg-size);
+  background-position: var(--app-bg-position);
+  background-repeat: var(--app-bg-repeat);
+  background-attachment: var(--app-bg-attachment);
+}
+
+/* LCARS chrome reserves space along the left + top + bottom edges
+ * for the elbow + header bar + sidebar + footer bar.
+ * The left padding includes the sidebar width PLUS the elbow's
+ * ::after-notch spacing (1.6rem) so content clears the inner curve. */
+body.theme-lcars47 {
+  --lcars-chrome-sidebar-w: 9rem;
+  --lcars-chrome-header-h: 2.5rem;
+  --lcars-chrome-footer-h: 2.5rem;
+  --lcars-chrome-elbow-extend: 1.75rem;
+  --lcars-chrome-elbow-spacing: 1.6rem;
+
+  padding-left: calc(var(--lcars-chrome-sidebar-w) + var(--lcars-chrome-elbow-spacing) + 0.75rem);
+  padding-top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend) + 0.75rem);
+  padding-bottom: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend) + 0.75rem);
+  padding-right: 1.25rem;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+@media (max-width: 720px) {
+  body.theme-lcars47 {
+    --lcars-chrome-sidebar-w: 5.5rem;
+  }
+}
+
+/* Default to default theme if the inline init script hasn't applied a class yet. */
+body:not(.theme-default):not(.theme-lcars47) {
+  /* Borrow default-theme tokens until the class lands. */
 }
 
 /* Snackbar panel styles */
 .snack-error .mdc-snackbar__surface {
-  background-color: #7a1a1a !important;
-  color: #ffffff !important;
+  background-color: var(--snackbar-error-bg) !important;
+  color: var(--snackbar-error-fg) !important;
 }
 
 .snack-error .mdc-snackbar__label {
-  color: #ffffff !important;
+  color: var(--snackbar-error-fg) !important;
 }
 
 .snack-error .mat-mdc-snack-bar-action {
-  color: #ff9999 !important;
+  color: var(--snackbar-error-action) !important;
 }
 
 .snack-success .mdc-snackbar__surface {
-  background-color: #0159B5 !important;
-  color: #ffffff !important;
+  background-color: var(--snackbar-success-bg) !important;
+  color: var(--snackbar-success-fg) !important;
 }
 
 .snack-success .mdc-snackbar__label {
-  color: #ffffff !important;
+  color: var(--snackbar-success-fg) !important;
 }
 
-/* Dark theme overrides for settings page select */
+/* Dark theme overrides for settings page select (legacy) */
 app-settings .mat-mdc-select-value-text {
-  color: #ffffff !important;
+  color: var(--input-fg) !important;
 }
 
 app-settings .mat-mdc-select-arrow {
-  color: #ffffff !important;
+  color: var(--accent) !important;
 }
 
-/* Dark theme dialog for cover search */
+/* Themed dialog for cover search (preserved class hook for components) */
 .dark-dialog .mat-mdc-dialog-container {
-  --mdc-dialog-container-color: #1a1a2e;
-  color: #ffffff;
+  --mdc-dialog-container-color: var(--dialog-bg);
+  color: var(--dialog-fg);
 }

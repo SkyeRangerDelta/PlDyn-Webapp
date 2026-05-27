@@ -1,0 +1,64 @@
+@if (active === 'lcars47') {
+  <div class="lcars-chrome">
+
+    <!-- TOP ROW: elbow + title bar + nav button segments + right end cap -->
+    <div class="lcars-chrome__top-elbow"></div>
+
+    <div class="lcars-chrome__row lcars-chrome__row--top">
+      <span class="lcars-chrome__bar lcars-chrome__bar--title" data-tone="header">
+        <span class="lcars-chrome__title">LCARS 47 · {{ pageLabel }}</span>
+        <span class="lcars-chrome__stardate">SD {{ stardate }}</span>
+      </span>
+
+      @if (authed) {
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="0" routerLink="/">HOME</button>
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="2" routerLink="/media">MEDIA</button>
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="1" routerLink="/music-editor">EDITOR</button>
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="3" routerLink="/settings">CONFIG</button>
+        <span class="lcars-chrome__bar lcars-chrome__bar--user" data-tone="user">{{ username }}</span>
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="alert" (click)="logout()">LOGOUT</button>
+      } @else if (!isLoginPage()) {
+        <button class="lcars-chrome__bar lcars-chrome__bar--nav" data-tone="0" routerLink="/login">LOGIN</button>
+      }
+
+      <span class="lcars-chrome__bar lcars-chrome__bar--cap"></span>
+    </div>
+
+    <!-- LEFT SIDEBAR: column of bars + theme button + bottom-left elbow -->
+    <aside class="lcars-chrome__sidebar">
+      @for (label of sectionLabels; track label; let i = $index) {
+        <span class="lcars-chrome__bar lcars-chrome__bar--side" [attr.data-tone]="i % 3">{{ label }}</span>
+      }
+      <span class="lcars-chrome__sidebar-filler"></span>
+      <button
+        class="lcars-chrome__bar lcars-chrome__bar--side lcars-chrome__bar--theme"
+        [matMenuTriggerFor]="themeMenu"
+        aria-label="Change theme">THEME</button>
+    </aside>
+
+    <div class="lcars-chrome__bottom-elbow"></div>
+
+    <!-- BOTTOM ROW: footer segments + right end cap -->
+    <div class="lcars-chrome__row lcars-chrome__row--bottom">
+      <span class="lcars-chrome__bar lcars-chrome__bar--foot" data-tone="0">SYS</span>
+      <span class="lcars-chrome__bar lcars-chrome__bar--foot" data-tone="1">LCARS 47</span>
+      <span class="lcars-chrome__bar lcars-chrome__bar--foot" data-tone="2">PLDYN-NET</span>
+      <span class="lcars-chrome__bar lcars-chrome__bar--foot" data-tone="alert">SD {{ stardate }}</span>
+      <span class="lcars-chrome__bar lcars-chrome__bar--foot lcars-chrome__bar--fill" data-tone="1"></span>
+      <span class="lcars-chrome__bar lcars-chrome__bar--cap"></span>
+    </div>
+
+    <mat-menu #themeMenu="matMenu" yPosition="above" xPosition="after">
+      <div mat-menu-item disabled class="lcars-theme-menu-header">THEME</div>
+      @for (t of themes; track t.id) {
+        <button mat-menu-item (click)="setTheme(t.id)">
+          <span style="display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:middle;margin-right:8px;" [style.background]="t.accent"></span>
+          {{ t.label }}
+          @if (active === t.id) {
+            <mat-icon style="margin-left:auto">check</mat-icon>
+          }
+        </button>
+      }
+    </mat-menu>
+  </div>
+}

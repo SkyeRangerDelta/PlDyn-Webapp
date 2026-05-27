@@ -1,14 +1,12 @@
-@use '../../styles/colors';
-
 p {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-ui);
   text-align: left;
-  color: white;
+  color: var(--on-surface);
   font-size: large;
 }
 
 img {
-  color: white;
+  color: var(--on-surface);
 }
 
 div {
@@ -26,9 +24,11 @@ div {
   justify-content: center;
 
   h2 {
-    color: colors.$text-color;
-    font-family: 'Courier New', Courier, monospace;
+    color: var(--on-surface);
+    font-family: var(--font-display);
     margin: 0 0 1rem 0;
+    text-transform: var(--text-transform-ui);
+    letter-spacing: var(--letter-spacing-ui);
   }
 
   .quick-links {
@@ -40,5 +40,14 @@ div {
         margin-right: 0.3rem;
       }
     }
+  }
+}
+
+:host-context(body.theme-lcars47) {
+  .welcome-section h2 {
+    color: var(--accent);
+  }
+  .quick-links button {
+    border-radius: 999px;
   }
 }

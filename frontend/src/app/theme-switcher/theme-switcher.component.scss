@@ -1,0 +1,106 @@
+:host {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 900;
+}
+
+/* In LCARS theme, the chrome renders its own THEME sidebar bar — hide
+ * the floating FAB. */
+:host-context(body.theme-lcars47) {
+  display: none;
+}
+
+.theme-fab {
+  --mdc-fab-container-color: var(--accent);
+  --mdc-fab-icon-color: var(--button-fg);
+  background-color: var(--accent);
+  color: var(--button-fg);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  transition: background-color 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    background-color: var(--button-hover-bg);
+    transform: rotate(30deg);
+  }
+
+  mat-icon {
+    color: inherit;
+  }
+}
+
+:host-context(body.theme-lcars47) .theme-fab {
+  border-radius: 999px;
+  border: 2px solid #000;
+}
+
+/* Menu styles must be global because mat-menu is portaled outside the
+ * component DOM tree. The .theme-menu panelClass is forwarded. */
+::ng-deep .theme-menu .mat-mdc-menu-content {
+  padding: 0.25rem 0;
+  background: var(--surface-elevated);
+  color: var(--on-surface);
+}
+
+::ng-deep .theme-menu .theme-menu-header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  opacity: 0.9;
+  font-size: 0.85rem;
+}
+
+::ng-deep .theme-menu .theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 14rem;
+  padding-block: 0.4rem;
+  color: var(--on-surface);
+}
+
+::ng-deep .theme-menu .swatch {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: inline-block;
+  overflow: hidden;
+}
+
+::ng-deep .theme-menu .swatch-accent {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  height: 60%;
+  border-top-left-radius: 6px;
+}
+
+::ng-deep .theme-menu .theme-label {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  line-height: 1.1;
+}
+
+::ng-deep .theme-menu .theme-name {
+  font-weight: 600;
+  font-family: var(--font-display);
+  text-transform: var(--text-transform-ui);
+  letter-spacing: var(--letter-spacing-ui);
+}
+
+::ng-deep .theme-menu .theme-desc {
+  font-size: 0.75rem;
+  color: var(--on-surface-muted);
+}
+
+::ng-deep .theme-menu .theme-check {
+  color: var(--accent);
+  margin-left: 0.25rem;
+}

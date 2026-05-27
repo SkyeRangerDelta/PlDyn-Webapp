@@ -1,0 +1,223 @@
+/*
+ * Angular Material 21 MDC token overrides scoped to the LCARS theme.
+ * Token names verified against @angular/material 21 (Material Design 3
+ * MDC token surface). Default theme uses Angular's prebuilt azure-blue
+ * theme verbatim — no overrides here for that theme.
+ *
+ * Strategy: override the MDC/MAT custom properties Material reads at
+ * runtime. Avoid !important; rely on selector specificity only when a
+ * token doesn't exist for the property we need to change.
+ */
+
+body.theme-lcars47 {
+  /* ---------- Buttons (mat-mdc-button, mat-flat-button, fab) ---------- */
+  --mdc-text-button-label-text-color: var(--button-fg);
+  --mdc-text-button-label-text-font: var(--font-ui);
+  --mdc-text-button-container-shape: var(--button-radius);
+
+  --mdc-filled-button-container-color: var(--button-bg);
+  --mdc-filled-button-label-text-color: var(--button-fg);
+  --mdc-filled-button-label-text-font: var(--font-ui);
+  --mdc-filled-button-container-shape: var(--button-radius);
+  --mdc-filled-button-disabled-container-color: #444;
+  --mdc-filled-button-disabled-label-text-color: #888;
+
+  --mdc-outlined-button-label-text-color: var(--accent);
+  --mdc-outlined-button-outline-color: var(--accent);
+  --mdc-outlined-button-container-shape: var(--button-radius);
+
+  --mdc-protected-button-container-color: var(--button-bg);
+  --mdc-protected-button-label-text-color: var(--button-fg);
+  --mdc-protected-button-container-shape: var(--button-radius);
+
+  --mat-text-button-state-layer-color: var(--accent);
+  --mat-filled-button-state-layer-color: #ffffff;
+  --mat-outlined-button-state-layer-color: var(--accent);
+
+  /* FAB */
+  --mdc-fab-container-color: var(--accent);
+  --mdc-fab-icon-color: var(--button-fg);
+  --mat-fab-foreground-color: var(--button-fg);
+  --mat-fab-state-layer-color: #ffffff;
+  --mdc-fab-small-container-color: var(--accent);
+  --mdc-fab-small-icon-color: var(--button-fg);
+
+  .mat-mdc-button .mdc-button__label,
+  .mat-mdc-unelevated-button .mdc-button__label,
+  .mat-mdc-raised-button .mdc-button__label,
+  .mat-mdc-outlined-button .mdc-button__label {
+    text-transform: var(--text-transform-ui);
+    letter-spacing: var(--button-letter-spacing);
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+
+  .mat-mdc-button-base {
+    border-radius: var(--button-radius);
+  }
+
+  /* Prebuilt azure-blue theme writes background-color directly on these
+   * selectors with high specificity, so we override at the same level. */
+  .mat-mdc-unelevated-button:not(:disabled),
+  .mat-mdc-raised-button:not(:disabled),
+  .mat-mdc-fab:not(:disabled),
+  .mat-mdc-mini-fab:not(:disabled) {
+    background-color: var(--button-bg);
+    color: var(--button-fg);
+  }
+  .mat-mdc-unelevated-button:not(:disabled):hover,
+  .mat-mdc-raised-button:not(:disabled):hover,
+  .mat-mdc-fab:not(:disabled):hover,
+  .mat-mdc-mini-fab:not(:disabled):hover {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-fg);
+  }
+  .mat-mdc-button:not(:disabled) {
+    color: var(--accent);
+  }
+  .mat-mdc-outlined-button:not(:disabled) {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ---------- Form fields ---------- */
+  --mdc-filled-text-field-container-color: var(--input-bg);
+  --mdc-filled-text-field-label-text-color: var(--on-surface-muted);
+  --mdc-filled-text-field-input-text-color: var(--input-fg);
+  --mdc-filled-text-field-caret-color: var(--accent);
+  --mdc-filled-text-field-focus-active-indicator-color: var(--accent);
+  --mdc-filled-text-field-hover-active-indicator-color: var(--accent-2);
+
+  --mdc-outlined-text-field-outline-color: var(--input-border);
+  --mdc-outlined-text-field-hover-outline-color: var(--accent-2);
+  --mdc-outlined-text-field-focus-outline-color: var(--accent);
+  --mdc-outlined-text-field-label-text-color: var(--on-surface-muted);
+  --mdc-outlined-text-field-input-text-color: var(--input-fg);
+  --mdc-outlined-text-field-caret-color: var(--accent);
+  --mdc-outlined-text-field-focus-label-text-color: var(--accent);
+  --mdc-outlined-text-field-disabled-outline-color: var(--on-surface-faint);
+  --mdc-outlined-text-field-disabled-label-text-color: var(--on-surface-faint);
+  --mdc-outlined-text-field-disabled-input-text-color: var(--on-surface-faint);
+
+  --mat-form-field-container-text-font: var(--font-ui);
+  --mat-form-field-subscript-text-font: var(--font-ui);
+  --mat-form-field-error-text-color: var(--danger);
+
+  .mat-mdc-form-field {
+    color: var(--input-fg);
+  }
+  .mat-mdc-form-field .mat-mdc-input-element {
+    color: var(--input-fg);
+    caret-color: var(--accent);
+  }
+  .mat-mdc-form-field-infix {
+    color: var(--input-fg);
+  }
+  .mat-mdc-form-field-icon-suffix,
+  .mat-mdc-form-field-icon-prefix {
+    color: var(--accent);
+  }
+
+  /* ---------- Select / option / menu panels ---------- */
+  --mat-select-panel-background-color: var(--surface-elevated);
+  --mat-select-enabled-trigger-text-color: var(--input-fg);
+  --mat-select-placeholder-text-color: var(--on-surface-muted);
+  --mat-select-enabled-arrow-color: var(--accent);
+  --mat-select-focused-arrow-color: var(--accent);
+
+  --mat-option-selected-state-label-text-color: var(--accent);
+  --mat-option-label-text-color: var(--on-surface);
+  --mat-option-hover-state-layer-color: rgba(255, 153, 0, 0.18);
+  --mat-option-focus-state-layer-color: rgba(255, 153, 0, 0.18);
+  --mat-option-selected-state-layer-color: rgba(255, 153, 0, 0.25);
+
+  --mat-menu-container-color: var(--surface-elevated);
+  --mat-menu-item-label-text-color: var(--on-surface);
+  --mat-menu-item-hover-state-layer-color: rgba(255, 153, 0, 0.18);
+  --mat-menu-item-focus-state-layer-color: rgba(255, 153, 0, 0.18);
+  --mat-menu-container-shape: 16px;
+
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text {
+    color: var(--input-fg);
+  }
+  .mat-mdc-select-arrow {
+    color: var(--accent);
+  }
+
+  /* ---------- Dialog ---------- */
+  --mdc-dialog-container-color: var(--dialog-bg);
+  --mdc-dialog-subhead-color: var(--on-surface);
+  --mdc-dialog-supporting-text-color: var(--on-surface);
+  --mdc-dialog-container-shape: 24px;
+
+  .mat-mdc-dialog-container {
+    color: var(--dialog-fg);
+  }
+  .mat-mdc-dialog-surface {
+    background: var(--dialog-bg) !important;
+    color: var(--dialog-fg) !important;
+  }
+
+  /* ---------- Snackbar ---------- */
+  --mdc-snackbar-container-color: var(--surface-elevated);
+  --mdc-snackbar-supporting-text-color: var(--on-surface);
+  --mat-snack-bar-button-color: var(--accent);
+
+  /* ---------- Paginator ---------- */
+  --mat-paginator-container-background-color: transparent;
+  --mat-paginator-container-text-color: var(--on-surface);
+  --mat-paginator-enabled-icon-color: var(--accent);
+  --mat-paginator-disabled-icon-color: var(--on-surface-faint);
+  --mat-paginator-select-trigger-text-color: var(--on-surface);
+  --mat-paginator-container-text-font: var(--font-ui);
+
+  /* ---------- Progress bar ---------- */
+  --mdc-linear-progress-active-indicator-color: var(--accent);
+  --mdc-linear-progress-track-color: var(--surface-2);
+
+  /* ---------- Table ---------- */
+  --mat-table-background-color: transparent;
+  --mat-table-row-item-outline-color: var(--border);
+  --mat-table-header-headline-color: var(--accent);
+  --mat-table-row-item-label-text-color: var(--on-surface);
+  --mat-table-header-headline-font: var(--font-display);
+  --mat-table-row-item-label-text-font: var(--font-ui);
+
+  /* ---------- Checkbox / radio / slide-toggle ---------- */
+  --mdc-checkbox-selected-checkmark-color: #000000;
+  --mdc-checkbox-selected-focus-icon-color: var(--accent);
+  --mdc-checkbox-selected-hover-icon-color: var(--accent);
+  --mdc-checkbox-selected-icon-color: var(--accent);
+  --mdc-checkbox-unselected-icon-color: var(--accent-2);
+  --mdc-checkbox-unselected-hover-icon-color: var(--accent);
+
+  --mdc-radio-selected-icon-color: var(--accent);
+  --mdc-radio-unselected-icon-color: var(--accent-2);
+
+  --mdc-switch-selected-handle-color: var(--accent);
+  --mdc-switch-selected-track-color: var(--accent-2);
+
+  /* ---------- Tabs ---------- */
+  --mat-tab-header-label-text-color: var(--on-surface-muted);
+  --mat-tab-header-active-label-text-color: var(--accent);
+  --mat-tab-header-inactive-label-text-color: var(--on-surface-muted);
+  --mat-tab-header-active-focus-indicator-color: var(--accent);
+  --mat-tab-header-active-hover-indicator-color: var(--accent);
+  --mat-tab-header-active-ripple-color: var(--accent);
+  --mdc-tab-indicator-active-indicator-color: var(--accent);
+
+  /* ---------- Tooltip / chip / badge ---------- */
+  --mdc-plain-tooltip-container-color: var(--surface-elevated);
+  --mdc-plain-tooltip-supporting-text-color: var(--on-surface);
+  --mdc-chip-elevated-container-color: var(--accent-4);
+  --mdc-chip-label-text-color: #000000;
+  --mat-badge-background-color: var(--accent-3);
+  --mat-badge-text-color: #000000;
+
+  /* ---------- Card ---------- */
+  --mdc-elevated-card-container-color: var(--surface-elevated);
+  --mat-card-subtitle-text-color: var(--on-surface-muted);
+  --mat-card-title-text-color: var(--on-surface);
+  --mdc-elevated-card-container-shape: 24px;
+}

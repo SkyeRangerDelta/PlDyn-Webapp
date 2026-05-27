@@ -1,26 +1,26 @@
-@use '../../styles/colors';
-
 .settings-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
-  background-color: colors.$background-color;
-  color: colors.$text-color;
-  border: 2px solid colors.$button-background;
-  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--on-surface);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--panel-radius);
   max-width: 500px;
   margin: 1rem auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
   h2 {
     margin: 0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--font-display);
+    text-transform: var(--text-transform-ui);
+    letter-spacing: var(--letter-spacing-ui);
   }
 }
 
 .loading-text {
-  color: rgba(colors.$text-color, 0.7);
+  color: var(--on-surface-muted);
 }
 
 .settings-group {
@@ -37,11 +37,14 @@
   label {
     min-width: 140px;
     font-size: 0.95rem;
+    font-family: var(--font-ui);
+    text-transform: var(--text-transform-ui);
+    letter-spacing: var(--letter-spacing-ui);
   }
 
   mat-form-field {
     flex: 1;
-    --mdc-outlined-text-field-container-shape: 4px;
+    --mdc-outlined-text-field-container-shape: var(--input-radius);
     --mat-form-field-container-height: 40px;
     --mat-form-field-container-vertical-padding: 8px;
   }
@@ -52,16 +55,30 @@
   justify-content: flex-end;
 
   button {
-    padding: 0.5rem 1.5rem;
-    background-color: colors.$button-background;
-    color: colors.$text-color;
+    padding: var(--button-padding-y) var(--button-padding-x);
+    background-color: var(--button-bg);
+    color: var(--button-fg);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--button-radius);
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: var(--font-ui);
+    text-transform: var(--text-transform-ui);
+    letter-spacing: var(--button-letter-spacing);
 
     &:hover {
-      background-color: colors.$button-hover;
+      background-color: var(--button-hover-bg);
+      color: var(--button-hover-fg);
     }
+  }
+}
+
+:host-context(body.theme-lcars47) {
+  .settings-container {
+    background: var(--surface-2);
+    border-radius: 36px;
+  }
+  .settings-container h2 {
+    color: var(--accent);
   }
 }

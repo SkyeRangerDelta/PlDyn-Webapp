@@ -1,0 +1,123 @@
+/* Default theme: the frame collapses to `display: contents` so the
+ * projected content lays out exactly as if there were no wrapper.
+ * LCARS theme: switches the wrapper to a grid and renders the header
+ * band and sidebar bars. */
+
+:host {
+  display: contents;
+}
+
+.lcars-frame {
+  display: contents;
+}
+
+.lcars-frame__header,
+.lcars-frame__sidebar {
+  display: none;
+}
+
+.lcars-frame__content {
+  display: contents;
+}
+
+:host-context(body.theme-lcars47) {
+  display: block;
+}
+
+:host-context(body.theme-lcars47) .lcars-frame {
+  display: grid;
+  grid-template-columns: var(--frame-sidebar-width) 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'header header'
+    'sidebar content';
+  gap: var(--frame-gap);
+  padding: var(--frame-padding);
+  background: transparent;
+}
+
+:host-context(body.theme-lcars47) .lcars-frame:not(.has-sidebar) {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    'header'
+    'content';
+}
+
+:host-context(body.theme-lcars47) .lcars-frame:not(.has-header) {
+  grid-template-rows: 1fr;
+  grid-template-areas:
+    'sidebar content';
+}
+
+:host-context(body.theme-lcars47) .lcars-frame:not(.has-header):not(.has-sidebar) {
+  display: contents;
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--frame-header-band-color);
+  color: #000;
+  min-height: var(--frame-header-band-height);
+  padding: 0.4rem 1.25rem 0.4rem 1.5rem;
+  border-top-left-radius: var(--frame-elbow-radius);
+  border-top-right-radius: var(--frame-elbow-radius);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__header-label {
+  font-size: 0.95rem;
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__header-fill {
+  flex: 1;
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: var(--frame-gap);
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__sidebar-bar {
+  background: var(--accent);
+  min-height: 1.25rem;
+  padding: 0.15rem 0.75rem;
+  color: #000;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__sidebar-bar[data-tone='0'] { background: var(--accent); }
+:host-context(body.theme-lcars47) .lcars-frame__sidebar-bar[data-tone='1'] { background: var(--accent-2); }
+:host-context(body.theme-lcars47) .lcars-frame__sidebar-bar[data-tone='2'] { background: var(--accent-4); }
+
+:host-context(body.theme-lcars47) .lcars-frame__sidebar-bar--elbow {
+  min-height: 3rem;
+  background: var(--accent);
+  border-bottom-left-radius: var(--frame-elbow-radius);
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__sidebar-bar--foot {
+  min-height: 2.5rem;
+  background: var(--accent-3);
+  border-top-left-radius: var(--frame-elbow-radius);
+}
+
+:host-context(body.theme-lcars47) .lcars-frame__content {
+  grid-area: content;
+  display: block;
+  min-width: 0;
+}

@@ -6,9 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="assets/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <script>
+    (function () {
+      var allowed = { 'default': 1, 'lcars47': 1 };
+      var t = 'default';
+      try {
+        var stored = localStorage.getItem('pldyn-theme');
+        if (stored && allowed[stored]) { t = stored; }
+      } catch (e) { /* localStorage unavailable */ }
+      document.documentElement.setAttribute('data-theme', t);
+      function applyBodyClass() {
+        if (document.body) {
+          document.body.classList.remove('theme-default', 'theme-lcars47');
+          document.body.classList.add('theme-' + t);
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyBodyClass);
+      } else {
+        applyBodyClass();
+      }
+    })();
+  </script>
 </head>
 <body class="mat-typography">
   <app-root></app-root>

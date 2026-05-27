@@ -1,0 +1,236 @@
+/* LCARS chrome — based on the canonical Garrett-/lcars elbow pattern:
+ * the elbow is a single solid-colored rectangle covering both the
+ * horizontal arm and the top of the vertical column; an ::after
+ * pseudo-element with the background color "cuts" the inner corner
+ * with its own border-radius, producing the iconic concave inner curve.
+ * Reference proportions: outer-radius ≈ 1.25× bar-height, inner-radius ≈
+ * 0.5× outer-radius. */
+
+$gap: 0.4rem;
+$elbow-spacing: 1.6rem;        /* width of the ::after notch — must be ≥ inner-radius */
+$elbow-outer-radius: 3rem;     /* outer corner radius */
+$elbow-inner-radius: 1.4rem;   /* inner curve radius */
+
+:host { display: contents; }
+
+.lcars-chrome {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  font-family: var(--font-display);
+  color: #000;
+}
+
+.lcars-chrome > * { pointer-events: auto; }
+
+/* ============================================================
+ * TOP-LEFT ELBOW
+ * Solid block at top-left. Outer top-left rounded. ::after cuts a
+ * black gap into the right side from the header line down, creating
+ * the elbow's inner curve.
+ * ============================================================ */
+.lcars-chrome__top-elbow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing});
+  height: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 1.75rem));
+  background: var(--lcars-elbow-color, var(--accent));
+  border-top-left-radius: $elbow-outer-radius;
+}
+
+.lcars-chrome__top-elbow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: var(--lcars-chrome-header-h);
+  width: $elbow-spacing;
+  height: calc(100% - var(--lcars-chrome-header-h));
+  background: var(--app-bg);
+  border-top-left-radius: $elbow-inner-radius;
+}
+
+/* ============================================================
+ * TOP ROW (right of elbow): title bar + nav segments + right end cap
+ * ============================================================ */
+.lcars-chrome__row--top {
+  position: absolute;
+  top: 0;
+  left: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing} + #{$gap});
+  right: 1rem;
+  height: var(--lcars-chrome-header-h);
+  display: flex;
+  gap: $gap;
+  align-items: stretch;
+}
+
+/* ============================================================
+ * BOTTOM-LEFT ELBOW (mirror of top)
+ * ============================================================ */
+.lcars-chrome__bottom-elbow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing});
+  height: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 1.75rem));
+  background: var(--lcars-elbow-color, var(--accent));
+  border-bottom-left-radius: $elbow-outer-radius;
+}
+
+.lcars-chrome__bottom-elbow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: var(--lcars-chrome-footer-h);
+  width: $elbow-spacing;
+  height: calc(100% - var(--lcars-chrome-footer-h));
+  background: var(--app-bg);
+  border-bottom-left-radius: $elbow-inner-radius;
+}
+
+/* ============================================================
+ * BOTTOM ROW: footer bar segments + right end cap
+ * ============================================================ */
+.lcars-chrome__row--bottom {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing} + #{$gap});
+  right: 1rem;
+  height: var(--lcars-chrome-footer-h);
+  display: flex;
+  gap: $gap;
+  align-items: stretch;
+}
+
+/* ============================================================
+ * SIDEBAR (vertical column between the two elbows)
+ * ============================================================ */
+.lcars-chrome__sidebar {
+  position: absolute;
+  top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 1.75rem) + #{$gap});
+  bottom: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 1.75rem) + #{$gap});
+  left: 0;
+  width: var(--lcars-chrome-sidebar-w);
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+.lcars-chrome__sidebar-filler {
+  flex: 1 1 auto;
+  background: var(--accent-3);
+  min-height: 1rem;
+}
+
+/* ============================================================
+ * SHARED BAR STYLES
+ * ============================================================ */
+.lcars-chrome__bar {
+  box-sizing: border-box;
+  background: var(--accent);
+  color: #000;
+  border: 0;
+  padding: 0 1rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: default;
+  min-height: 1.5rem;
+}
+
+button.lcars-chrome__bar { cursor: pointer; }
+button.lcars-chrome__bar:hover { filter: brightness(1.18); }
+
+/* Color tones across the palette */
+.lcars-chrome__bar[data-tone='0'] { background: var(--accent); }
+.lcars-chrome__bar[data-tone='1'] { background: var(--accent-2); }
+.lcars-chrome__bar[data-tone='2'] { background: var(--accent-4); }
+.lcars-chrome__bar[data-tone='3'] { background: var(--primary); }
+.lcars-chrome__bar[data-tone='alert'] { background: var(--accent-3); }
+.lcars-chrome__bar[data-tone='user'] { background: #000; color: var(--on-surface); border: 1px solid var(--accent-2); }
+.lcars-chrome__bar[data-tone='header'] { background: var(--primary); color: #000; }
+
+/* Header title segment */
+.lcars-chrome__bar--title {
+  justify-content: flex-start;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  min-width: 12rem;
+}
+.lcars-chrome__title { font-size: 0.95rem; letter-spacing: 0.16em; }
+.lcars-chrome__stardate { font-size: 0.72rem; opacity: 0.8; }
+
+/* Nav button segment */
+.lcars-chrome__bar--nav {
+  justify-content: center;
+  min-width: 6rem;
+  padding: 0 1.1rem;
+}
+
+/* User chip */
+.lcars-chrome__bar--user {
+  justify-content: center;
+  font-size: 0.7rem;
+  min-width: 7rem;
+}
+
+/* Footer segments */
+.lcars-chrome__bar--foot {
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 8rem;
+}
+
+.lcars-chrome__bar--fill {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Right-end cap — capsule */
+.lcars-chrome__bar--cap {
+  flex: 0 0 auto;
+  width: calc(var(--lcars-chrome-header-h) * 0.9);
+  background: var(--accent-3);
+  border-top-right-radius: 999px;
+  border-bottom-right-radius: 999px;
+}
+
+.lcars-chrome__row--bottom .lcars-chrome__bar--cap {
+  width: calc(var(--lcars-chrome-footer-h) * 0.9);
+}
+
+/* Sidebar bars */
+.lcars-chrome__bar--side {
+  flex: 0 0 auto;
+  min-height: 1.6rem;
+  width: 100%;
+}
+
+.lcars-chrome__bar--theme {
+  background: var(--accent);
+  min-height: 2rem;
+}
+
+/* Smaller screens */
+@media (max-width: 720px) {
+  .lcars-chrome {
+    --lcars-chrome-sidebar-w: 5.5rem;
+  }
+  .lcars-chrome__bar { font-size: 0.62rem; padding: 0 0.5rem; }
+  .lcars-chrome__bar--nav { min-width: 4rem; }
+  .lcars-chrome__bar--foot { min-width: 5rem; }
+}
+
+/* Theme menu styles (mat-menu panel is portaled) */
+::ng-deep .lcars-theme-menu-header {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-family: var(--font-display);
+}
