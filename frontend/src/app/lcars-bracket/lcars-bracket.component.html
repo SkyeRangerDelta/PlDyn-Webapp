@@ -1,0 +1,29 @@
+<div class="bracket" [attr.data-tone]="tone" [class.no-bottom]="!showBottom" [class.no-sidebar]="!showSidebar">
+  <div class="bracket__top-elbow"></div>
+
+  <div class="bracket__top-bar">
+    @if (label) {
+      <span class="bracket__label">{{ label }}</span>
+    }
+    <ng-content select="[bracketTop]"></ng-content>
+  </div>
+
+  @if (showSidebar) {
+    <div class="bracket__sidebar"></div>
+  }
+
+  <div class="bracket__content">
+    <ng-content></ng-content>
+  </div>
+
+  @if (showBottom) {
+    <div class="bracket__bottom-elbow"></div>
+    <div class="bracket__bottom-bar">
+      @if (footerLabel) {
+        <span class="bracket__footer-label">{{ footerLabel }}</span>
+      }
+      <ng-content select="[bracketBottom]"></ng-content>
+      <span class="bracket__bottom-cap"></span>
+    </div>
+  }
+</div>

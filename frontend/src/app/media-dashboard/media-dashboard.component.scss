@@ -183,16 +183,46 @@
 
 :host-context(body.theme-lcars47) {
   .media-dashboard {
-    background: var(--surface-2);
-    border-radius: 36px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    max-width: none;
+    margin: 0;
+    gap: 1rem;
+  }
+  .dashboard-actions {
+    display: contents;
+  }
+  /* Fill bar between the editor selectors and "Open Editor".
+   * Uses the bracket's tone color (orange) so it reads as part of the
+   * bracket rather than as another button. */
+  .dashboard-actions__spacer {
+    flex: 1 1 auto;
+    align-self: stretch;
+    background: var(--accent);
+    min-width: 0;
   }
   .contributions-section .media-item {
     background: var(--surface-elevated);
-    border-radius: 24px;
+    border: 0;
+    border-radius: 8px;
   }
-  .uploader-section {
-    background: var(--surface-elevated);
-    border-radius: 24px;
+  .contributions-section .media-item .cover-placeholder {
+    background: linear-gradient(135deg, var(--accent-4) 0%, var(--accent-2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 2rem;
+  }
+  .contributions-section .media-item .song-count {
+    background: var(--accent);
+    color: #000;
+  }
+  .pagination {
+    padding-block: 0.4rem;
   }
   .media-type-buttons button:nth-of-type(1) { background-color: var(--accent); color: #000; }
   .media-type-buttons button:nth-of-type(2) { background-color: var(--accent-2); color: #000; }

@@ -1,38 +1,42 @@
 <div class="login-container">
-  <div class="overlay">
-    <h1>Login</h1>
-    <p class="login-subtext">Use your Jellyfin Credentials</p>
+  <div class="login-card">
+    <div class="login-header">
+      <span class="login-header__label">USER AUTH</span>
+      <span class="login-header__fill"></span>
+      <span class="login-header__tag">LCARS 47</span>
+    </div>
 
-    @if (jellyfinOffline) {
-      <div class="jellyfin-warning">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        Jellyfin server is unreachable — login may not work.
-      </div>
-    }
+    <div class="overlay">
+      <h1>Login</h1>
+      <p class="login-subtext">Use your Jellyfin Credentials</p>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="user" placeholder="Enter your username" />
-        @if (!loginForm.get('user') || loginForm.get('user')?.hasError('required')) {
-          <mat-error>
-            Username is required
-          </mat-error>
-        }
-      </mat-form-field>
+      @if (jellyfinOffline) {
+        <div class="jellyfin-warning">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Jellyfin server is unreachable — login may not work.
+        </div>
+      }
 
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="pass" type="password" placeholder="Enter your password" />
-        @if ( !loginForm.get('pass') || loginForm.get('pass')?.hasError('required')) {
-          <mat-error>
-            Password is required
-          </mat-error>
-        }
-      </mat-form-field>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="user" placeholder="Enter your username" />
+          @if (!loginForm.get('user') || loginForm.get('user')?.hasError('required')) {
+            <mat-error>Username is required</mat-error>
+          }
+        </mat-form-field>
 
-      <button mat-flat-button type="submit">Submit</button>
-    </form>
-    <div [ngStyle]="getSubmitResultStyle()">{{ submitText }}</div>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="pass" type="password" placeholder="Enter your password" />
+          @if (!loginForm.get('pass') || loginForm.get('pass')?.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" class="login-submit">Submit</button>
+      </form>
+      <div [ngStyle]="getSubmitResultStyle()">{{ submitText }}</div>
+    </div>
   </div>
 </div>

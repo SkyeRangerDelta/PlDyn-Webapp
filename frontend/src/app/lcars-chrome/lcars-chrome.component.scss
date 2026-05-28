@@ -7,9 +7,9 @@
  * 0.5× outer-radius. */
 
 $gap: 0.4rem;
-$elbow-spacing: 2.4rem;        /* width of the ::after notch — must be ≥ inner-radius */
-$elbow-outer-radius: 4.5rem;   /* outer corner radius — chunky LCARS proportions */
-$elbow-inner-radius: 2.2rem;   /* inner curve radius (~half outer, per Garrett ref) */
+$elbow-spacing: 3rem;          /* width of the ::after notch — must be ≥ inner-radius */
+$elbow-outer-radius: 6rem;     /* outer corner radius — chunky LCARS proportions */
+$elbow-inner-radius: 2.8rem;   /* inner curve radius (~half outer, per Garrett ref) */
 
 :host { display: contents; }
 
@@ -35,7 +35,7 @@ $elbow-inner-radius: 2.2rem;   /* inner curve radius (~half outer, per Garrett r
   top: 0;
   left: 0;
   width: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing});
-  height: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 2.5rem));
+  height: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 3.5rem));
   background: var(--lcars-elbow-color, var(--accent));
   border-top-left-radius: $elbow-outer-radius;
 }
@@ -73,7 +73,7 @@ $elbow-inner-radius: 2.2rem;   /* inner curve radius (~half outer, per Garrett r
   bottom: 0;
   left: 0;
   width: calc(var(--lcars-chrome-sidebar-w) + #{$elbow-spacing});
-  height: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 2.5rem));
+  height: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 3.5rem));
   background: var(--lcars-elbow-color, var(--accent));
   border-bottom-left-radius: $elbow-outer-radius;
 }
@@ -108,8 +108,8 @@ $elbow-inner-radius: 2.2rem;   /* inner curve radius (~half outer, per Garrett r
  * ============================================================ */
 .lcars-chrome__sidebar {
   position: absolute;
-  top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 2.5rem) + #{$gap});
-  bottom: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 2.5rem) + #{$gap});
+  top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend, 3.5rem) + #{$gap});
+  bottom: calc(var(--lcars-chrome-footer-h) + var(--lcars-chrome-elbow-extend, 3.5rem) + #{$gap});
   left: 0;
   width: var(--lcars-chrome-sidebar-w);
   display: flex;

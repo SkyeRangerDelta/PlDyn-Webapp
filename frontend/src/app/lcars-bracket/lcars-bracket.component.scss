@@ -1,0 +1,294 @@
+/* In-page LCARS bracket — single-color frame with rounded outer corners
+ * and the iconic ::after-cut inner curves. All segments (top elbow, top
+ * bar, sidebar, bottom elbow, bottom bar) share one tone color so the
+ * frame reads as a single continuous bracket.
+ *
+ * Default theme: passes children through unchanged.
+ * LCARS theme: renders the frame via absolute positioning so elbow
+ * + sidebar widths align exactly. */
+
+$bar-h: 1.85rem;
+$side-w: 2.5rem;
+$gap: 0.3rem;
+$elbow-outer-r: 2.4rem;
+$elbow-inner-r: 1.1rem;
+$elbow-spacing: 1.2rem;   /* width of ::after notch — must be ≥ inner radius */
+$elbow-extend: 1.4rem;    /* how far the elbow extends past the bar height */
+
+:host { display: contents; }
+
+.bracket { display: contents; }
+
+.bracket__top-elbow,
+.bracket__bottom-elbow,
+.bracket__top-bar,
+.bracket__bottom-bar,
+.bracket__sidebar { display: none; }
+
+.bracket__content { display: contents; }
+
+/* ===== LCARS theme: render the frame ===== */
+:host-context(body.theme-lcars47) { display: block; }
+
+:host-context(body.theme-lcars47) .bracket {
+  display: block;
+  position: relative;
+  /* Content padding defaults clear the sidebar/elbow. Hosts can override
+   * --bracket-content-pad-left to let centered content span more of the
+   * bracket while the sidebar remains visible on the left. */
+  --bracket-content-pad-left: calc(#{$side-w} + #{$elbow-spacing} + #{$gap});
+  padding-top:    calc(#{$bar-h} + #{$gap});
+  padding-left:   var(--bracket-content-pad-left);
+  padding-bottom: calc(#{$bar-h} + #{$gap});
+  min-height: calc(2 * #{$bar-h} + 2 * #{$elbow-extend} + 2 * #{$gap});
+}
+
+:host-context(body.theme-lcars47) .bracket.no-bottom {
+  padding-bottom: 0;
+  min-height: calc(#{$bar-h} + #{$elbow-extend} + #{$gap});
+}
+
+:host-context(body.theme-lcars47) .bracket.no-sidebar {
+  padding-left: calc(#{$elbow-spacing} + #{$gap});
+}
+
+/* --- Top-left elbow --- */
+:host-context(body.theme-lcars47) .bracket__top-elbow {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(#{$side-w} + #{$elbow-spacing});
+  height: calc(#{$bar-h} + #{$elbow-extend});
+  background: var(--accent);
+  border-top-left-radius: $elbow-outer-r;
+}
+
+:host-context(body.theme-lcars47) .bracket__top-elbow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: $elbow-spacing;
+  height: 100%;
+  background: var(--app-bg);
+}
+
+/* --- Bottom-left elbow (mirror) --- */
+:host-context(body.theme-lcars47) .bracket__bottom-elbow {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: calc(#{$side-w} + #{$elbow-spacing});
+  height: calc(#{$bar-h} + #{$elbow-extend});
+  background: var(--accent);
+  border-bottom-left-radius: $elbow-outer-r;
+}
+
+:host-context(body.theme-lcars47) .bracket__bottom-elbow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: $elbow-spacing;
+  height: 100%;
+  background: var(--app-bg);
+}
+
+
+/* --- Sidebar (solid bar between the two elbows) --- */
+:host-context(body.theme-lcars47) .bracket__sidebar {
+  display: block;
+  position: absolute;
+  top: calc(#{$bar-h} + #{$elbow-extend} + #{$gap});
+  left: 0;
+  bottom: calc(#{$bar-h} + #{$elbow-extend} + #{$gap});
+  width: $side-w;
+  background: var(--accent);
+}
+
+:host-context(body.theme-lcars47) .bracket.no-bottom .bracket__sidebar {
+  bottom: 0;
+}
+
+/* --- Top bar (right of the elbow) --- */
+:host-context(body.theme-lcars47) .bracket__top-bar {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  /* Overlap the elbow's "horizontal arm extension" (the orange strip
+   * between the vertical column and elbow_width). The bar's first
+   * segment covers it, eliminating the orphan stem effect. */
+  left: $side-w;
+  right: 0;
+  min-height: $bar-h;
+  background: var(--accent);
+  color: #000;
+  padding: 0 0.5rem 0 0.85rem;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-top-right-radius: calc(#{$bar-h} / 2);
+  border-bottom-right-radius: calc(#{$bar-h} / 2);
+}
+
+/* --- Bottom bar --- */
+:host-context(body.theme-lcars47) .bracket__bottom-bar {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  /* Overlap the elbow's "horizontal arm extension" (the orange strip
+   * between the vertical column and elbow_width). The bar's first
+   * segment covers it, eliminating the orphan stem effect. */
+  left: $side-w;
+  right: 0;
+  min-height: $bar-h;
+  background: var(--accent);
+  color: #000;
+  padding: 0 0.5rem 0 0.85rem;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-top-right-radius: calc(#{$bar-h} / 2);
+  border-bottom-right-radius: calc(#{$bar-h} / 2);
+}
+
+/* No-sidebar variant: the elbow shrinks to just the spacing column */
+:host-context(body.theme-lcars47) .bracket.no-sidebar .bracket__top-elbow,
+:host-context(body.theme-lcars47) .bracket.no-sidebar .bracket__bottom-elbow {
+  width: $elbow-spacing;
+}
+:host-context(body.theme-lcars47) .bracket.no-sidebar .bracket__top-bar,
+:host-context(body.theme-lcars47) .bracket.no-sidebar .bracket__bottom-bar {
+  left: 0;
+}
+
+/* Tone variations: a single color drives every segment of the frame */
+:host-context(body.theme-lcars47) .bracket[data-tone='peach'] .bracket__top-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='peach'] .bracket__bottom-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='peach'] .bracket__top-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='peach'] .bracket__bottom-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='peach'] .bracket__sidebar {
+  background: var(--primary);
+}
+
+:host-context(body.theme-lcars47) .bracket[data-tone='periwinkle'] .bracket__top-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='periwinkle'] .bracket__bottom-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='periwinkle'] .bracket__top-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='periwinkle'] .bracket__bottom-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='periwinkle'] .bracket__sidebar {
+  background: var(--accent-2);
+}
+
+:host-context(body.theme-lcars47) .bracket[data-tone='purple'] .bracket__top-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='purple'] .bracket__bottom-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='purple'] .bracket__top-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='purple'] .bracket__bottom-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='purple'] .bracket__sidebar {
+  background: var(--accent-4);
+}
+
+:host-context(body.theme-lcars47) .bracket[data-tone='red'] .bracket__top-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='red'] .bracket__bottom-elbow,
+:host-context(body.theme-lcars47) .bracket[data-tone='red'] .bracket__top-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='red'] .bracket__bottom-bar,
+:host-context(body.theme-lcars47) .bracket[data-tone='red'] .bracket__sidebar {
+  background: var(--accent-3);
+}
+
+/* Labels */
+:host-context(body.theme-lcars47) .bracket__label,
+:host-context(body.theme-lcars47) .bracket__footer-label {
+  flex: 0 0 auto;
+}
+
+/* Content slot — already inset by the bracket's padding */
+:host-context(body.theme-lcars47) .bracket__content {
+  display: block;
+  position: relative;
+  min-width: 0;
+  z-index: 1;
+}
+
+/* Bottom bar acts as a row of LCARS segments. Background is
+ * transparent so each segment provides its own color; gaps between
+ * segments show the page background. */
+:host-context(body.theme-lcars47) .bracket__bottom-bar {
+  background: transparent;
+  padding: 0;
+  gap: 0.3rem;
+  height: $bar-h;
+  min-height: $bar-h;
+  border-radius: 0;
+}
+
+:host-context(body.theme-lcars47) .bracket__footer-label {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 0.85rem;
+  background: var(--accent);
+  color: #000;
+  white-space: nowrap;
+}
+
+/* Buttons projected into the bottom bar — flush rectangular LCARS
+ * segments. Each fills the full bar height with per-tone background. */
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  cursor: pointer;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button[data-tone='peach']      { background: var(--primary); }
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button[data-tone='orange']     { background: var(--accent); }
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button[data-tone='periwinkle'] { background: var(--accent-2); }
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button[data-tone='purple']     { background: var(--accent-4); }
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button[data-tone='red']        { background: var(--accent-3); }
+
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button:hover:not(:disabled) {
+  filter: brightness(1.18);
+}
+
+:host-context(body.theme-lcars47) .bracket__bottom-bar ::ng-deep button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Right-end cap for the bottom bar (rendered as a flex item after the slot) */
+:host-context(body.theme-lcars47) .bracket__bottom-cap {
+  height: 100%;
+  width: calc(#{$bar-h} * 0.9);
+  background: var(--accent);
+  border-top-right-radius: calc(#{$bar-h} / 2);
+  border-bottom-right-radius: calc(#{$bar-h} / 2);
+  flex: 0 0 auto;
+  margin-left: auto;  /* anchor the cap to the right end of the bottom bar */
+}

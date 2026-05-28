@@ -1,52 +1,49 @@
 <div class="media-dashboard">
-  <!-- Contributions Section -->
-  Recent uploads
-  @if (totalAlbums > 0) {
-    <div class="contributions-totals">{{ totalAlbums }} albums, {{ totalSongs }} songs contributed</div>
-  }
-  <div class="contributions-section">
-    @if (contributions.length > 0) {
-      @for (item of contributions; track item.album + item.albumArtist) {
-        <div class="media-item">
-          <div class="cover-wrapper">
-            @if (item.coverUrl) {
-              <img [src]="item.coverUrl" [alt]="item.album" />
-            } @else {
-              <div class="cover-placeholder"></div>
-            }
-            <span class="song-count">{{ item.songCount }}</span>
+  <app-lcars-bracket
+    label="RECENT UPLOADS"
+    [footerLabel]="totalAlbums > 0 ? (totalAlbums + ' ALBUMS · ' + totalSongs + ' TRACKS') : 'EMPTY'"
+    tone="orange">
+    <div class="contributions-section">
+      @if (contributions.length > 0) {
+        @for (item of contributions; track item.album + item.albumArtist) {
+          <div class="media-item">
+            <div class="cover-wrapper">
+              @if (item.coverUrl) {
+                <img [src]="item.coverUrl" [alt]="item.album" />
+              } @else {
+                <div class="cover-placeholder">
+                  <i class="fa-solid fa-compact-disc"></i>
+                </div>
+              }
+              <span class="song-count">{{ item.songCount }}</span>
+            </div>
+            <div class="album-name">{{ item.album }}</div>
+            <div class="album-artist">{{ item.albumArtist }}</div>
           </div>
-          <div class="album-name">{{ item.album }}</div>
-          <div class="album-artist">{{ item.albumArtist }}</div>
-        </div>
+        }
+      } @else {
+        <p>No contributions yet</p>
       }
-    } @else {
-      <p>No contributions yet</p>
+    </div>
+
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button mat-icon-button (click)="prevPage()" [disabled]="currentPage <= 1">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+        <button mat-icon-button (click)="nextPage()" [disabled]="currentPage >= totalPages">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
     }
-  </div>
 
-  @if (totalPages > 1) {
-    <div class="pagination">
-      <button mat-icon-button (click)="prevPage()" [disabled]="currentPage <= 1">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
-      <button mat-icon-button (click)="nextPage()" [disabled]="currentPage >= totalPages">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
+    <div bracketBottom class="dashboard-actions">
+      <button mat-flat-button data-tone="peach" (click)="selectMediaType('music')">Music</button>
+      <button mat-flat-button data-tone="periwinkle" disabled (click)="selectMediaType('movies')">Movies</button>
+      <button mat-flat-button data-tone="purple" disabled (click)="selectMediaType('shows')">Shows</button>
+      <span class="dashboard-actions__spacer"></span>
+      <button mat-flat-button data-tone="red" routerLink="/music-editor">Open Editor →</button>
     </div>
-  }
-
-  Upload editor
-  <!-- Uploader Section -->
-  <div class="media-type-buttons">
-    <div class="btns-left">
-      <button mat-flat-button color="primary" (click)="selectMediaType('music')">Music</button>
-      <button mat-flat-button color="primary" disabled (click)="selectMediaType('movies')">Movies</button>
-      <button mat-flat-button color="primary" disabled (click)="selectMediaType('shows')">Shows</button>
-    </div>
-    <div class="btns-right">
-      <button mat-flat-button color="primary" routerLink="/music-editor">Open Editor →</button>
-    </div>
-  </div>
+  </app-lcars-bracket>
 </div>

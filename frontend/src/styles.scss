@@ -23,8 +23,8 @@ body.theme-lcars47 {
   --lcars-chrome-sidebar-w: 9rem;
   --lcars-chrome-header-h: 2.5rem;
   --lcars-chrome-footer-h: 2.5rem;
-  --lcars-chrome-elbow-extend: 2.5rem;
-  --lcars-chrome-elbow-spacing: 2.4rem;
+  --lcars-chrome-elbow-extend: 3.5rem;
+  --lcars-chrome-elbow-spacing: 3rem;
 
   padding-left: calc(var(--lcars-chrome-sidebar-w) + var(--lcars-chrome-elbow-spacing) + 0.75rem);
   padding-top: calc(var(--lcars-chrome-header-h) + var(--lcars-chrome-elbow-extend) + 0.75rem);

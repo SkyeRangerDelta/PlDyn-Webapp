@@ -21,6 +21,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.component';
 import { LcarsFrameComponent } from './lcars-frame/lcars-frame.component';
 import { LcarsChromeComponent } from './lcars-chrome/lcars-chrome.component';
+import { LcarsBracketComponent } from './lcars-bracket/lcars-bracket.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
@@ -35,7 +36,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     SettingsComponent,
     ThemeSwitcherComponent,
     LcarsFrameComponent,
-    LcarsChromeComponent
+    LcarsChromeComponent,
+    LcarsBracketComponent
   ],
   imports: [
     BrowserModule,
