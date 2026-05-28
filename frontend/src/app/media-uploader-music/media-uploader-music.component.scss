@@ -242,35 +242,252 @@ input[type="file"] {
   background-color: var(--row-bg-alt);
 }
 
+/* ============================================================
+ * LCARS theme — music editor as an LCARS data grid.
+ * Goals: less orange, more color variety, clean cell rhythm, drop
+ * heavy grid borders in favor of subtle row dividers, periwinkle
+ * column headers like a typical LCARS data grid.
+ * ============================================================ */
 :host-context(body.theme-lcars47) {
+  /* Outer panel: drop the orange box. The chrome around the page
+   * provides enough framing. */
   .media-uploader-music {
-    background: var(--surface-2);
-    border-radius: 36px;
-  }
-  .media-uploader-music table th {
-    background: var(--accent);
-    color: #000;
+    background: transparent;
+    border: 0;
     border-radius: 0;
+    box-shadow: none;
+    padding: 0.5rem 0;
+    max-width: none;
+    margin: 0;
+    gap: 0.75rem;
   }
-  .album-header-row,
-  .album-header-row td {
-    background-color: var(--row-bg-album-header);
+
+  /* ---- Add Songs / Upload buttons: distinct LCARS pills ---- */
+  .custom-uploader {
+    background: var(--primary);            /* peach */
+    color: #000;
+    border-radius: 999px;
+    padding: 0.55rem 1.4rem;
+    box-shadow: none;
+  }
+  .custom-uploader:hover { background: var(--button-hover-bg); }
+
+  .add-content-btns .upload-btn,
+  #submit-btn {
+    background: var(--accent);             /* orange */
+    color: #000;
+    border-radius: 999px;
+    padding: 0.55rem 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+  .add-content-btns .upload-btn:disabled,
+  #submit-btn:disabled {
+    background: var(--surface-2);
+    color: var(--on-surface-faint);
+  }
+
+  /* ---- Table layout ---- */
+  .media-uploader-music table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  /* Drop every inter-cell border — replace with row dividers below. */
+  .media-uploader-music table th,
+  .media-uploader-music table td {
+    border: 0;
+    padding: 0.5rem 0.65rem;
+  }
+
+  /* ---- Column header row (thead): periwinkle LCARS data-grid header ---- */
+  .media-uploader-music table th {
+    background: var(--accent-2);           /* periwinkle */
+    color: #000;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 0;
+    border-bottom: 2px solid var(--accent-4); /* purple accent line under header */
+  }
+  /* Rounded ends on the header row */
+  .media-uploader-music table thead tr th:first-child {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    padding-left: 1.25rem;
+  }
+  .media-uploader-music table thead tr th:last-child {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    padding-right: 1.25rem;
+  }
+
+  /* ---- Album header rows: LCARS section-header band ----
+   * Capsule ends match the column-header row above. The empty first
+   * cell becomes an orange marker tag ("ALBUM"); the album-name cell
+   * carries the title in display type; year/album-artist render as
+   * embedded pill inputs; the cover cell is distinct.
+   */
+  .album-header-row td,
+  .media-uploader-music table:nth-of-type(n) .album-header-row td {
+    background: var(--primary);            /* peach base */
+    color: #000;
+    border-bottom: 0;
+    padding: 0.55rem 0.65rem;
+  }
+
+  /* Capsule left/right ends across the whole album row */
+  .album-header-row td:first-child {
+    background: var(--accent);             /* orange marker */
+    color: #000;
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    padding: 0;
+    width: 3.25rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    position: relative;
+  }
+  /* The "ALBUM" marker label rendered via ::after — keeps the template
+   * untouched so the cell can stay empty in markup. */
+  .album-header-row td:first-child::after {
+    content: 'ALBUM';
+    display: inline-block;
+  }
+
+  .album-header-row td:last-child {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    padding-right: 1rem;
+  }
+
+  /* Small visual gutter between the cover cell and the album name run. */
+  .album-header-row .cover-cell {
+    background: var(--accent-4);           /* purple accent for the cover slot */
+    padding: 0.25rem 0.6rem;
+  }
+  .album-header-row .cover-cell .cover-img {
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Album name — bigger, LCARS display type, single line. */
+  .album-name-cell {
+    color: #000;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    padding-left: 1.25rem;
+  }
+
+  /* Year / Album-artist as visible inline pill inputs */
+  .album-field-input {
+    background: rgba(0, 0, 0, 0.22);
+    color: #000;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    width: 88%;
+    transition: background 0.15s ease;
+
+    &::placeholder { color: rgba(0, 0, 0, 0.55); }
+    &:hover { background: rgba(0, 0, 0, 0.32); }
+    &:focus {
+      background: #000;
+      color: var(--on-surface);
+      outline: 0;
+    }
+  }
+
+  /* ---- Song rows: dark base, peach text, subtle dividers ---- */
+  .song-row td {
+    background: var(--surface);
+    color: var(--on-surface);
+    border-bottom: 1px solid var(--surface-2);
+  }
+  .song-row:hover td {
+    background: var(--row-bg-alt);
+  }
+  .song-row .song-field-input {
+    background: transparent;
+    color: var(--on-surface);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 0.3rem 0.5rem;
+    font-family: var(--font-ui);
+  }
+  .song-row .song-field-input:focus {
+    background: var(--surface-elevated);
+    border-color: var(--accent-2);
+    outline: 0;
+  }
+  /* Year / Album Artist read-only display: drop italic, keep muted */
+  .song-row .readonly-field {
+    color: var(--on-surface-muted);
+    font-style: normal;
+    padding-left: 0.6rem;
+  }
+
+  /* ---- Indent the title column on song rows for readability ---- */
+  .song-row td:nth-child(2) { padding-left: 1.5rem; }
+
+  /* ---- Remove button: compact red icon pill ---- */
+  .remove-btn {
+    background: transparent;
+    color: var(--accent-3);
+    border: 1px solid var(--accent-3);
+    border-radius: 999px;
+    width: 1.85rem;
+    height: 1.85rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+  .remove-btn:hover {
+    background: var(--accent-3);
     color: #000;
   }
 
-  /* Cycle album header colors across the page using nth-of-type on the
-   * wrapping <table> — each album lives in its own table. */
-  table:nth-of-type(4n + 1) .album-header-row,
-  table:nth-of-type(4n + 1) .album-header-row td { background-color: var(--accent); color: #000; }
-  table:nth-of-type(4n + 2) .album-header-row,
-  table:nth-of-type(4n + 2) .album-header-row td { background-color: var(--accent-2); color: #000; }
-  table:nth-of-type(4n + 3) .album-header-row,
-  table:nth-of-type(4n + 3) .album-header-row td { background-color: var(--accent-4); color: #000; }
-  table:nth-of-type(4n)     .album-header-row,
-  table:nth-of-type(4n)     .album-header-row td { background-color: var(--accent-3); color: #000; }
-
-  .remove-btn {
-    color: var(--accent-3);
-    border-color: var(--accent-3);
+  /* ---- Status text: small peach LCARS pill ---- */
+  .upload-progress-line {
+    margin-top: 1rem;
   }
+  .upload-progress-line .progress-text {
+    background: var(--primary);
+    color: #000;
+    padding: 0.25rem 0.85rem;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    opacity: 1;
+  }
+  .upload-progress-line .progress-bar-inline {
+    background: var(--surface-2);
+    border-radius: 999px;
+    height: 0.6rem;
+    width: 160px;
+  }
+  .upload-progress-line .progress-bar {
+    background: var(--accent);
+    border-radius: 999px;
+  }
+
+  /* Cover cell tightening — single 50×50 image doesn't need a wide cell. */
+  .cover-cell { padding: 0.35rem 0.5rem; }
 }
